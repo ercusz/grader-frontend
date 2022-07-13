@@ -1,22 +1,67 @@
 {
+  "name": "frontend",
+  "author": "Wachirawitch <custard@wachirawitch.works> (https://github.com/ercusz)",
+  "description": "Unnamed senior project",
+  "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0",
+    "yarn": ">=1.22.0",
+    "npm": "please-use-yarn"
+  },
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "lint": "next lint",
+    "prettier": "prettier --write .",
+    "prepare": "husky install",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.8.6",
     "next": "latest",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "util": "^0.12.4"
   },
   "devDependencies": {
+    "@babel/core": "^7.18.6",
+    "@commitlint/cli": "^17.0.3",
+    "@commitlint/config-conventional": "^17.0.3",
+    "@storybook/addon-actions": "^6.5.9",
+    "@storybook/addon-essentials": "^6.5.9",
+    "@storybook/addon-interactions": "^6.5.9",
+    "@storybook/addon-links": "^6.5.9",
+    "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/builder-webpack5": "^6.5.9",
+    "@storybook/manager-webpack5": "^6.5.9",
+    "@storybook/react": "^6.5.9",
+    "@storybook/testing-library": "^0.0.13",
     "@types/node": "17.0.35",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.5",
+    "@typescript-eslint/eslint-plugin": "^5.30.4",
+    "@typescript-eslint/parser": "^5.30.4",
     "autoprefixer": "^10.4.7",
+    "babel-loader": "^8.2.5",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.19.0",
+    "eslint-config-next": "12.2.0",
+    "eslint-plugin-storybook": "^0.5.13",
+    "husky": "^8.0.1",
     "postcss": "^8.4.14",
+    "prettier": "^2.7.1",
+    "storybook-css-modules-preset": "^1.1.1",
     "tailwindcss": "^3.1.2",
     "typescript": "4.7.2"
+  },
+  "resolutions": {
+    "webpack": "^5"
   }
 }
