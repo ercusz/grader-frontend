@@ -12,12 +12,26 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import Link from 'next/link';
 import * as React from 'react';
 import ThemeToggleButton from '../themetoggle/ThemeToggleButton';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
-const pages = ['คลาสเรียนของฉัน', 'จัดการคลาสเรียน'];
+const pages = [
+  {
+    name: 'คลาสเรียนของฉัน',
+    route: '/classroom',
+  },
+  {
+    name: 'จัดการคลาสเรียน',
+    route: '/manage-classroom',
+  },
+  {
+    name: 'เพลย์กราวด์',
+    route: '/playground',
+  },
+];
 const settings = ['บัญชี', 'ออกจากระบบ'];
 
 const Header: React.FC<IHeader> = () => {
@@ -98,9 +112,11 @@ const Header: React.FC<IHeader> = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+              {pages.map((page, index) => (
+                <MenuItem key={index} onClick={handleCloseNavMenu}>
+                  <Link href={page.route}>
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </Link>
                 </MenuItem>
               ))}
             </Menu>
@@ -123,14 +139,15 @@ const Header: React.FC<IHeader> = () => {
             grade้r
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'inherit', display: 'block' }}
-              >
-                {page}
-              </Button>
+            {pages.map((page, index) => (
+              <Link key={index} href={page.route}>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'inherit', display: 'block' }}
+                >
+                  {page.name}
+                </Button>
+              </Link>
             ))}
           </Box>
 
