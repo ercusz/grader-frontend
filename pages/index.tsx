@@ -17,46 +17,65 @@ const Home: NextPageWithLayout = () => {
   const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   return (
-    <main className="flex flex-col items-center gap-y-5 mt-12 sm:mt-36">
+    <main className="flex flex-col items-center gap-y-5 mt-6">
       {/* Hero unit */}
-      <Box
-        sx={{
-          bgcolor: 'background.paper',
-          pt: 8,
-          pb: 6,
-        }}
-      >
-        <Container maxWidth="sm">
-          <Typography
-            component="h1"
-            variant="h2"
-            align="center"
-            color="text.primary"
-            gutterBottom
+      <Grid container sx={{ height: '100vh' }}>
+        <Grid item xs={16} sm={16} md={6}>
+          <Box
+            className="lg:scale-125"
+            sx={{
+              bgcolor: 'background.paper',
+              pt: 20,
+              pb: 6,
+            }}
           >
-            grade้r👨‍💻
-          </Typography>
+            <Container maxWidth="sm">
+              <Typography
+                component="h1"
+                variant="h2"
+                align="center"
+                color="text.primary"
+                gutterBottom
+              >
+                grade้r
+              </Typography>
 
-          <Typography
-            className="mt-4"
-            variant="h5"
-            align="center"
-            color="text.secondary"
-            paragraph
-          >
-            &ldquo;เกรดเด้อ&rdquo;
-          </Typography>
-          <Stack
-            sx={{ pt: 4 }}
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-          >
-            <Button variant="contained">คลาสเรียนของฉัน</Button>
-            <Button variant="outlined">จัดการคลาสเรียน</Button>
-          </Stack>
-        </Container>
-      </Box>
+              <Typography
+                className="mt-4"
+                variant="h5"
+                align="center"
+                color="text.secondary"
+                paragraph
+              >
+                &ldquo;เกรดเด้อ&rdquo;
+              </Typography>
+              <Stack
+                sx={{ pt: 4 }}
+                direction="row"
+                spacing={2}
+                justifyContent="center"
+              >
+                <Button variant="contained">คลาสเรียนของฉัน</Button>
+                <Button variant="outlined">จัดการคลาสเรียน</Button>
+              </Stack>
+            </Container>
+          </Box>
+        </Grid>
+        <Grid
+          className="scale-90"
+          item
+          xs={false}
+          sm={false}
+          md={6}
+          sx={{
+            backgroundImage: 'url(/home.svg)',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+        ></Grid>
+      </Grid>
+
       <Container sx={{ py: 8 }} maxWidth="md">
         {/* End hero unit */}
         <Grid container spacing={4}>
