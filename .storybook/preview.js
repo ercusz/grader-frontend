@@ -1,5 +1,15 @@
+import CssBaseline from '@mui/material/CssBaseline';
+import { ThemeProvider } from '@mui/material/styles';
+import addons from '@storybook/addons';
 import * as NextImage from 'next/image';
+import React from 'react';
+import {
+  DARK_MODE_EVENT_NAME,
+  UPDATE_DARK_MODE_EVENT_NAME,
+} from 'storybook-dark-mode';
+import { ColorContext } from '../state/color/ColorContext';
 import '../styles/globals.css';
+import { darkTheme, lightTheme } from '../utils/theme';
 
 const BREAKPOINTS_INT = {
   xs: 375,
@@ -33,6 +43,43 @@ Object.defineProperty(NextImage, 'default', {
   value: (props) => <OriginalNextImage {...props} unoptimized />,
 });
 
+// get channel to listen to event emitter
+const channel = addons.getChannel();
+
+// create a component that uses the dark mode hook
+function ThemeWrapper(props) {
+  // this example uses hook but you can also use class component as well
+  const [isDark, setDark] = React.useState(false);
+
+  const colorMode = React.useMemo(
+    () => ({
+      toggleColorMode: () => {
+        channel.emit(UPDATE_DARK_MODE_EVENT_NAME);
+      },
+    }),
+    []
+  );
+
+  React.useEffect(() => {
+    channel.on(DARK_MODE_EVENT_NAME, setDark);
+    return () => channel.removeListener(DARK_MODE_EVENT_NAME, setDark);
+  }, [channel, setDark]);
+
+  // render your custom theme provider
+  return (
+    <ColorContext.Provider value={colorMode}>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <CssBaseline />
+        {props.children}
+      </ThemeProvider>
+    </ColorContext.Provider>
+  );
+}
+
+export const decorators = [
+  (renderStory) => <ThemeWrapper>{renderStory()}</ThemeWrapper>,
+];
+
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {
@@ -42,4 +89,7 @@ export const parameters = {
     },
   },
   viewport: { viewports: customViewports },
+  darkMode: {
+    current: 'light',
+  },
 };

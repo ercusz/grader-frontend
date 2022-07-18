@@ -1,24 +1,25 @@
-import createCache from '@emotion/cache';
-import { CacheProvider } from '@emotion/react';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import type { AppProps } from 'next/app';
 import React from 'react';
+import { ColorContext } from '../state/color/ColorContext';
 import '../styles/globals.css';
+import createEmotionCache from '../utils/createEmotionCache';
+import { darkTheme, lightTheme } from '../utils/theme';
 import { NextPageWithLayout } from './page';
-import { ColorContext } from '../state/color/ColorContext'
+
+// Client-side cache, shared for the whole session of the user in the browser.
+const clientSideEmotionCache = createEmotionCache();
 
 interface AppPropsWithLayout extends AppProps {
+  emotionCache?: EmotionCache;
   Component: NextPageWithLayout;
 }
 
-const cache = createCache({
-  key: 'css',
-  prepend: true,
-});
-
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp(props: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
+  const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const getLayout = Component.getLayout || ((page) => page);
 
   const [mode, setMode] = React.useState<'light' | 'dark'>('light');
@@ -31,18 +32,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     []
   );
 
-  const theme = React.useMemo(
-    () =>
-      createTheme({
-        palette: {
-          mode,
-        },
-      }),
-    [mode]
-  );
+  const theme = mode === 'light' ? lightTheme : darkTheme;
 
   return (
-    <CacheProvider value={cache}>
+    <CacheProvider value={emotionCache}>
       <ColorContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />

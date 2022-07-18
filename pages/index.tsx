@@ -24,7 +24,6 @@ const Home: NextPageWithLayout = () => {
           <Box
             className="lg:scale-125"
             sx={{
-              bgcolor: 'background.paper',
               pt: 20,
               pb: 6,
             }}
