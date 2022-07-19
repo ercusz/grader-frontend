@@ -75,7 +75,6 @@ const ThemeToggleButton: React.FC<IThemeToggleButton> = () => {
           control={
             <MaterialUISwitch
               sx={{ m: 1 }}
-              defaultChecked
               checked={theme.palette.mode === 'dark'}
               onChange={colorMode.toggleColorMode}
             />
