@@ -6,14 +6,14 @@ export const lightTheme = createTheme({
   palette: {
     mode: 'light',
     primary: {
-      main: '#556cd6',
+      main: '#22272E',
     },
     error: {
       main: red.A400,
     },
     background: {
-      default: '#FFFFFF',
-      paper: 'F5F5F5',
+      default: '#FCFCFC',
+      paper: '#FFFFFF',
     },
   },
 });
@@ -23,7 +23,7 @@ export const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#556cd6',
+      main: '#FCFCFC',
     },
     error: {
       main: red.A400,
