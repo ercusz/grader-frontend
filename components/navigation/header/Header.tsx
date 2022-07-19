@@ -9,6 +9,7 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { alpha } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
@@ -60,8 +61,13 @@ const Header: React.FC<IHeader> = () => {
   return (
     <AppBar
       position="fixed"
-      color="transparent"
-      sx={{ backdropFilter: 'blur(10px)' }}
+      sx={{
+        color: (theme) => theme.palette.text.primary,
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
+        backgroundColor: (theme) =>
+          alpha(theme.palette.background.default, 0.72),
+      }}
       elevation={0}
     >
       <Container maxWidth="xl">
@@ -142,6 +148,7 @@ const Header: React.FC<IHeader> = () => {
             {pages.map((page, index) => (
               <Link key={index} href={page.route}>
                 <Button
+                  className="font-bold"
                   onClick={handleCloseNavMenu}
                   sx={{ my: 2, color: 'inherit', display: 'block' }}
                 >
