@@ -1,31 +1,25 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Grid,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, Grid, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
+import React, { useRef } from 'react';
 import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
 import { NextPageWithLayout } from './page';
 
 const Home: NextPageWithLayout = () => {
-  const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const ref = useRef(null);
+  React.useEffect(() => {
+    import('@lottiefiles/lottie-player');
+  });
 
   return (
-    <main className="flex flex-col items-center gap-y-5 mt-6">
+    <section>
       {/* Hero unit */}
-      <Grid container sx={{ height: '100vh' }}>
+      <Grid container>
         <Grid item xs={16} sm={16} md={6}>
           <Box
             className="lg:scale-125"
             sx={{
-              pt: 20,
-              pb: 6,
+              pt: 10,
             }}
           >
             <Container maxWidth="sm">
@@ -60,61 +54,30 @@ const Home: NextPageWithLayout = () => {
             </Container>
           </Box>
         </Grid>
+
         <Grid
-          className="scale-90"
+          className="scale-110 lg:scale-125"
           item
           xs={false}
           sm={false}
           md={6}
           sx={{
-            backgroundImage: 'url(/home.svg)',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            display: { xs: 'none', sm: 'none', md: 'block' },
+            backgroundColor: 'transparent',
+            boxShadow: 'none',
           }}
-        ></Grid>
-      </Grid>
-
-      <Container sx={{ py: 8 }} maxWidth="md">
-        {/* End hero unit */}
-        <Grid container spacing={4}>
-          {cards.map((card) => (
-            <Grid item key={card} xs={12} sm={6} md={4}>
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  sx={{
-                    // 16:9
-                    pt: '56.25%',
-                  }}
-                  image="https://source.unsplash.com/random"
-                  alt="random"
-                />
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    Heading
-                  </Typography>
-                  <Typography>
-                    This is a media card. You can use this section to describe
-                    the content.
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">View</Button>
-                  <Button size="small">Edit</Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
+        >
+          <lottie-player
+            id="firstLottie"
+            ref={ref}
+            autoplay
+            loop
+            mode="normal"
+            src="/programmer-guy.json"
+          ></lottie-player>
         </Grid>
-      </Container>
-    </main>
+      </Grid>
+    </section>
   );
 };
 
