@@ -13,11 +13,13 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({
   return (
     <>
       <Head>
-        <title>Unnamed website</title>
+        <title>grade้r</title>
       </Head>
       <div {...divProps} className={`min-h-screen flex flex-col ${justify}`}>
         <Header />
-        <main className="px-5">{children}</main>
+        <main className="px-10 py-28" style={{ height: '100vh' }}>
+          {children}
+        </main>
         <div className="m-auto" />
       </div>
     </>
