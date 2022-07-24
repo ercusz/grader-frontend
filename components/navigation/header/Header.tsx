@@ -1,4 +1,3 @@
-import LogoDevIcon from '@mui/icons-material/LogoDev';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
@@ -15,6 +14,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import * as React from 'react';
+import Branding from '../branding/Branding';
 import ThemeToggleButton from '../themetoggle/ThemeToggleButton';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
@@ -72,23 +72,9 @@ const Header: React.FC<IHeader> = () => {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <LogoDevIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            grade้r
-          </Typography>
-
+          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            <Branding withText />
+          </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -127,23 +113,9 @@ const Header: React.FC<IHeader> = () => {
               ))}
             </Menu>
           </Box>
-          <LogoDevIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            grade้r
-          </Typography>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+            <Branding large/>
+          </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page, index) => (
               <Link key={index} href={page.route}>
