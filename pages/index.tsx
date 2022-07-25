@@ -14,10 +14,10 @@ const Home: NextPageWithLayout = () => {
   return (
     <section>
       {/* Hero unit */}
-      <Grid container>
+      <Grid container justifyContent="center" alignItems="center">
         <Grid item xs={16} sm={16} md={6}>
           <Box
-            className="lg:scale-125"
+            className="lg:scale-125 lg:-mt-10"
             sx={{
               pt: 10,
             }}
@@ -32,7 +32,6 @@ const Home: NextPageWithLayout = () => {
               >
                 grade้r
               </Typography>
-
               <Typography
                 className="mt-4"
                 variant="h5"
@@ -56,7 +55,7 @@ const Home: NextPageWithLayout = () => {
         </Grid>
 
         <Grid
-          className="scale-110 lg:scale-125"
+          className="scale-110"
           item
           xs={false}
           sm={false}
@@ -68,7 +67,7 @@ const Home: NextPageWithLayout = () => {
           }}
         >
           <lottie-player
-            id="firstLottie"
+            id="home-image"
             ref={ref}
             autoplay
             loop

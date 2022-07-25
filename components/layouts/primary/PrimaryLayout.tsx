@@ -1,3 +1,4 @@
+import Container from '@mui/material/Container';
 import Head from 'next/head';
 import Header from '../../navigation/header/Header';
 
@@ -17,9 +18,7 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({
       </Head>
       <div {...divProps} className={`min-h-screen flex flex-col ${justify}`}>
         <Header />
-        <main className="px-10 py-28" style={{ height: '100vh' }}>
-          {children}
-        </main>
+        <Container className="px-10 py-16">{children}</Container>
         <div className="m-auto" />
       </div>
     </>
