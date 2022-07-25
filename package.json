@@ -24,11 +24,13 @@
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@lottiefiles/lottie-player": "^1.5.7",
+    "@monaco-editor/react": "^4.4.5",
     "@mui/icons-material": "^5.8.4",
     "@mui/material": "^5.8.6",
     "next": "latest",
     "react": "18.1.0",
     "react-dom": "18.1.0",
+    "react-icons": "^4.4.0",
     "util": "^0.12.4"
   },
   "devDependencies": {
