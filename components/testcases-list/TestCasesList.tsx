@@ -2,6 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import LoadingButton from '@mui/lab/LoadingButton';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Chip from '@mui/material/Chip';
@@ -25,16 +26,19 @@ export interface ITestCase {
   input: string;
   expectedOutput: string;
   status: number;
+  loading: boolean;
 }
 
 export interface ITestCasesList {
   testcases: ITestCase[];
   setTestcases: React.Dispatch<React.SetStateAction<ITestCase[]>>;
+  runTestCase: (testcase: ITestCase) => Promise<void>;
 }
 
 const TestCasesList: React.FC<ITestCasesList> = ({
   testcases,
   setTestcases,
+  runTestCase,
 }) => {
   const [openTestCaseList, setOpenTestCaseList] = useState([false]);
   const [openNewTestCase, setOpenNewTestCase] = useState(true);
@@ -67,7 +71,7 @@ const TestCasesList: React.FC<ITestCasesList> = ({
   };
 
   const handleTestCaseListClick = (id: number) => {
-    setOpenTestCaseList((prevState: any[]) => ({
+    setOpenTestCaseList((prevState: boolean[]) => ({
       ...prevState,
       [id]: !prevState[id],
     }));
@@ -85,11 +89,12 @@ const TestCasesList: React.FC<ITestCasesList> = ({
   const handleAddTestCaseButton = () => {
     if (testcases && input != '' && name != '' && expectedOutput != '') {
       let testcase: ITestCase = {
-        id: testcases!.length - 1,
+        id: new Date().getUTCMilliseconds(),
         name: name,
         input: input,
         expectedOutput: expectedOutput,
         status: 0,
+        loading: false,
       };
       setTestcases((prevTestcases) => [...prevTestcases, testcase]);
     }
@@ -151,9 +156,14 @@ const TestCasesList: React.FC<ITestCasesList> = ({
                       alignItems="center"
                       spacing={1}
                     >
-                      <IconButton color="success">
+                      <LoadingButton
+                        onClick={() => runTestCase(testcase)}
+                        loading={testcase.loading}
+                        color="success"
+                        disabled={testcase.loading}
+                      >
                         <PlayCircleIcon fontSize="large" />
-                      </IconButton>
+                      </LoadingButton>
                       {testcase.name}
                       {testcase.status >= 3 && (
                         <Chip
@@ -270,7 +280,6 @@ const TestCasesList: React.FC<ITestCasesList> = ({
                         Name
                       </Typography>
                       <TextField
-                        autoFocus
                         margin="dense"
                         type="text"
                         fullWidth
@@ -284,7 +293,6 @@ const TestCasesList: React.FC<ITestCasesList> = ({
                         Input
                       </Typography>
                       <TextField
-                        autoFocus
                         margin="dense"
                         type="text"
                         fullWidth
@@ -300,7 +308,6 @@ const TestCasesList: React.FC<ITestCasesList> = ({
                         Expected Output
                       </Typography>
                       <TextField
-                        autoFocus
                         margin="dense"
                         type="text"
                         fullWidth

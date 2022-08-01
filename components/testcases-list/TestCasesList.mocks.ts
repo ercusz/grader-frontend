@@ -8,6 +8,7 @@ const base: ITestCasesList = {
       input: 'John\nDoe',
       expectedOutput: "Hello, I'm John Doe!",
       status: 0,
+      loading: true,
     },
     {
       id: 2,
@@ -15,6 +16,7 @@ const base: ITestCasesList = {
       input: 'Peter\nParker',
       expectedOutput: "Hello, I'm Peter Parker!",
       status: 3,
+      loading: true,
     },
     {
       id: 3,
@@ -22,6 +24,7 @@ const base: ITestCasesList = {
       input: 'ปีเตอร์\nปาร์คเกอร์',
       expectedOutput: "Hello, I'm ปีเตอร์ ปาร์คเกอร์!",
       status: 4,
+      loading: false,
     },
     {
       id: 4,
@@ -29,10 +32,15 @@ const base: ITestCasesList = {
       input: 'โทนี่โทนี่\nช็อปเปอร์',
       expectedOutput: "Hello, I'm โทนี่โทนี่ ช็อปเปอร์!",
       status: 13,
+      loading: false,
     },
   ],
   setTestcases: () => {
     console.log('call setTestcases');
+  },
+  runTestCase: async () => {
+    console.log('call runTestCase');
+    return;
   },
 };
 

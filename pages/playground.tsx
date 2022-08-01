@@ -84,46 +84,66 @@ const Playground: NextPageWithLayout = () => {
       stdin: customInput,
     };
 
-    const submission = await createSubmission(params);
+    try {
+      const submission = await createSubmission(params);
 
-    setStatus(submission.status_id);
-    setTime(submission.time);
-    setMemory(submission.memory);
+      setStatus(submission.status_id);
+      setTime(submission.time);
+      setMemory(submission.memory);
 
-    if (submission.stderr != '') {
-      output.setValue(submission.stderr);
-    } else if (submission.compile_output != '') {
-      output.setValue(submission.compile_output);
-    } else {
-      output.setValue(submission.stdout);
+      if (submission.stderr != '') {
+        output.setValue(submission.stderr);
+      } else if (submission.compile_output != '') {
+        output.setValue(submission.compile_output);
+      } else {
+        output.setValue(submission.stdout);
+      }
+    } catch (error) {
+      setStatus(15);
     }
   };
 
   const handleRunAllTestCasesButton = async () => {
-    setIsProgress(true);
-
     await runAllTestCases();
+  };
 
-    setIsProgress(false);
+  const runTestCase = async (testcase: ITestCase) => {
+    const editor: any = editorRef.current;
+    const params = {
+      languageId: 4,
+      sourceCode: editor.getValue(),
+      stdin: testcase.input,
+      expectedOutput: testcase.expectedOutput,
+    };
+
+    setTestcases((currentTestcases) =>
+      currentTestcases.map((t) =>
+        t.id === testcase.id ? { ...t, loading: true, status: 0 } : t
+      )
+    );
+
+    try {
+      const submission = await createSubmission(params);
+
+      setTestcases((currentTestcases) =>
+        currentTestcases.map((t) =>
+          t.id === testcase.id
+            ? { ...t, status: submission.status_id, loading: false }
+            : t
+        )
+      );
+    } catch {
+      setTestcases((currentTestcases) =>
+        currentTestcases.map((t) =>
+          t.id === testcase.id ? { ...t, status: 15, loading: false } : t
+        )
+      );
+    }
   };
 
   const runAllTestCases = async () => {
-    const editor: any = editorRef.current;
-
     testcases.forEach(async (testcase) => {
-      const params = {
-        languageId: 4,
-        sourceCode: editor.getValue(),
-        stdin: testcase.input,
-        expectedOutput: testcase.expectedOutput,
-      };
-
-      const submission = await createSubmission(params);
-      setTestcases((currentTestcases) =>
-        currentTestcases.map((t) =>
-          t.id === testcase.id ? { ...t, status: submission.status_id } : t
-        )
-      );
+      runTestCase(testcase);
     });
   };
 
@@ -391,6 +411,7 @@ const Playground: NextPageWithLayout = () => {
                 <TestCasesList
                   testcases={testcases}
                   setTestcases={setTestcases}
+                  runTestCase={runTestCase}
                 />
               </CardContent>
             </Card>
