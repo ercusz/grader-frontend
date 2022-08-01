@@ -31,8 +31,6 @@ export async function createSubmission(
 
     return data;
   } catch (error) {
-    console.log(error);
-
-    return error;
+    throw new Error();
   }
 }
