@@ -26,6 +26,7 @@
     "@lottiefiles/lottie-player": "^1.5.7",
     "@monaco-editor/react": "^4.4.5",
     "@mui/icons-material": "^5.8.4",
+    "@mui/lab": "^5.0.0-alpha.92",
     "@mui/material": "^5.8.6",
     "axios": "^0.27.2",
     "next": "latest",
