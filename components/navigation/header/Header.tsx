@@ -1,3 +1,4 @@
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
@@ -8,11 +9,14 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Stack from '@mui/material/Stack';
 import { alpha } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import * as React from 'react';
 import Branding from '../branding/Branding';
 import ThemeToggleButton from '../themetoggle/ThemeToggleButton';
@@ -33,9 +37,30 @@ const pages = [
     route: '/playground',
   },
 ];
-const settings = ['บัญชี', 'ออกจากระบบ'];
+const settings = ['บัญชี'];
 
 const Header: React.FC<IHeader> = () => {
+  const { data: session } = useSession();
+
+  React.useEffect(() => {
+    if (session == null) return;
+    console.log('session.jwt', session.jwt);
+  }, [session]);
+
+  const router = useRouter();
+  const [isInSignInPage, setIsInSignInPage] = React.useState(false);
+
+  React.useEffect(() => {
+    if (
+      router.pathname === '/auth/sign-in' ||
+      router.pathname === '/auth/sign-up'
+    ) {
+      setIsInSignInPage(true);
+    }
+
+    return () => setIsInSignInPage(false);
+  }, [router.pathname]);
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -61,13 +86,18 @@ const Header: React.FC<IHeader> = () => {
   return (
     <AppBar
       position="fixed"
-      sx={{
-        color: (theme) => theme.palette.text.primary,
-        backdropFilter: 'blur(6px)',
-        WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
-        backgroundColor: (theme) =>
-          alpha(theme.palette.background.default, 0.72),
-      }}
+      sx={
+        isInSignInPage
+          ? {}
+          : {
+              color: (theme) => theme.palette.text.primary,
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
+              backgroundColor: (theme) =>
+                alpha(theme.palette.background.default, 0.72),
+            }
+      }
+      color={isInSignInPage ? 'transparent' : undefined}
       elevation={0}
     >
       <Container maxWidth="xl">
@@ -83,6 +113,10 @@ const Header: React.FC<IHeader> = () => {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              sx={{
+                visibility: session ? 'visible' : 'hidden',
+                display: isInSignInPage ? 'none' : 'block',
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -104,64 +138,118 @@ const Header: React.FC<IHeader> = () => {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page, index) => (
-                <MenuItem key={index} onClick={handleCloseNavMenu}>
-                  <Link href={page.route}>
-                    <Typography textAlign="center">{page.name}</Typography>
-                  </Link>
-                </MenuItem>
-              ))}
+              {session &&
+                pages.map((page, index) => (
+                  <MenuItem key={index} onClick={handleCloseNavMenu}>
+                    <Link href={page.route}>
+                      <Typography textAlign="center">{page.name}</Typography>
+                    </Link>
+                  </MenuItem>
+                ))}
             </Menu>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <Branding large/>
+            <Branding large />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page, index) => (
-              <Link key={index} href={page.route}>
-                <Button
-                  className="font-bold"
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'inherit', display: 'block' }}
-                >
-                  {page.name}
-                </Button>
-              </Link>
-            ))}
-          </Box>
-
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="โปรไฟล์ของคุณ">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="จอห์น" src="/static/images/avatar/2.jpg" />
-              </IconButton>
-            </Tooltip>
-            <Menu
-              sx={{ mt: '45px' }}
-              id="menu-appbar"
-              anchorEl={anchorElUser}
-              anchorOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
-              }}
-              open={Boolean(anchorElUser)}
-              onClose={handleCloseUserMenu}
-            >
-              <MenuItem>
-                <ThemeToggleButton />
-              </MenuItem>
-              <Divider />
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
+            {session &&
+              pages.map((page, index) => (
+                <Link key={index} href={page.route}>
+                  <Button
+                    className="font-bold"
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: 'inherit', display: 'block' }}
+                  >
+                    {page.name}
+                  </Button>
+                </Link>
               ))}
-            </Menu>
+          </Box>
+          <Box sx={{ flexGrow: 0 }}>
+            {session ? (
+              <>
+                <Tooltip title="โปรไฟล์ของคุณ">
+                  <IconButton
+                    className="
+                      transition-all
+                      ring-white ring-2
+                      shadow-lg shadow-gray p-[3px] hover:p-[6px]
+                      bg-gradient-to-tl hover:bg-gradient-to-br
+                      from-green-300 via-cyan-500 to-sky-600"
+                    onClick={handleOpenUserMenu}
+                  >
+                    <Avatar
+                      alt={session.user ? session.user.username : null}
+                      src={session.user ? session.user.image : null}
+                      sx={{ width: 28, height: 28 }}
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                >
+                  <MenuItem>
+                    <ThemeToggleButton />
+                  </MenuItem>
+                  <Divider />
+                  {settings.map((setting) => (
+                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                      <Typography textAlign="center">{setting}</Typography>
+                    </MenuItem>
+                  ))}
+                  <MenuItem onClick={() => signOut()}>
+                    <Typography textAlign="center">ออกจากระบบ</Typography>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <>
+                {!isInSignInPage && (
+                  <>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        flexGrow: 1,
+                        display: { xs: 'none', md: 'flex' },
+                      }}
+                    >
+                      <Link href="/auth/sign-in">
+                        <Button className="font-bold" variant="text">
+                          ลงชื่อเข้าใช้
+                        </Button>
+                      </Link>
+                      <Link href="/auth/sign-up">
+                        <Button variant="contained">เริ่มต้นใช้งาน</Button>
+                      </Link>
+                    </Stack>
+                    <Link href="/auth/sign-in">
+                      <IconButton
+                        sx={{
+                          flexGrow: 1,
+                          display: { xs: 'flex', md: 'none' },
+                        }}
+                      >
+                        <AccountCircleIcon />
+                      </IconButton>
+                    </Link>
+                  </>
+                )}
+              </>
+            )}
           </Box>
         </Toolbar>
       </Container>

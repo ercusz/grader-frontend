@@ -24,6 +24,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { getSession } from 'next-auth/react';
 import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
@@ -180,7 +181,7 @@ const Playground: NextPageWithLayout = () => {
   };
 
   return (
-    <section className="pt-5">
+    <section className="pt-24 px-10 min-h-screen">
       <InputDialog
         open={openInputDialog}
         setOpen={setOpenInputDialog}
@@ -215,7 +216,7 @@ const Playground: NextPageWithLayout = () => {
         container
         spacing={{ xs: 2, sm: 2, md: 3, lg: 4 }}
         justifyContent="center"
-        paddingBottom={{ xs: 16, sm: 14, md: 2, lg: 0 }}
+        paddingBottom={{ xs: 12, sm: 12, md: 10, lg: 10 }}
       >
         <Grid item xs={12} sm={12} md={8} lg={8}>
           <Container>
@@ -426,4 +427,20 @@ export default Playground;
 
 Playground.getLayout = (page) => {
   return <PrimaryLayout>{page}</PrimaryLayout>;
+};
+
+export const getServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  // Check if session exists or not, if not, redirect
+  if (session == null) {
+    return {
+      redirect: {
+        destination: '/auth/sign-in',
+        permanent: true,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 };

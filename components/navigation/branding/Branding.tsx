@@ -33,14 +33,13 @@ const Branding: React.FC<IBranding> = ({ withText = false, large = false }) => {
             bg={theme.palette.mode === 'dark' ? 'white' : 'black'}
             text={theme.palette.mode === 'dark' ? 'black' : 'white'}
             fontSize={large ? 'large' : 'medium'}
-            sx={{ mr: 1 }}
           />
           {withText && (
             <Typography
               variant={large ? 'h4' : 'h6'}
               noWrap
               sx={{
-                mr: 2,
+                mx: 1,
                 fontWeight: 700,
                 color: 'inherit',
                 textDecoration: 'none',

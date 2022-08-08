@@ -1,26 +1,42 @@
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import React, { useRef } from 'react';
+import type { LottiePlayer } from 'lottie-web';
+import { useSession } from 'next-auth/react';
+import { useEffect, useRef, useState } from 'react';
 import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
 import { NextPageWithLayout } from './page';
 
 const Home: NextPageWithLayout = () => {
-  const ref = useRef(null);
-  React.useEffect(() => {
-    import('@lottiefiles/lottie-player');
-  });
+  const { data: session } = useSession();
+  const ref = useRef<HTMLDivElement>(null);
+  const [lottie, setLottie] = useState<LottiePlayer | null>(null);
+
+  useEffect(() => {
+    import('lottie-web').then((Lottie) => setLottie(Lottie.default));
+  }, []);
+
+  useEffect(() => {
+    if (lottie && ref.current) {
+      const animation = lottie.loadAnimation({
+        container: ref.current,
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: '/programmer-guy.json',
+      });
+
+      return () => animation.destroy();
+    }
+  }, [lottie]);
 
   return (
     <section>
       {/* Hero unit */}
-      <Grid container justifyContent="center" alignItems="center">
+      <Grid container className="min-h-screen" justifyContent="center" alignItems="center">
         <Grid item xs={16} sm={16} md={6}>
           <Box
-            className="lg:scale-125 lg:-mt-10"
-            sx={{
-              pt: 10,
-            }}
+            className="lg:scale-125"
           >
             <Container maxWidth="sm">
               <Typography
@@ -41,21 +57,22 @@ const Home: NextPageWithLayout = () => {
               >
                 &ldquo;เกรดเด้อ&rdquo;
               </Typography>
-              <Stack
-                sx={{ pt: 4 }}
-                direction="row"
-                spacing={2}
-                justifyContent="center"
-              >
-                <Button variant="contained">คลาสเรียนของฉัน</Button>
-                <Button variant="outlined">จัดการคลาสเรียน</Button>
-              </Stack>
+              {session && (
+                <Stack
+                  sx={{ pt: 4 }}
+                  direction="row"
+                  spacing={2}
+                  justifyContent="center"
+                >
+                  <Button variant="contained">คลาสเรียนของฉัน</Button>
+                  <Button variant="outlined">จัดการคลาสเรียน</Button>
+                </Stack>
+              )}
             </Container>
           </Box>
         </Grid>
 
         <Grid
-          className="scale-110"
           item
           xs={false}
           sm={false}
@@ -66,14 +83,7 @@ const Home: NextPageWithLayout = () => {
             boxShadow: 'none',
           }}
         >
-          <lottie-player
-            id="home-image"
-            ref={ref}
-            autoplay
-            loop
-            mode="normal"
-            src="/programmer-guy.json"
-          ></lottie-player>
+          <div ref={ref} />
         </Grid>
       </Grid>
     </section>
