@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -48,7 +47,9 @@ const InputDialog: React.FC<IInputDialog> = ({
           onChange={handleChange}
         />
         <DialogContentText variant="caption" style={{ whiteSpace: 'pre' }}>
-        {input?.replace(/\s/g, '') !== '' ? 'Custom input ของคุณ คือ \n' + input : ''}
+          {input?.replace(/\s/g, '') !== ''
+            ? 'Custom input ของคุณ คือ \n' + input
+            : ''}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
