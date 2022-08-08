@@ -87,7 +87,7 @@ const TestCasesList: React.FC<ITestCasesList> = ({
   };
 
   const handleAddTestCaseButton = () => {
-    if (testcases && input != '' && name != '' && expectedOutput != '') {
+    if (testcases && name != '' && expectedOutput != '') {
       let testcase: ITestCase = {
         id: new Date().getUTCMilliseconds(),
         name: name,
@@ -324,7 +324,7 @@ const TestCasesList: React.FC<ITestCasesList> = ({
                         onClick={handleAddTestCaseButton}
                         startIcon={<MdOutlineAddCircleOutline />}
                         disabled={
-                          input != '' && name != '' && expectedOutput != ''
+                          name != '' && expectedOutput != ''
                             ? false
                             : true
                         }
