@@ -1,37 +1,36 @@
-import {
-  Alert,
-  AlertTitle,
-  Button,
-  Collapse,
-  Divider,
-  Link as MuiLink,
-} from '@mui/material';
+import { Alert, AlertTitle, Button, Collapse, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import SignInForm from '../../components/sign-in-form/SignInForm';
+import SignUpForm from '../../components/sign-up-form/SignUpForm';
+import { signUp } from '../../utils/auth';
 import { NextPageWithLayout } from '../page';
 
-const SignIn: NextPageWithLayout = () => {
+const SignUp: NextPageWithLayout = () => {
   const router = useRouter();
 
   const [openAlert, setOpenAlert] = useState(false);
 
-  const onSubmit = async (data: { email: string; password: string }) => {
-    const result = await signIn('credentials', {
-      redirect: false,
-      email: data.email,
-      password: data.password,
-    });
-    if (result!.ok) {
-      router.replace('/');
-      return;
+  const onSubmit = async (data: {
+    email: string;
+    username: string;
+    password: string;
+  }) => {
+    try {
+      const res = await signUp({
+        email: data.email,
+        username: data.username,
+        password: data.password,
+      });
+
+      router.replace('/auth/sign-in');
     }
-    setOpenAlert(true);
+    catch(error){
+      setOpenAlert(true);
+    }
   };
 
   return (
@@ -43,7 +42,7 @@ const SignIn: NextPageWithLayout = () => {
           sm={false}
           md={6}
           sx={{
-            backgroundImage: 'url(/sign-in.jpg)',
+            backgroundImage: 'url(/sign-up.jpg)',
             backgroundRepeat: 'no-repeat',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
@@ -73,7 +72,7 @@ const SignIn: NextPageWithLayout = () => {
             color="text.primary"
             gutterBottom
           >
-            ลงชื่อเข้าใช้
+            สร้างบัญชี
           </Typography>
           <Typography
             variant="subtitle1"
@@ -86,25 +85,16 @@ const SignIn: NextPageWithLayout = () => {
           <Collapse in={openAlert}>
             <Alert severity="error">
               <AlertTitle className="font-bold">
-                อีเมลหรือรหัสผ่านไม่ถูกต้อง!
+                เกิดข้อผิดพลาดในการสร้างบัญชี!
               </AlertTitle>
-              คุณยังไม่มีบัญชีใช่ไหม? —
-              <Link href="sign-up" passHref>
-                <MuiLink className="px-1 font-bold">เริ่มต้นสร้างบัญชี</MuiLink>
-              </Link>
-              🚀
+              กรุณาลองใหม่อีกครั้งในภายหลัง
             </Alert>
           </Collapse>
-          <SignInForm onSubmit={onSubmit} />
-          <Typography className="mt-2" variant="subtitle2" align="right">
-            <Link href="forgot-password" passHref>
-              <MuiLink>ลืมรหัสผ่าน</MuiLink>
-            </Link>
-          </Typography>
-          <Divider sx={{ my: 2 }}>ยังไม่มีบัญชี?</Divider>
-          <Link href="sign-up" passHref>
+          <SignUpForm onSubmit={onSubmit} />
+          <Divider sx={{ mt: 4, mb: 2 }}>มีบัญชีแล้ว?</Divider>
+          <Link href="sign-in" passHref>
             <Button fullWidth variant="outlined" color="primary">
-              สร้างบัญชี
+              ลงชื่อเข้าใช้
             </Button>
           </Link>
         </Grid>
@@ -113,8 +103,8 @@ const SignIn: NextPageWithLayout = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
 
-SignIn.getLayout = (page) => {
+SignUp.getLayout = (page) => {
   return <PrimaryLayout>{page}</PrimaryLayout>;
 };

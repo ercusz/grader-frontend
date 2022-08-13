@@ -23,19 +23,33 @@ const SignInForm: React.FC<ISignInForm> = ({ onSubmit }) => {
       >
         <TextFieldElement
           fullWidth
-          label="Email"
+          label="อีเมล"
           name="email"
           type="email"
-          required
+          validation={{
+            required: { value: true, message: 'คุณจำเป็นต้องกรอก อีเมล' },
+            pattern: {
+              value: /^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$/,
+              message: 'กรุณากรอกอีเมลให้ถูกต้อง',
+            },
+          }}
         />
         <PasswordElement
           fullWidth
           margin="dense"
-          label="Password"
+          label="รหัสผ่าน"
           name="password"
-          required
+          validation={{
+            required: { value: true, message: 'คุณจำเป็นต้องกรอก รหัสผ่าน' },
+          }}
         />
-        <Button className="font-bold" fullWidth type="submit" variant="contained" color="primary">
+        <Button
+          className="font-bold"
+          fullWidth
+          type="submit"
+          variant="contained"
+          color="primary"
+        >
           ลงชื่อเข้าใช้
         </Button>
       </Stack>

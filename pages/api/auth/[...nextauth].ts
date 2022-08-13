@@ -46,7 +46,7 @@ export default NextAuth({
         username: user.username,
         email: user.email,
         // mock image data
-        image: 'http://localhost:1337/uploads/1421139055_18_o_dc8fea33dd.jpg',
+        profile: 'http://localhost:1337/uploads/xxxxx',
       };
       return Promise.resolve(session);
     },
