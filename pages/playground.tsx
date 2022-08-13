@@ -230,13 +230,18 @@ const Playground: NextPageWithLayout = () => {
                     spacing={1}
                   >
                     <CgCodeSlash />
-                    <Typography variant="h5" marginBottom={1}>
+                    <Typography
+                      className="font-bold"
+                      variant="h5"
+                      marginBottom={1}
+                    >
                       Java Code Editor
                     </Typography>
                   </Stack>
                 }
                 action={
                   <Button
+                    className="font-bold"
                     variant="contained"
                     startIcon={<VscPlay />}
                     onClick={handleRunButton}
@@ -258,6 +263,7 @@ const Playground: NextPageWithLayout = () => {
                     Status:
                   </Typography>
                   <Chip
+                    className="font-bold"
                     sx={{
                       bgcolor:
                         compileStatus.find((obj) => obj.id === status)?.color +
@@ -287,7 +293,11 @@ const Playground: NextPageWithLayout = () => {
                     spacing={1}
                   >
                     <VscOutput />
-                    <Typography variant="h5" marginBottom={1}>
+                    <Typography
+                      className="font-bold"
+                      variant="h5"
+                      marginBottom={1}
+                    >
                       Output
                     </Typography>
                   </Stack>
@@ -356,13 +366,19 @@ const Playground: NextPageWithLayout = () => {
                       <Typography variant="caption" display="block">
                         Time:
                       </Typography>
-                      <Chip color="primary" size="small" label={time + ' s'} />
+                      <Chip
+                        className="font-bold"
+                        color="primary"
+                        size="small"
+                        label={time + ' s'}
+                      />
                     </Stack>
                     <Stack direction="row" spacing={1} alignItems="center">
                       <Typography variant="caption" display="block">
                         Memory:
                       </Typography>
                       <Chip
+                        className="font-bold"
                         color="primary"
                         size="small"
                         label={
@@ -392,13 +408,18 @@ const Playground: NextPageWithLayout = () => {
                     spacing={1}
                   >
                     <ImLab />
-                    <Typography variant="h5" marginBottom={1}>
+                    <Typography
+                      className="font-bold"
+                      variant="h5"
+                      marginBottom={1}
+                    >
                       Test cases
                     </Typography>
                   </Stack>
                 }
                 action={
                   <Button
+                    className="font-bold"
                     variant="contained"
                     startIcon={<VscRunAll />}
                     onClick={handleRunAllTestCasesButton}

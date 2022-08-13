@@ -29,10 +29,6 @@ const pages = [
     route: '/classroom',
   },
   {
-    name: 'จัดการคลาสเรียน',
-    route: '/manage-classroom',
-  },
-  {
     name: 'เพลย์กราวด์',
     route: '/playground',
   },
@@ -44,7 +40,6 @@ const Header: React.FC<IHeader> = () => {
 
   React.useEffect(() => {
     if (session == null) return;
-    console.log('session.jwt', session.jwt);
   }, [session]);
 
   const router = useRouter();
@@ -95,6 +90,7 @@ const Header: React.FC<IHeader> = () => {
               WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
               backgroundColor: (theme) =>
                 alpha(theme.palette.background.default, 0.72),
+              transition: 'all 0.2s ease-in-out',
             }
       }
       color={isInSignInPage ? 'transparent' : undefined}
@@ -157,8 +153,9 @@ const Header: React.FC<IHeader> = () => {
                 <Link key={index} href={page.route}>
                   <Button
                     className="font-bold"
+                    size="large"
                     onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'inherit', display: 'block' }}
+                    sx={{ color: 'inherit', display: 'block' }}
                   >
                     {page.name}
                   </Button>
@@ -168,20 +165,29 @@ const Header: React.FC<IHeader> = () => {
           <Box sx={{ flexGrow: 0 }}>
             {session ? (
               <>
+                <Box sx={{display: { xs: 'none', md: 'inline-block' }}}>
+                  <ThemeToggleButton />
+                </Box>
                 <Tooltip title="โปรไฟล์ของคุณ">
                   <IconButton
-                    className="
-                      transition-all
-                      ring-white ring-2
-                      shadow-lg shadow-gray p-[3px] hover:p-[6px]
-                      bg-gradient-to-tl hover:bg-gradient-to-br
-                      from-green-300 via-cyan-500 to-sky-600"
+                    className="drop-shadow-2xl
+                    bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"
                     onClick={handleOpenUserMenu}
                   >
                     <Avatar
-                      alt={session.user ? session.user.username : null}
-                      src={session.user ? session.user.image : null}
-                      sx={{ width: 28, height: 28 }}
+                      className="transition-all
+                      outline outline-offset-4
+                      bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
+                      hover:outline-offset-2"
+                      alt={session.user ? session.user.username : undefined}
+                      src={session.user ? session.user.profile : undefined}
+                      sx={{
+                        width: 28,
+                        height: 28,
+                        outlineColor: (theme) =>
+                          theme.palette.background.default,
+                        color: 'white',
+                      }}
                     />
                   </IconButton>
                 </Tooltip>
@@ -202,7 +208,9 @@ const Header: React.FC<IHeader> = () => {
                   onClose={handleCloseUserMenu}
                 >
                   <MenuItem>
-                    <ThemeToggleButton />
+                    <Typography textAlign="center">
+                      @{session.user.username}
+                    </Typography>
                   </MenuItem>
                   <Divider />
                   {settings.map((setting) => (

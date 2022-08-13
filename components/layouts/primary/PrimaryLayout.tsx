@@ -16,10 +16,12 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({
       <Head>
         <title>grade้r</title>
       </Head>
-      <div {...divProps} className={`min-h-screen flex flex-col ${justify}`}>
+      <div
+        {...divProps}
+        className={`font-sans antialiased min-h-screen flex flex-col ${justify}`}
+      >
         <Header />
         <Container className="min-w-full p-0 m-0">{children}</Container>
-        <div className="m-auto" />
       </div>
     </>
   );

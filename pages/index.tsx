@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import type { LottiePlayer } from 'lottie-web';
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
 import { NextPageWithLayout } from './page';
@@ -32,14 +33,17 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <section>
-      {/* Hero unit */}
-      <Grid container className="min-h-screen" justifyContent="center" alignItems="center">
+      <Grid
+        container
+        className="min-h-screen"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Grid item xs={16} sm={16} md={6}>
-          <Box
-            className="lg:scale-125"
-          >
+          <Box className="lg:scale-125">
             <Container maxWidth="sm">
               <Typography
+                className="font-bold"
                 component="h1"
                 variant="h2"
                 align="center"
@@ -64,8 +68,12 @@ const Home: NextPageWithLayout = () => {
                   spacing={2}
                   justifyContent="center"
                 >
-                  <Button variant="contained">คลาสเรียนของฉัน</Button>
-                  <Button variant="outlined">จัดการคลาสเรียน</Button>
+                  <Link href="/classroom">
+                    <Button variant="contained">คลาสเรียนของฉัน</Button>
+                  </Link>
+                  <Link href="/playground">
+                    <Button variant="outlined">เพลย์กราวด์</Button>
+                  </Link>
                 </Stack>
               )}
             </Container>

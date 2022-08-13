@@ -135,7 +135,6 @@ const TestCasesList: React.FC<ITestCasesList> = ({
       <List
         sx={{
           width: '100%',
-          bgcolor: 'background.paper',
         }}
       >
         {testcases &&
