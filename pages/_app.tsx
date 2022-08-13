@@ -4,6 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
 import React from 'react';
 import { ColorContext } from '../state/color/ColorContext';
 import '../styles/globals.css';
@@ -45,6 +46,9 @@ function MyApp(props: AppPropsWithLayout) {
   return (
     <SessionProvider session={session}>
       <CacheProvider value={emotionCache}>
+        <Head>
+          <meta name="viewport" content="initial-scale=1, width=device-width" />
+        </Head>
         <ColorContext.Provider value={colorMode}>
           <ThemeProvider theme={theme}>
             <CssBaseline />

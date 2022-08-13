@@ -447,7 +447,7 @@ const Playground: NextPageWithLayout = () => {
 export default Playground;
 
 Playground.getLayout = (page) => {
-  return <PrimaryLayout>{page}</PrimaryLayout>;
+  return <PrimaryLayout title="เพลย์กราวด์">{page}</PrimaryLayout>;
 };
 
 export const getServerSideProps = async (context: any) => {

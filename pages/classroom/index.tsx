@@ -245,5 +245,5 @@ const Classroom: NextPageWithLayout = () => {
 export default Classroom;
 
 Classroom.getLayout = (page) => {
-  return <PrimaryLayout>{page}</PrimaryLayout>;
+  return <PrimaryLayout title="คลาสเรียนของฉัน">{page}</PrimaryLayout>;
 };
