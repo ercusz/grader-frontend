@@ -2,13 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['i.pravatar.cc', 'source.unsplash.com'],
+    domains: ['i.pravatar.cc', 'source.unsplash.com', 'images.unsplash.com'],
   },
-};
 
-module.exports = nextConfig;
-
-module.exports = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
@@ -19,3 +15,5 @@ module.exports = {
     return config;
   },
 };
+
+module.exports = nextConfig;
