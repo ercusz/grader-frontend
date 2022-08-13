@@ -1,6 +1,9 @@
+import { CacheProvider } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import addons from '@storybook/addons';
+import { SessionProvider } from 'next-auth/react';
+import { RouterContext } from 'next/dist/shared/lib/router-context'; // next 12
 import * as NextImage from 'next/image';
 import React from 'react';
 import {
@@ -9,6 +12,7 @@ import {
 } from 'storybook-dark-mode';
 import { ColorContext } from '../state/color/ColorContext';
 import '../styles/globals.css';
+import createEmotionCache from '../utils/createEmotionCache';
 import { darkTheme, lightTheme } from '../utils/theme';
 
 const BREAKPOINTS_INT = {
@@ -65,14 +69,21 @@ function ThemeWrapper(props) {
     return () => channel.removeListener(DARK_MODE_EVENT_NAME, setDark);
   }, [channel, setDark]);
 
+  const clientSideEmotionCache = createEmotionCache();
+  const session = undefined;
+
   // render your custom theme provider
   return (
-    <ColorContext.Provider value={colorMode}>
-      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        <CssBaseline />
-        {props.children}
-      </ThemeProvider>
-    </ColorContext.Provider>
+    <SessionProvider session={session}>
+      <CacheProvider value={clientSideEmotionCache}>
+        <ColorContext.Provider value={colorMode}>
+          <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+            <CssBaseline />
+            {props.children}
+          </ThemeProvider>
+        </ColorContext.Provider>
+      </CacheProvider>
+    </SessionProvider>
   );
 }
 
@@ -91,5 +102,8 @@ export const parameters = {
   viewport: { viewports: customViewports },
   darkMode: {
     current: 'light',
+  },
+  nextRouter: {
+    Provider: RouterContext.Provider,
   },
 };
