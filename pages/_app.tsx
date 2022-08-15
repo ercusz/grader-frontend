@@ -1,6 +1,6 @@
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
+import { ThemeProvider, responsiveFontSizes } from '@mui/material/styles';
 import { Session } from 'next-auth';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
@@ -41,7 +41,8 @@ function MyApp(props: AppPropsWithLayout) {
     []
   );
 
-  const theme = mode === 'light' ? lightTheme : darkTheme;
+  let theme = mode === 'light' ? lightTheme : darkTheme;
+  theme = responsiveFontSizes(theme); // apply mui responsive font sizes
 
   return (
     <SessionProvider session={session}>
