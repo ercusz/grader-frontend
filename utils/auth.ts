@@ -21,7 +21,11 @@ export async function signIn({ email, password }: ISignIn) {
     });
     return res.data;
   } catch (error) {
-    console.log(error);
+    if (axios.isAxiosError(error)) {
+      console.log('error message: ', error.message);
+    } else {
+      console.log('unexpected error: ', error);
+    }
     return;
   }
 }
@@ -34,4 +38,25 @@ export async function signUp({ email, username, password }: ISignUp) {
   });
 
   return res.data;
+}
+
+export async function getUserInfo(token: string) {
+  try {
+    let res = await axios.get(strapiUrl + '/api/users/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.data.profile !== null) {
+      res.data.profile.url = strapiUrl + res.data.profile.url;
+    }
+    return res.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.log('error message: ', error.message);
+    } else {
+      console.log('unexpected error: ', error);
+    }
+    return;
+  }
 }

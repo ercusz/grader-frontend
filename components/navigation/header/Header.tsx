@@ -5,7 +5,6 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -14,12 +13,12 @@ import { alpha } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
 import Branding from '../branding/Branding';
-import ThemeToggleButton from '../themetoggle/ThemeToggleButton';
+import UserMenu from '../user-menu/UserMenu';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
@@ -33,7 +32,6 @@ const pages = [
     route: '/playground',
   },
 ];
-const settings = ['บัญชี'];
 
 const Header: React.FC<IHeader> = () => {
   const { data: session } = useSession();
@@ -59,6 +57,7 @@ const Header: React.FC<IHeader> = () => {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
+
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -66,16 +65,13 @@ const Header: React.FC<IHeader> = () => {
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
+
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseNavMenu = () => {
     setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
   };
 
   return (
@@ -165,9 +161,6 @@ const Header: React.FC<IHeader> = () => {
           <Box sx={{ flexGrow: 0 }}>
             {session ? (
               <>
-                <Box sx={{display: { xs: 'none', md: 'inline-block' }}}>
-                  <ThemeToggleButton />
-                </Box>
                 <Tooltip title="โปรไฟล์ของคุณ">
                   <IconButton
                     className="drop-shadow-2xl
@@ -176,11 +169,19 @@ const Header: React.FC<IHeader> = () => {
                   >
                     <Avatar
                       className="transition-all
-                      outline outline-offset-4
+                      outline outline-offset-4 text-sm
                       bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
                       hover:outline-offset-2"
-                      alt={session.user ? session.user.username : undefined}
-                      src={session.user ? session.user.profile : undefined}
+                      alt={
+                        session.user
+                          ? `${session.user.username}'s profile image`
+                          : undefined
+                      }
+                      src={
+                        session.user?.profile
+                          ? session.user.profile.url
+                          : undefined
+                      }
                       sx={{
                         width: 28,
                         height: 28,
@@ -188,40 +189,19 @@ const Header: React.FC<IHeader> = () => {
                           theme.palette.background.default,
                         color: 'white',
                       }}
-                    />
+                    >
+                      {session.user.firstName && session.user.lastName
+                        ? session.user.firstName?.charAt(0) +
+                          session.user.lastName?.charAt(0)
+                        : session.user.username.charAt(0)}
+                    </Avatar>
                   </IconButton>
                 </Tooltip>
-                <Menu
-                  sx={{ mt: '45px' }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  <MenuItem>
-                    <Typography textAlign="center">
-                      @{session.user.username}
-                    </Typography>
-                  </MenuItem>
-                  <Divider />
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
-                  <MenuItem onClick={() => signOut()}>
-                    <Typography textAlign="center">ออกจากระบบ</Typography>
-                  </MenuItem>
-                </Menu>
+                <UserMenu
+                  session={session}
+                  anchorElUser={anchorElUser}
+                  setAnchorElUser={setAnchorElUser}
+                />
               </>
             ) : (
               <>

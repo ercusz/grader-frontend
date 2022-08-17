@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { signIn } from '../../../utils/auth';
+import { User } from '../../../types/next-auth';
+import { getUserInfo, signIn } from '../../../utils/auth';
 
 export default NextAuth({
   // Configure one or more authentication providers
@@ -27,8 +28,7 @@ export default NextAuth({
             email: credentials.email,
             password: credentials.password,
           });
-          console.log(user);
-          console.log({ ...user, jwt });
+
           return { ...user, jwt };
         } catch (error) {
           // Sign In Fail
@@ -40,14 +40,15 @@ export default NextAuth({
   callbacks: {
     session: async ({ session, token }) => {
       session.id = token.id;
-      session.jwt = token.jwt;
-      let user: any = token.user;
-      session.user = {
-        username: user.username,
-        email: user.email,
-        // mock image data
-        profile: 'http://localhost:1337/uploads/xxxxx',
-      };
+      let jwtToken: string = token.jwt + '';
+      session.jwt = jwtToken;
+      if (session.jwt !== undefined) {
+        const user: User = await getUserInfo(jwtToken);
+        if (user === undefined) {
+          return Promise.reject();
+        }
+        session.user = user;
+      }
       return Promise.resolve(session);
     },
     jwt: async ({ token, user }) => {
@@ -55,7 +56,6 @@ export default NextAuth({
       if (isSignIn) {
         token.id = user!.id;
         token.jwt = user!.jwt;
-        token.user = user;
       }
       return Promise.resolve(token);
     },
