@@ -323,9 +323,7 @@ const TestCasesList: React.FC<ITestCasesList> = ({
                         onClick={handleAddTestCaseButton}
                         startIcon={<MdOutlineAddCircleOutline />}
                         disabled={
-                          name != '' && expectedOutput != ''
-                            ? false
-                            : true
+                          name != '' && expectedOutput != '' ? false : true
                         }
                       >
                         เพิ่ม

@@ -92,7 +92,7 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const token = await createSubmission(req.body);
-  
+
   if (axios.isAxiosError(token)) {
     res.status(500).send('Create submission failed!');
   } else {

@@ -8,7 +8,12 @@ export interface ICodeEditor {
   onMount?: OnMount;
 }
 
-const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onChange, onMount }) => {
+const CodeEditor: React.FC<ICodeEditor> = ({
+  language,
+  template,
+  onChange,
+  onMount,
+}) => {
   const theme = useTheme();
 
   return (

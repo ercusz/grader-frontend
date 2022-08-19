@@ -1,7 +1,7 @@
 import { ISignInForm } from './SignInForm';
 
 const base: ISignInForm = {
-  onSubmit: undefined
+  onSubmit: undefined,
 };
 
 export const mockSignInFormProps = {

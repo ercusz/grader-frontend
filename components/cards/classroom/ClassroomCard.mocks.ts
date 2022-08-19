@@ -7,7 +7,8 @@ const base: IClassroomCard = {
     semester: 1,
     year: 2565,
     section: 3,
-    coverImageUrl: 'https://images.unsplash.com/photo-1597008641621-cefdcf718025?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1939&q=80',
+    coverImageUrl:
+      'https://images.unsplash.com/photo-1597008641621-cefdcf718025?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1939&q=80',
     instructor: {
       id: 1236,
       username: 'somsak1112',
@@ -23,7 +24,7 @@ const base: IClassroomCard = {
     success: 100,
     slug: 'c2dvb2RieWU',
   },
-  loading: false
+  loading: false,
 };
 
 export const mockClassroomCardProps = {

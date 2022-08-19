@@ -10,14 +10,14 @@ export interface IPrimaryLayout extends React.ComponentPropsWithoutRef<'div'> {
 const PrimaryLayout: React.FC<IPrimaryLayout> = ({
   children,
   title,
-  description="grade้r — helps you improve your coding skills.",
+  description = 'grade้r — helps you improve your coding skills.',
   ...divProps
 }) => {
   return (
     <>
       <Head>
         <title>{title ? title + ' - ' : null}grade้r</title>
-        <meta name='description' content={description} />
+        <meta name="description" content={description} />
       </Head>
       <div {...divProps} className={`min-h-screen flex flex-col`}>
         <Header />

@@ -1,10 +1,10 @@
 import { red } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
-import "@fontsource/inter"
-import "@fontsource/inter/300.css"
-import "@fontsource/inter/500.css"
-import "@fontsource/inter/600.css"
-import "@fontsource/inter/800.css"
+import '@fontsource/inter';
+import '@fontsource/inter/300.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/800.css';
 
 // Create a light theme instance.
 export const lightTheme = createTheme({

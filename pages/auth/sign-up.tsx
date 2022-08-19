@@ -27,8 +27,7 @@ const SignUp: NextPageWithLayout = () => {
       });
 
       router.replace('/auth/sign-in');
-    }
-    catch(error){
+    } catch (error) {
       setOpenAlert(true);
     }
   };

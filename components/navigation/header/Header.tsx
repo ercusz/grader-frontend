@@ -174,7 +174,7 @@ const Header: React.FC<IHeader> = () => {
                       hover:outline-offset-2"
                       alt={
                         session.user
-                          ? `${session.user.username}'s profile image`
+                          ? `${session.user?.username}'s profile image`
                           : undefined
                       }
                       src={
@@ -193,7 +193,7 @@ const Header: React.FC<IHeader> = () => {
                       {session.user.firstName && session.user.lastName
                         ? session.user.firstName?.charAt(0) +
                           session.user.lastName?.charAt(0)
-                        : session.user.username.charAt(0)}
+                        : session.user.username?.charAt(0)}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
