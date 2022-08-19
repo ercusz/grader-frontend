@@ -246,9 +246,7 @@ const Classroom: NextPageWithLayout = () => {
   const debouncedSearchTerm: string = useDebounce<string>(searchValue, 500);
 
   useEffect(() => {
-    return () => {
-      setTimeout(() => setIsSearching(false), 1500);
-    };
+    setTimeout(() => setIsSearching(false), 1500);
   }, []);
 
   useEffect(() => {
