@@ -102,7 +102,7 @@ const UserMenu: React.FC<IUserMenu> = ({
       >
         <Box>
           <Stack
-            className="w-full flex justify-center align-middle pt-1 pb-4"
+            className="w-full flex pt-1 pb-4"
             direction="column"
             justifyContent="center"
             alignItems="center"
@@ -116,7 +116,7 @@ const UserMenu: React.FC<IUserMenu> = ({
                       "
                 alt={
                   session.user
-                    ? `${session.user.username}'s profile image`
+                    ? `${session.user?.username}'s profile image`
                     : undefined
                 }
                 src={
@@ -132,11 +132,16 @@ const UserMenu: React.FC<IUserMenu> = ({
                 {session.user.firstName && session.user.lastName
                   ? session.user.firstName?.charAt(0) +
                     session.user.lastName?.charAt(0)
-                  : session.user.username.charAt(0)}
+                  : session.user.username?.charAt(0)}
               </Avatar>
             </IconButton>
             {session.user.firstName && session.user.lastName ? (
-              <>
+              <Stack
+                direction="column"
+                justifyContent="center"
+                alignItems="center"
+                spacing={1}
+              >
                 <Typography variant="inherit" noWrap>
                   {`${session.user.firstName} ${session.user.lastName}`}
                 </Typography>
@@ -157,9 +162,9 @@ const UserMenu: React.FC<IUserMenu> = ({
                     )
                   }
                   label={session.user.role.name.toUpperCase()}
-                  sx={{ borderRadius: 2, pl: 0.6, my: 0.5 }}
+                  sx={{ borderRadius: 2, pl: 0.4 }}
                 />
-              </>
+              </Stack>
             ) : (
               <Link href="/settings/account">
                 <Chip
@@ -170,11 +175,11 @@ const UserMenu: React.FC<IUserMenu> = ({
                   color="warning"
                   icon={<WarningIcon />}
                   label="คุณยังไม่ได้ทำการตั้งชื่อ"
-                  sx={{ borderRadius: 2, pl: 0.6, mb: 0.5 }}
+                  sx={{ borderRadius: 2, pl: 0.4 }}
                 />
               </Link>
             )}
-            <Link href={`/p/@${session.user.username}`}>
+            <Link href={`/p/@${session.user?.username}`}>
               <Typography className="text-sm cursor-pointer font-semibold hover:underline">
                 @{session.user?.username}
               </Typography>
@@ -183,7 +188,7 @@ const UserMenu: React.FC<IUserMenu> = ({
         </Box>
         <Divider sx={{ mb: 1.5 }} />
         {showAppearance ? (
-          <>
+          <div>
             <MenuItem onClick={() => setShowAppearance(false)}>
               <ListItemIcon>
                 <ArrowBackIcon />
@@ -221,9 +226,9 @@ const UserMenu: React.FC<IUserMenu> = ({
                 ธีมมืด
               </ListItemText>
             </MenuItem>
-          </>
+          </div>
         ) : (
-          <>
+          <div>
             {settings &&
               settings.map((setting) => (
                 <Link
@@ -246,7 +251,7 @@ const UserMenu: React.FC<IUserMenu> = ({
                   </MenuItem>
                 </Link>
               ))}
-          </>
+          </div>
         )}
       </MenuList>
     </Menu>

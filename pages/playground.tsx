@@ -24,7 +24,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { getSession } from 'next-auth/react';
 import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
@@ -448,20 +447,4 @@ export default Playground;
 
 Playground.getLayout = (page) => {
   return <PrimaryLayout title="เพลย์กราวด์">{page}</PrimaryLayout>;
-};
-
-export const getServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-  // Check if session exists or not, if not, redirect
-  if (session == null) {
-    return {
-      redirect: {
-        destination: '/auth/sign-in',
-        permanent: true,
-      },
-    };
-  }
-  return {
-    props: {},
-  };
 };

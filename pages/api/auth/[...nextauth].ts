@@ -1,6 +1,5 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { User } from '../../../types/next-auth';
 import { getUserInfo, signIn } from '../../../utils/auth';
 
 export default NextAuth({
@@ -39,11 +38,8 @@ export default NextAuth({
   ],
   callbacks: {
     session: async ({ session, token }) => {
-      session.id = token.id;
-      let jwtToken: string = token.jwt + '';
-      session.jwt = jwtToken;
-      if (session.jwt !== undefined) {
-        const user: User = await getUserInfo(jwtToken);
+      if (token.jwt) {
+        const user = await getUserInfo(token.jwt);
         if (user === undefined) {
           return Promise.reject();
         }
@@ -52,12 +48,15 @@ export default NextAuth({
       return Promise.resolve(session);
     },
     jwt: async ({ token, user }) => {
-      const isSignIn = user ? true : false;
-      if (isSignIn) {
-        token.id = user!.id;
-        token.jwt = user!.jwt;
+      if (user) {
+        token.id = user.id;
+        token.jwt = user.jwt;
       }
       return Promise.resolve(token);
     },
+  },
+  pages: {
+    signIn: '/auth/sign-in',
+    error: '/api/auth/error',
   },
 });
