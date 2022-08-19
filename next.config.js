@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
+    minimumCacheTTL: 60,
     domains: ['i.pravatar.cc', 'source.unsplash.com', 'images.unsplash.com'],
   },
 
