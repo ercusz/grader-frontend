@@ -5,12 +5,14 @@ import { ICreateSubmission, IGetSubmission } from '../../utils/submission';
 const createSubmission = async ({
   languageId,
   sourceCode,
+  additionalFiles,
   stdin,
   expectedOutput,
 }: ICreateSubmission) => {
   const formData = {
     language_id: languageId,
-    source_code: Buffer.from(sourceCode).toString('base64'),
+    source_code: sourceCode ? Buffer.from(sourceCode).toString('base64') : undefined,
+    additional_files: additionalFiles ? additionalFiles : undefined,
     stdin: stdin ? Buffer.from(stdin).toString('base64') : undefined,
     expected_output: expectedOutput
       ? Buffer.from(expectedOutput).toString('base64')
@@ -38,7 +40,7 @@ const createSubmission = async ({
     .catch((err) => {
       let error = err.response ? err.response.data : err;
       console.log('create submission error: ', error);
-      return error;
+      throw new Error();
     });
 
   return res;
@@ -66,7 +68,7 @@ const getSubmission = async (token: IGetSubmission) => {
   } catch (err) {
     console.log('get submission error: ', err);
 
-    return err;
+    throw new Error();
   }
 };
 

@@ -28,7 +28,7 @@ import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
 import { VscOutput, VscPlay, VscRunAll } from 'react-icons/vsc';
-import CodeEditor from '../components/code-editor/CodeEditor';
+import CodeEditor, { ITab } from '../components/code-editor/CodeEditor';
 import InputDialog from '../components/input-dialog/InputDialog';
 import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
 import Branding from '../components/navigation/branding/Branding';
@@ -38,7 +38,7 @@ import TestCasesList, {
 } from '../components/testcases-list/TestCasesList';
 import { compileStatus } from '../utils/compileStatuses';
 import { Java, PlainText } from '../utils/languageTemplate';
-import { createSubmission } from '../utils/submission';
+import { createSubmission, sourceCodeZip } from '../utils/submission';
 import { NextPageWithLayout } from './page';
 
 const Playground: NextPageWithLayout = () => {
@@ -58,6 +58,9 @@ const Playground: NextPageWithLayout = () => {
   const [time, setTime] = useState(0);
   const [memory, setMemory] = useState(0);
   const [testcases, setTestcases] = useState<ITestCase[]>([]);
+  const [tabs, setTabs] = useState<ITab[]>([
+    { path: 'Main.java', value: Java.template },
+  ]);
 
   const handleEditorDidMount = (editor: any, monaco: Monaco) => {
     editorRef.current = editor;
@@ -76,11 +79,12 @@ const Playground: NextPageWithLayout = () => {
   };
 
   const executeCode = async () => {
-    const editor: any = editorRef.current;
     const output: any = outputRef.current;
+    const src = await sourceCodeZip(tabs);
     const params = {
-      languageId: 4,
-      sourceCode: editor.getValue(),
+      languageId: 89,
+      sourceCode: undefined,
+      additionalFiles: src,
       stdin: customInput,
     };
 
@@ -108,10 +112,12 @@ const Playground: NextPageWithLayout = () => {
   };
 
   const runTestCase = async (testcase: ITestCase) => {
-    const editor: any = editorRef.current;
+    const src = await sourceCodeZip(tabs);
+    
     const params = {
-      languageId: 4,
-      sourceCode: editor.getValue(),
+      languageId: 89,
+      sourceCode: undefined,
+      additionalFiles: src,
       stdin: testcase.input,
       expectedOutput: testcase.expectedOutput,
     };
@@ -251,6 +257,8 @@ const Playground: NextPageWithLayout = () => {
               />
               <CardMedia>
                 <CodeEditor
+                  tabs={tabs}
+                  setTabs={setTabs}
                   language={Java.lang}
                   template={Java.template}
                   onMount={handleEditorDidMount}

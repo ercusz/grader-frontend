@@ -1,8 +1,11 @@
 import axios from 'axios';
+import JSZip from 'jszip';
+import { ITab } from '../components/code-editor/CodeEditor';
 
 export interface ICreateSubmission {
   languageId: number;
-  sourceCode: string;
+  sourceCode?: string;
+  additionalFiles?: string;
   stdin?: string;
   expectedOutput?: string;
 }
@@ -33,4 +36,14 @@ export async function createSubmission(
   } catch (error) {
     throw new Error();
   }
+}
+
+export const sourceCodeZip = (files: ITab[]) => {
+  var zip = new JSZip();
+  zip.file("compile", "/usr/local/openjdk14/bin/javac Main.java");
+  zip.file("run", "/usr/local/openjdk14/bin/java Main");
+  for (const file of files) {
+    zip.file(file.path, file.value);
+  }
+  return zip.generateAsync({type:"base64"});
 }
