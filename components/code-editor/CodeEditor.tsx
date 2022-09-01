@@ -171,7 +171,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({
         height="50vh"
         onChange={onChange}
         onMount={onMount}
-        defaultValue={tabs[currentTabIdx].value}
+        defaultValue={tabs[currentTabIdx]?.value}
         defaultLanguage={language}
         path={tabs[currentTabIdx].path}
         theme={theme.palette.mode === 'dark' ? 'vs-dark' : 'github'}
