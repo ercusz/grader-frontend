@@ -40,10 +40,10 @@ export async function createSubmission(
 
 export const sourceCodeZip = (files: ITab[]) => {
   var zip = new JSZip();
-  zip.file("compile", "/usr/local/openjdk14/bin/javac Main.java");
-  zip.file("run", "/usr/local/openjdk14/bin/java Main");
+  zip.file('compile', '/usr/local/openjdk14/bin/javac Main.java');
+  zip.file('run', '/usr/local/openjdk14/bin/java Main');
   for (const file of files) {
     zip.file(file.path, file.value);
   }
-  return zip.generateAsync({type:"base64"});
-}
+  return zip.generateAsync({ type: 'base64' });
+};

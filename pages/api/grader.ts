@@ -11,7 +11,9 @@ const createSubmission = async ({
 }: ICreateSubmission) => {
   const formData = {
     language_id: languageId,
-    source_code: sourceCode ? Buffer.from(sourceCode).toString('base64') : undefined,
+    source_code: sourceCode
+      ? Buffer.from(sourceCode).toString('base64')
+      : undefined,
     additional_files: additionalFiles ? additionalFiles : undefined,
     stdin: stdin ? Buffer.from(stdin).toString('base64') : undefined,
     expected_output: expectedOutput
