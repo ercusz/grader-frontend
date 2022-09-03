@@ -12,6 +12,10 @@ import createEmotionCache from '../utils/createEmotionCache';
 import { darkTheme, lightTheme } from '../utils/theme';
 import { NextPageWithLayout } from './page';
 
+if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
+  require('../mocks');
+}
+
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 

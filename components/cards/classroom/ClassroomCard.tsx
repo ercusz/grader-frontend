@@ -18,6 +18,7 @@ import {
 import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
+import { Classroom } from '../../../types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
 
 const CircularProgressWithLabel = (
@@ -79,33 +80,8 @@ const CircularProgressWithLabel = (
   );
 };
 
-type User = {
-  id: number;
-  username: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  profile: [
-    {
-      url: string;
-    }
-  ];
-};
-
-type FakeClassroom = {
-  id: number;
-  name: string;
-  semester: number;
-  year: number;
-  section: number;
-  coverImageUrl: string;
-  instructor: User;
-  success: number;
-  slug: string;
-};
-
 export interface IClassroomCard {
-  classroom: FakeClassroom;
+  classroom: Classroom;
   loading: boolean;
 }
 
@@ -202,8 +178,12 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                 className="object-cover"
                 layout="fill"
                 quality={60}
-                alt={`${classroom.instructor.firstname} ${classroom.instructor.lastname}`}
-                src={classroom.instructor.profile[0].url}
+                alt={`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}
+                src={
+                  classroom.instructor.profile_img
+                    ? classroom.instructor.profile_img.url
+                    : ''
+                }
                 sizes="100vw"
               />
             </Avatar>
@@ -216,7 +196,7 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                   variant="body2"
                   noWrap
                   className="font-semibold"
-                >{`${classroom.instructor.firstname} ${classroom.instructor.lastname}`}</Typography>
+                >{`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}</Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"

@@ -47,8 +47,8 @@ export async function getUserInfo(token: string) {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (res.data.profile !== null) {
-      res.data.profile.url = strapiUrl + res.data.profile.url;
+    if (res.data.profile_img !== null) {
+      res.data.profile_img.url = strapiUrl + res.data.profile_img.url;
     }
     return res.data;
   } catch (error) {

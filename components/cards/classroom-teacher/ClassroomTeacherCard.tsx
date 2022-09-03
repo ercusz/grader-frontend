@@ -10,11 +10,12 @@ import {
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { TeacherClassroom } from '../../../types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
 
 export interface IClassroomTeacherCard {
-  classroom: any;
+  classroom: TeacherClassroom;
   loading: boolean;
 }
 
@@ -22,21 +23,6 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
   classroom,
   loading,
 }) => {
-  const [percent, setPercent] = useState(0);
-
-  useEffect(() => {
-    if (percent < classroom.success) {
-      setPercent((p) => {
-        let newPercent = p + 20;
-        if (newPercent > classroom.success) {
-          return classroom.success;
-        }
-
-        return newPercent;
-      });
-    }
-  }, [classroom.success, percent]);
-
   return (
     <>
       {loading ? (
@@ -103,8 +89,12 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
                 className="object-cover"
                 layout="fill"
                 quality={60}
-                alt={`${classroom.instructor.firstname} ${classroom.instructor.lastname}`}
-                src={classroom.instructor.profile[0].url}
+                alt={`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}
+                src={
+                  classroom.instructor.profile_img
+                    ? classroom.instructor.profile_img.url
+                    : ''
+                }
                 sizes="100vw"
               />
             </Avatar>
@@ -117,7 +107,7 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
                   variant="body2"
                   noWrap
                   className="font-semibold"
-                >{`${classroom.instructor.firstname} ${classroom.instructor.lastname}`}</Typography>
+                >{`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}</Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"

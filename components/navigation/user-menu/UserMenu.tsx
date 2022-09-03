@@ -120,7 +120,7 @@ const UserMenu: React.FC<IUserMenu> = ({
                     : undefined
                 }
                 src={
-                  session.user?.profile ? session.user.profile.url : undefined
+                  session.user?.profile_img ? session.user.profile_img.url : undefined
                 }
                 sx={{
                   width: 48,
@@ -129,13 +129,13 @@ const UserMenu: React.FC<IUserMenu> = ({
                   color: 'white',
                 }}
               >
-                {session.user.firstName && session.user.lastName
-                  ? session.user.firstName?.charAt(0) +
-                    session.user.lastName?.charAt(0)
+                {session.user.first_name && session.user.last_name
+                  ? session.user.first_name?.charAt(0) +
+                    session.user.last_name?.charAt(0)
                   : session.user.username?.charAt(0)}
               </Avatar>
             </IconButton>
-            {session.user.firstName && session.user.lastName ? (
+            {session.user.first_name && session.user.last_name ? (
               <Stack
                 direction="column"
                 justifyContent="center"
@@ -143,7 +143,7 @@ const UserMenu: React.FC<IUserMenu> = ({
                 spacing={1}
               >
                 <Typography variant="inherit" noWrap>
-                  {`${session.user.firstName} ${session.user.lastName}`}
+                  {`${session.user.first_name} ${session.user.last_name}`}
                 </Typography>
                 <Chip
                   className="font-semibold scale-95"

@@ -73,6 +73,7 @@
     "eslint-config-next": "12.2.0",
     "eslint-plugin-storybook": "^0.6.4",
     "husky": "^8.0.1",
+    "msw": "^0.46.1",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "storybook-css-modules-preset": "^1.1.1",
@@ -82,5 +83,8 @@
   },
   "resolutions": {
     "webpack": "^5"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

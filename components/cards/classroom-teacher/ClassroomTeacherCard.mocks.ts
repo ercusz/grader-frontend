@@ -2,27 +2,43 @@ import { IClassroomTeacherCard } from './ClassroomTeacherCard';
 
 const base: IClassroomTeacherCard = {
   classroom: {
-    id: 3,
-    name: 'วิทยาการคำนวณ',
+    id: 1,
+    name: 'Data Structures',
     semester: 1,
     year: 2565,
-    section: 3,
+    section: [
+      {
+        id: 1,
+        name: 'Section 1',
+      },
+      {
+        id: 2,
+        name: 'Section 2',
+      },
+      {
+        id: 3,
+        name: 'Section พิเศษ',
+      },
+    ],
     coverImageUrl:
-      'https://images.unsplash.com/photo-1597008641621-cefdcf718025?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1939&q=80',
+      'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
     instructor: {
-      id: 1236,
-      username: 'somsak1112',
-      firstname: 'สมศักดิ์',
-      lastname: 'เกรดเด้อ',
-      email: 'somsak@kku.edu',
-      profile: [
-        {
-          url: 'https://i.pravatar.cc/',
-        },
-      ],
+      id: 1234,
+      username: 'johndoe69',
+      email: 'johnny@kku.edu',
+      student_id: undefined,
+      first_name: 'John',
+      last_name: 'Doe',
+      role: {
+        id: 999999,
+        name: 'Teacher',
+      },
+      profile_img: {
+        id: 1,
+        url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+      },
     },
-    success: 100,
-    slug: 'c2dvb2RieWU',
+    slug: 'YXNkZm9ya3Ys',
   },
   loading: false,
 };

@@ -178,8 +178,8 @@ const Header: React.FC<IHeader> = () => {
                           : undefined
                       }
                       src={
-                        session.user?.profile
-                          ? session.user.profile.url
+                        session.user?.profile_img
+                          ? session.user.profile_img.url
                           : undefined
                       }
                       sx={{
@@ -190,9 +190,9 @@ const Header: React.FC<IHeader> = () => {
                         color: 'white',
                       }}
                     >
-                      {session.user.firstName && session.user.lastName
-                        ? session.user.firstName?.charAt(0) +
-                          session.user.lastName?.charAt(0)
+                      {session.user.first_name && session.user.last_name
+                        ? session.user.first_name?.charAt(0) +
+                          session.user.last_name?.charAt(0)
                         : session.user.username?.charAt(0)}
                     </Avatar>
                   </IconButton>

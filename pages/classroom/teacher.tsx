@@ -18,6 +18,10 @@ import { NextPageWithLayout } from '../page';
 import AddIcon from '@mui/icons-material/Add';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import axios from 'axios';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getToken } from 'next-auth/jwt';
+import { getSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
@@ -29,46 +33,12 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import ClassroomCardSkeleton from '../../components/cards/classroom-skeleton/ClassroomCardSkeleton';
 import ClassroomTeacherCard from '../../components/cards/classroom-teacher/ClassroomTeacherCard';
+import { TeacherClassroom } from '../../types/types';
 import { useDebounce } from '../../utils/useDebounce';
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 
-const classrooms: any = [
-  {
-    id: 1,
-    name: 'Data Structures',
-    semester: 1,
-    year: 2565,
-    section: [
-      {
-        id: 1,
-      },
-      {
-        id: 2,
-      },
-      {
-        id: 3,
-      },
-    ],
-    coverImageUrl:
-      'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-    instructor: {
-      id: 1234,
-      username: 'johndoe69',
-      firstname: 'John',
-      lastname: 'Doe',
-      email: 'johnny@kku.edu',
-      profile: [
-        {
-          url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
-        },
-      ],
-    },
-    slug: 'YXNkZm9ya3Ys',
-  },
-];
-
-const Classroom: NextPageWithLayout = () => {
+const Classroom: NextPageWithLayout = ({
+  classrooms,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const theme = useTheme();
   const medium = useMediaQuery(theme.breakpoints.up('md'));
   const small = useMediaQuery(theme.breakpoints.up('sm'));
@@ -91,7 +61,7 @@ const Classroom: NextPageWithLayout = () => {
   useEffect(() => {
     if (debouncedSearchTerm) {
       setIsSearching(true);
-      let res = classrooms.filter((classroom: any) => {
+      let res = classrooms.filter((classroom: TeacherClassroom) => {
         let filter = debouncedSearchTerm.replace(
           /[-[\]{}()*+?.,\\^$|#\s]/g,
           '\\$&'
@@ -99,8 +69,14 @@ const Classroom: NextPageWithLayout = () => {
         let rule = new RegExp(filter, 'i');
         return (
           rule.test(classroom.name) ||
-          rule.test(classroom.instructor.firstname) ||
-          rule.test(classroom.instructor.lastname)
+          rule.test(
+            classroom.instructor.first_name
+              ? classroom.instructor.first_name
+              : ''
+          ) ||
+          rule.test(
+            classroom.instructor.last_name ? classroom.instructor.last_name : ''
+          )
         );
       });
       setTimeout(() => setIsSearching(false), 500);
@@ -108,7 +84,7 @@ const Classroom: NextPageWithLayout = () => {
     } else {
       setResults(classrooms);
     }
-  }, [debouncedSearchTerm]);
+  }, [debouncedSearchTerm, classrooms]);
 
   return (
     <section className="px-10 pt-16 overflow-y-hidden h-screen">
@@ -145,7 +121,7 @@ const Classroom: NextPageWithLayout = () => {
                 fullWidth
                 size="small"
                 type="search"
-                placeholder="search"
+                placeholder="ค้นหาคลาสเรียน"
                 autoComplete="off"
                 name="search"
                 helperText={
@@ -205,10 +181,17 @@ Classroom.getLayout = (page) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  
   const session = await getSession(context);
+  const token = await getToken(context);
+  const strapiUrl = process.env.STRAPI_HOST;
+  const res = await axios.get(`${strapiUrl}/api/classrooms/teacher/me`, {
+    headers: {
+      Authorization: `Bearer ${token?.jwt}`,
+    },
+  });
+  const classrooms: TeacherClassroom = res.data;
 
-  if (session?.user.role.name !== "Teacher") {
+  if (session?.user.role.name !== 'Teacher') {
     return {
       redirect: {
         destination: '/classroom',
@@ -217,6 +200,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     };
   }
   return {
-    props: {},
+    props: {
+      classrooms,
+    },
   };
 };
