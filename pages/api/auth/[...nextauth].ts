@@ -1,14 +1,14 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { getUserInfo, signIn } from '../../../utils/auth';
+import { getUserInfo, signIn } from '../../../utils/AuthService';
 
 export default NextAuth({
   // Configure one or more authentication providers
   providers: [
     CredentialsProvider({
-      name: 'Sign in with Email',
+      name: 'Sign in with credentials',
       credentials: {
-        email: { label: 'Email', type: 'text' },
+        identifier: { label: 'Username/Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials, req) {
@@ -22,17 +22,16 @@ export default NextAuth({
          * credentials is defined in the config above.
          * We can expect it contains two properties: `email` and `password`
          */
-        try {
-          const { user, jwt } = await signIn({
-            email: credentials.email,
-            password: credentials.password,
-          });
+        const { user, jwt, errorMsg } = await signIn({
+          identifier: credentials.identifier,
+          password: credentials.password,
+        });
 
-          return { ...user, jwt };
-        } catch (error) {
-          // Sign In Fail
-          return null;
+        if (errorMsg) {
+          throw new Error(errorMsg);
         }
+
+        return { ...user, jwt };
       },
     }),
   ],

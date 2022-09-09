@@ -120,7 +120,9 @@ const UserMenu: React.FC<IUserMenu> = ({
                     : undefined
                 }
                 src={
-                  session.user?.profile_img ? session.user.profile_img.url : undefined
+                  session.user?.profile_img
+                    ? session.user.profile_img.url
+                    : undefined
                 }
                 sx={{
                   width: 48,

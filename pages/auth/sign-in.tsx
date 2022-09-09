@@ -20,17 +20,23 @@ const SignIn: NextPageWithLayout = () => {
   const router = useRouter();
 
   const [openAlert, setOpenAlert] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('เกิดข้อผิดพลาดไม่ทราบสาเหตุ');
 
-  const onSubmit = async (data: { email: string; password: string }) => {
+  const onSubmit = async (data: { identifier: string; password: string }) => {
     const result = await signIn('credentials', {
       redirect: false,
-      email: data.email,
+      identifier: data.identifier,
       password: data.password,
     });
     if (result!.ok) {
       router.replace('/');
       return;
     }
+
+    if (result?.error) {
+      setErrorMsg(result.error);
+    }
+
     setOpenAlert(true);
   };
 
@@ -86,8 +92,9 @@ const SignIn: NextPageWithLayout = () => {
           <Collapse in={openAlert}>
             <Alert severity="error">
               <AlertTitle className="font-bold">
-                อีเมลหรือรหัสผ่านไม่ถูกต้อง!
+                เกิดข้อผิดพลาดในการเข้าสู่ระบบ
               </AlertTitle>
+              <Typography variant="subtitle1">{errorMsg}</Typography>
               คุณยังไม่มีบัญชีใช่ไหม? —
               <Link href="sign-up" passHref>
                 <MuiLink className="px-1 font-bold">เริ่มต้นสร้างบัญชี</MuiLink>

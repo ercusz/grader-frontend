@@ -1,6 +1,6 @@
-import axios from 'axios';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ICreateSubmission, IGetSubmission } from '../../utils/submission';
+import { graderHttpClient, Response } from '../../utils/APIHelper';
+import { ICreateSubmission, IGetSubmission } from '../../utils/GraderService';
 
 const createSubmission = async ({
   languageId,
@@ -21,37 +21,35 @@ const createSubmission = async ({
       : undefined,
   };
   const options = {
-    method: 'POST',
-    url: `${process.env.GRADER_HOST}/submissions/`,
     params: { base64_encoded: 'true' },
     headers: {
-      'Content-Type': 'application/json',
       'X-Auth-User': process.env.GRADER_X_AUTH_USER!,
       'X-Auth-Token': process.env.GRADER_X_AUTH_TOKEN!,
     },
-    data: formData,
   };
 
-  const res = await axios
-    .request(options)
-    .then(async function (response) {
-      console.log('create submission data: ', response.data);
-      const token = response.data.token;
-      return token;
-    })
-    .catch((err) => {
-      let error = err.response ? err.response.data : err;
-      console.log('create submission error: ', error);
-      throw new Error();
-    });
+  const { res, err }: Response = await graderHttpClient.post(
+    '/submissions/',
+    formData,
+    options
+  );
 
-  return res;
+  if (err) {
+    let error = err.response ? err.response.data : err;
+    console.log('create submission error: ', error);
+    return;
+  }
+
+  console.log('create submission data: ', res.data);
+  const token = res.data.token;
+
+  return token;
 };
 
 const getSubmission = async (token: IGetSubmission) => {
   const options = {
     method: 'GET',
-    url: `${process.env.GRADER_HOST}/submissions/${token}`,
+    url: `/submissions/${token}`,
     params: {
       base64_encoded: 'true',
       fields: 'stdout,stderr,status_id,compile_output,time,memory',
@@ -62,16 +60,16 @@ const getSubmission = async (token: IGetSubmission) => {
     },
   };
 
-  try {
-    let response = await axios.request(options);
-    console.log('get submission data: ', response.data);
+  const { res, err }: Response = await graderHttpClient.request(options);
 
-    return response.data;
-  } catch (err) {
+  if (err) {
     console.log('get submission error: ', err);
-
-    throw new Error();
+    return;
   }
+
+  console.log('get submission data: ', res.data);
+
+  return res.data;
 };
 
 const fetchSubmissionUntilSuccess = async (
@@ -97,10 +95,11 @@ export default async function handler(
 ) {
   const token = await createSubmission(req.body);
 
-  if (axios.isAxiosError(token)) {
+  if (!token) {
     res.status(500).send('Create submission failed!');
-  } else {
-    let submission = await fetchSubmissionUntilSuccess(token);
-    res.status(200).send(submission);
+    return;
   }
+
+  let submission = await fetchSubmissionUntilSuccess(token);
+  res.status(200).send(submission);
 }

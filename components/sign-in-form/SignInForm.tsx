@@ -23,14 +23,12 @@ const SignInForm: React.FC<ISignInForm> = ({ onSubmit }) => {
       >
         <TextFieldElement
           fullWidth
-          label="อีเมล"
-          name="email"
-          type="email"
+          label="ชื่อผู้ใช้/อีเมล"
+          name="identifier"
           validation={{
-            required: { value: true, message: 'คุณจำเป็นต้องกรอก อีเมล' },
-            pattern: {
-              value: /^[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+$/,
-              message: 'กรุณากรอกอีเมลให้ถูกต้อง',
+            required: {
+              value: true,
+              message: 'คุณจำเป็นต้องกรอก ชื่อผู้ใช้หรืออีเมล',
             },
           }}
         />

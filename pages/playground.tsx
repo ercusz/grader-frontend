@@ -37,8 +37,8 @@ import TestCasesList, {
   ITestCase,
 } from '../components/testcases-list/TestCasesList';
 import { compileStatus } from '../utils/compileStatuses';
+import { compressSourceCode, createSubmission } from '../utils/GraderService';
 import { Java, PlainText } from '../utils/languageTemplate';
-import { createSubmission, sourceCodeZip } from '../utils/submission';
 import { NextPageWithLayout } from './page';
 
 const Playground: NextPageWithLayout = () => {
@@ -80,7 +80,7 @@ const Playground: NextPageWithLayout = () => {
 
   const executeCode = async () => {
     const output: any = outputRef.current;
-    const src = await sourceCodeZip(tabs);
+    const src = await compressSourceCode(tabs);
     const params = {
       languageId: 89,
       sourceCode: undefined,
@@ -88,22 +88,24 @@ const Playground: NextPageWithLayout = () => {
       stdin: customInput,
     };
 
-    try {
-      const submission = await createSubmission(params);
+    const submission = await createSubmission(params);
 
-      setStatus(submission.status_id);
-      setTime(submission.time);
-      setMemory(submission.memory);
-
-      if (submission.stderr != '') {
-        output.setValue(submission.stderr);
-      } else if (submission.compile_output != '') {
-        output.setValue(submission.compile_output);
-      } else {
-        output.setValue(submission.stdout);
-      }
-    } catch (error) {
+    if (!submission) {
       setStatus(15);
+
+      return;
+    }
+
+    setStatus(submission.status_id);
+    setTime(submission.time);
+    setMemory(submission.memory);
+
+    if (submission.stderr != '') {
+      output.setValue(submission.stderr);
+    } else if (submission.compile_output != '') {
+      output.setValue(submission.compile_output);
+    } else {
+      output.setValue(submission.stdout);
     }
   };
 
@@ -112,7 +114,7 @@ const Playground: NextPageWithLayout = () => {
   };
 
   const runTestCase = async (testcase: ITestCase) => {
-    const src = await sourceCodeZip(tabs);
+    const src = await compressSourceCode(tabs);
 
     const params = {
       languageId: 89,
@@ -128,23 +130,25 @@ const Playground: NextPageWithLayout = () => {
       )
     );
 
-    try {
-      const submission = await createSubmission(params);
+    const submission = await createSubmission(params);
 
-      setTestcases((currentTestcases) =>
-        currentTestcases.map((t) =>
-          t.id === testcase.id
-            ? { ...t, status: submission.status_id, loading: false }
-            : t
-        )
-      );
-    } catch {
+    if (!submission) {
       setTestcases((currentTestcases) =>
         currentTestcases.map((t) =>
           t.id === testcase.id ? { ...t, status: 15, loading: false } : t
         )
       );
+
+      return;
     }
+
+    setTestcases((currentTestcases) =>
+      currentTestcases.map((t) =>
+        t.id === testcase.id
+          ? { ...t, status: submission.status_id, loading: false }
+          : t
+      )
+    );
   };
 
   const runAllTestCases = async () => {

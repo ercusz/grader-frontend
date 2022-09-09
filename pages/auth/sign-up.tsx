@@ -6,30 +6,38 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
 import SignUpForm from '../../components/sign-up-form/SignUpForm';
-import { signUp } from '../../utils/auth';
+import { mainHttpClient, Response } from '../../utils/APIHelper';
 import { NextPageWithLayout } from '../page';
 
 const SignUp: NextPageWithLayout = () => {
   const router = useRouter();
 
   const [openAlert, setOpenAlert] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('เกิดข้อผิดพลาดไม่ทราบสาเหตุ');
 
   const onSubmit = async (data: {
     email: string;
     username: string;
     password: string;
   }) => {
-    try {
-      const res = await signUp({
+    const { res, err }: Response = await mainHttpClient.post(
+      '/api/auth/sign-up',
+      {
         email: data.email,
         username: data.username,
         password: data.password,
-      });
+      }
+    );
 
-      router.replace('/auth/sign-in');
-    } catch (error) {
+    if (err) {
+      if (res) {
+        setErrorMsg(res.data?.errorMsg);
+      }
       setOpenAlert(true);
+      return;
     }
+
+    router.replace('/auth/sign-in');
   };
 
   return (
@@ -86,7 +94,7 @@ const SignUp: NextPageWithLayout = () => {
               <AlertTitle className="font-bold">
                 เกิดข้อผิดพลาดในการสร้างบัญชี!
               </AlertTitle>
-              กรุณาลองใหม่อีกครั้งในภายหลัง
+              {errorMsg}
             </Alert>
           </Collapse>
           <SignUpForm onSubmit={onSubmit} />

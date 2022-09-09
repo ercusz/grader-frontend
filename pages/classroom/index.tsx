@@ -16,7 +16,6 @@ import { NextPageWithLayout } from '../page';
 // Import Swiper styles
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import axios from 'axios';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { getSession } from 'next-auth/react';
@@ -31,6 +30,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import ClassroomCardSkeleton from '../../components/cards/classroom-skeleton/ClassroomCardSkeleton';
 import { Classroom as ClassroomType } from '../../types/types';
+import { getClassrooms } from '../../utils/ClassroomService';
 import { useDebounce } from '../../utils/useDebounce';
 
 const Classroom: NextPageWithLayout = ({
@@ -172,13 +172,17 @@ Classroom.getLayout = (page) => {
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
   const token = await getToken(context);
-  const strapiUrl = process.env.STRAPI_HOST;
-  const res = await axios.get(`${strapiUrl}/api/classrooms/me`, {
-    headers: {
-      Authorization: `Bearer ${token?.jwt}`,
-    },
-  });
-  const classrooms: ClassroomType = res.data;
+
+  const classrooms: ClassroomType = await getClassrooms(token?.jwt);
+
+  if (!classrooms) {
+    return {
+      redirect: {
+        destination: '/maintain',
+        permanent: false,
+      },
+    };
+  }
 
   if (session?.user.role.name === 'Teacher') {
     return {
