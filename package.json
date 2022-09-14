@@ -34,18 +34,20 @@
     "@mui/x-date-pickers": "^5.0.0-beta.4",
     "axios": "^0.27.2",
     "jszip": "^3.10.1",
+    "mui-chips-input": "^1.1.0",
     "next": "latest",
     "next-auth": "^4.10.3",
     "postcss-loader": "^7.0.1",
-    "react": "18.1.0",
-    "react-dom": "18.1.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
     "react-hook-form": "^7.34.0",
     "react-hook-form-mui": "^5.3.2",
     "react-icons": "^4.4.0",
     "sharp": "^0.30.7",
     "storybook-addon-next-router": "^4.0.0",
     "swiper": "^8.3.2",
-    "util": "^0.12.4"
+    "util": "^0.12.4",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.18.11/xlsx-0.18.11.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
