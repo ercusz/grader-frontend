@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { Classroom, TeacherClassroom } from '../types/types';
+import { Classroom, CreateCourseReq, TeacherClassroom } from '../types/types';
 
 const strapiUrl = process.env.STRAPI_HOST;
 
@@ -216,5 +216,24 @@ export const handlers = [
         },
       ])
     );
+  }),
+  rest.post(`${strapiUrl}/api/course/create`, async (_req, res, ctx) => {
+    try {
+      const courseData = await _req.json<CreateCourseReq>();
+
+      return res(
+        ctx.json({
+          message: 'Create course successful.',
+          courseData,
+        })
+      );
+    } catch (error) {
+      return res(
+        ctx.status(403),
+        ctx.json({
+          message: 'Create course failed.',
+        })
+      );
+    }
   }),
 ];

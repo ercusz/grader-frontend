@@ -41,3 +41,31 @@ export type TeacherClassroom = {
   instructor: User;
   slug: string;
 };
+
+export type CreateCourseReq = {
+  name: string;
+  code: string;
+  semester: number;
+  year: number;
+  teacherId: number;
+  classrooms: string[];
+}
+
+export type CourseDetail = {
+  name: string;
+  code: string;
+  semester: number;
+  year: number;
+};
+
+export type CourseDetailForm = {
+  name: string;
+  code: string;
+  semester: string;
+  year: string;
+};
+
+export type CreateCourseClassroom = {
+  name: string;
+  students: string[];
+};

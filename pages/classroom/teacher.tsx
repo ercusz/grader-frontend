@@ -35,6 +35,7 @@ import ClassroomTeacherCard from '../../components/cards/classroom-teacher/Class
 import { TeacherClassroom } from '../../types/types';
 import { getTeacherClassrooms } from '../../utils/ClassroomService';
 import { useDebounce } from '../../utils/useDebounce';
+import Link from 'next/link';
 
 const Classroom: NextPageWithLayout = ({
   classrooms,
@@ -100,9 +101,11 @@ const Classroom: NextPageWithLayout = ({
         >
           <Container className="flex justify-between">
             <Box sx={{ height: '40px', marginTop: 2 }}>
+              <Link href="/course/create">
               <Button size="small" variant="contained" startIcon={<AddIcon />}>
-                สร้างคลาสเรียน
+                เพิ่มรายวิชา
               </Button>
+              </Link>
             </Box>
             <Box sx={{ height: '40px', marginTop: 2 }}>
               <ButtonGroup size="large" disableElevation>
