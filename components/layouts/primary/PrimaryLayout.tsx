@@ -16,7 +16,7 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({
   return (
     <>
       <Head>
-        <title>{title ? title + ' - ' : null}grade้r</title>
+        <title>{title ? title + ' - grade้r' : 'grade้r'}</title>
         <meta name="description" content={description} />
       </Head>
       <div {...divProps} className={`min-h-screen flex flex-col`}>
