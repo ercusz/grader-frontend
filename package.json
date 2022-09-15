@@ -35,7 +35,7 @@
     "axios": "^0.27.2",
     "jszip": "^3.10.1",
     "mui-chips-input": "^1.1.0",
-    "next": "latest",
+    "next": "^12.3.0",
     "next-auth": "^4.10.3",
     "postcss-loader": "^7.0.1",
     "react": "18.2.0",
