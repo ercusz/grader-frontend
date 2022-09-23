@@ -3,6 +3,7 @@ import { IUserMenu } from './UserMenu';
 
 const base: IUserMenu = {
   session: {
+    jwt: 'Hello',
     expires: 'ASAP',
     user: {
       id: 0,

@@ -24,6 +24,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
@@ -36,6 +37,7 @@ import OutputBox from '../components/output-box/OutputBox';
 import TestCasesList, {
   ITestCase,
 } from '../components/testcases-list/TestCasesList';
+import { Submission } from '../types/types';
 import { compileStatus } from '../utils/compileStatuses';
 import { compressSourceCode, createSubmission } from '../utils/GraderService';
 import { Java, PlainText } from '../utils/languageTemplate';
@@ -44,8 +46,6 @@ import { NextPageWithLayout } from './page';
 const Playground: NextPageWithLayout = () => {
   const editorRef = useRef(null);
   const outputRef = useRef(null);
-  const [isProgress, setIsProgress] = useState(false);
-  const [status, setStatus] = useState(0);
   const [anchorOutputMenu, setAnchorOutputMenu] = useState<null | HTMLElement>(
     null
   );
@@ -55,31 +55,21 @@ const Playground: NextPageWithLayout = () => {
   const openCopiedAlert = Boolean(anchorCopiedAlert);
   const [openInputDialog, setOpenInputDialog] = useState(false);
   const [customInput, setCustomInput] = useState('');
-  const [time, setTime] = useState(0);
-  const [memory, setMemory] = useState(0);
   const [testcases, setTestcases] = useState<ITestCase[]>([]);
   const [tabs, setTabs] = useState<ITab[]>([
     { path: 'Main.java', value: Java.template },
   ]);
+  const queryClient = useQueryClient();
 
-  const handleEditorDidMount = (editor: any, monaco: Monaco) => {
-    editorRef.current = editor;
-  };
+  const {
+    isFetching: loadingProgram,
+    data: program,
+    refetch,
+  } = useQuery<Submission>(['program'], () => executeProgram(), {
+    enabled: false,
+  });
 
-  const handleOutputDidMount = (editor: any, monaco: Monaco) => {
-    outputRef.current = editor;
-  };
-
-  const handleRunButton = async () => {
-    setIsProgress(true);
-
-    await executeCode();
-
-    setIsProgress(false);
-  };
-
-  const executeCode = async () => {
-    const output: any = outputRef.current;
+  const executeProgram = async (): Promise<Submission> => {
     const src = await compressSourceCode(tabs);
     const params = {
       languageId: 89,
@@ -88,25 +78,19 @@ const Playground: NextPageWithLayout = () => {
       stdin: customInput,
     };
 
-    const submission = await createSubmission(params);
+    return (await createSubmission(params)) as Submission;
+  };
 
-    if (!submission) {
-      setStatus(15);
+  const handleExecProgram = () => {
+    refetch();
+  };
 
-      return;
-    }
+  const handleEditorDidMount = (editor: any, monaco: Monaco) => {
+    editorRef.current = editor;
+  };
 
-    setStatus(submission.status_id);
-    setTime(submission.time);
-    setMemory(submission.memory);
-
-    if (submission.stderr != '') {
-      output.setValue(submission.stderr);
-    } else if (submission.compile_output != '') {
-      output.setValue(submission.compile_output);
-    } else {
-      output.setValue(submission.stdout);
-    }
+  const handleOutputDidMount = (editor: any, monaco: Monaco) => {
+    outputRef.current = editor;
   };
 
   const handleRunAllTestCasesButton = async () => {
@@ -184,9 +168,36 @@ const Playground: NextPageWithLayout = () => {
   };
 
   const handleClearButton = () => {
-    const output: any = outputRef.current;
-    output.setValue('');
+    queryClient.setQueryData(['program'], {
+      ...program,
+      stderr: '',
+      compile_output: '',
+      stdout: '',
+    });
     handleCloseOutputMenu();
+  };
+
+  const renderStatusChip = (statusId: number) => {
+    const getBgColorAndLabel = (statusId: number) => {
+      const status = compileStatus.find((obj) => obj.id === statusId);
+      return {
+        bgColor: `${status ? status.color : compileStatus[0].color}.main`,
+        label: status ? status.description : compileStatus[0].description,
+      };
+    };
+    const { bgColor, label } = getBgColorAndLabel(statusId);
+
+    return (
+      <Chip
+        className="font-bold"
+        sx={{
+          bgcolor: bgColor,
+          color: 'white',
+        }}
+        size="small"
+        label={label}
+      />
+    );
   };
 
   return (
@@ -200,7 +211,7 @@ const Playground: NextPageWithLayout = () => {
 
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={isProgress}
+        open={loadingProgram}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -253,7 +264,7 @@ const Playground: NextPageWithLayout = () => {
                     className="font-bold"
                     variant="contained"
                     startIcon={<VscPlay />}
-                    onClick={handleRunButton}
+                    onClick={handleExecProgram}
                   >
                     Execute
                   </Button>
@@ -273,20 +284,7 @@ const Playground: NextPageWithLayout = () => {
                   <Typography variant="caption" display="block">
                     Status:
                   </Typography>
-                  <Chip
-                    className="font-bold"
-                    sx={{
-                      bgcolor:
-                        compileStatus.find((obj) => obj.id === status)?.color +
-                        '.main',
-                      color: 'white',
-                    }}
-                    size="small"
-                    label={
-                      compileStatus.find((obj) => obj.id === status)
-                        ?.description
-                    }
-                  />
+                  {renderStatusChip(program ? program.status_id : 0)}
                 </Stack>
               </CardActions>
             </Card>
@@ -355,12 +353,13 @@ const Playground: NextPageWithLayout = () => {
               </Menu>
               <CardMedia>
                 <OutputBox
+                  queryKey={['program']}
                   language={PlainText.lang}
                   onMount={handleOutputDidMount}
                 />
               </CardMedia>
               <CardActions className="justify-center">
-                {time > 0 && memory > 0 ? (
+                {program && program.time > 0 && program.memory > 0 ? (
                   <Stack
                     py={0.5}
                     direction={{
@@ -381,7 +380,7 @@ const Playground: NextPageWithLayout = () => {
                         className="font-bold"
                         color="primary"
                         size="small"
-                        label={time + ' s'}
+                        label={program.time + ' s'}
                       />
                     </Stack>
                     <Stack direction="row" spacing={1} alignItems="center">
@@ -393,7 +392,7 @@ const Playground: NextPageWithLayout = () => {
                         color="primary"
                         size="small"
                         label={
-                          memory
+                          program.memory
                             .toString()
                             .replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' KB'
                         }

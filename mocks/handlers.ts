@@ -1,7 +1,7 @@
 import { rest } from 'msw';
-import { Classroom, CreateCourseReq, TeacherClassroom } from '../types/types';
+import { Classroom, CreateCourseReq, Course } from '../types/types';
 
-const strapiUrl = process.env.STRAPI_HOST;
+const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_HOST;
 
 export const handlers = [
   rest.get(`${strapiUrl}/api/classrooms/me`, (_req, res, ctx) => {
@@ -172,9 +172,9 @@ export const handlers = [
       ])
     );
   }),
-  rest.get(`${strapiUrl}/api/classrooms/teacher/me`, (_req, res, ctx) => {
+  rest.get(`${strapiUrl}/api/courses/me`, (_req, res, ctx) => {
     return res(
-      ctx.json<TeacherClassroom[]>([
+      ctx.json<Course[]>([
         {
           id: 1,
           name: 'Data Structures',

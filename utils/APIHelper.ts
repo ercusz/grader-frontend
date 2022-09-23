@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const strapiUrl = process.env.STRAPI_HOST;
-const graderUrl = process.env.GRADER_HOST;
+const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_HOST;
+const graderUrl = process.env.NEXT_PUBLIC_GRADER_HOST;
 
 export type Response = {
   res: any;

@@ -2,11 +2,6 @@ export type User = {
   id: number;
   username: string | undefined;
   email: string;
-  // provider: string;
-  // confirmed: boolean;
-  // blocked: boolean;
-  // createdAt: string;
-  // updatedAt: string;
   student_id: string | undefined;
   first_name: string | undefined;
   last_name: string | undefined;
@@ -31,7 +26,7 @@ export type Section = {
   name: string;
 };
 
-export type TeacherClassroom = {
+export type Course = {
   id: number;
   name: string;
   semester: number;
@@ -69,3 +64,12 @@ export type CreateCourseClassroom = {
   name: string;
   students: string[];
 };
+
+export type Submission = {
+  stdout: string;
+  status_id: number;
+  time: number;
+  memory: number
+  stderr: string;
+  compile_output: string;
+}

@@ -1,5 +1,6 @@
 import JSZip from 'jszip';
 import { ITab } from '../components/code-editor/CodeEditor';
+import { Submission } from '../types/types';
 import { mainHttpClient, Response } from './APIHelper';
 
 export interface ICreateSubmission {
@@ -14,20 +15,16 @@ export interface IGetSubmission {
   token: string;
 }
 
-export const createSubmission = async (submission: ICreateSubmission) => {
-  const { res, err }: Response = await mainHttpClient.post(
+export const createSubmission = async (submission: ICreateSubmission): Promise<Submission> => {
+  const { res }: Response = await mainHttpClient.post(
     '/api/grader',
     submission
   );
 
-  if (err) {
-    return;
-  }
-
-  return decodeSubmission(res.data);
+  return decodeSubmission(res.data) as Submission;
 };
 
-export const decodeSubmission = (submission: any) => {
+export const decodeSubmission = (submission: any): Submission => {
   submission.stdout = submission.stdout
     ? Buffer.from(submission.stdout, 'base64').toString('utf-8')
     : '';
@@ -40,7 +37,7 @@ export const decodeSubmission = (submission: any) => {
     ? Buffer.from(submission.compile_output, 'base64').toString('utf-8')
     : '';
 
-  return submission;
+  return submission as Submission;
 };
 
 export const compressSourceCode = (files: ITab[]) => {

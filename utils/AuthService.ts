@@ -1,6 +1,6 @@
 import { contentHttpClient, Response } from './APIHelper';
 
-const strapiUrl = process.env.STRAPI_HOST;
+const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_HOST;
 
 interface ISignIn {
   identifier: string;
@@ -62,16 +62,8 @@ export async function signUp({ email, username, password }: ISignUp) {
   return;
 }
 
-export async function getUserInfo(token: string) {
-  if (!token) {
-    return;
-  }
-
-  let { res, err }: Response = await contentHttpClient.get('/api/users/me', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+export async function getUserInfo() {
+  let { res, err }: Response = await contentHttpClient.get('/api/users/me');
 
   if (err) {
     console.log(`Get user data failed with error:\n${err}`);

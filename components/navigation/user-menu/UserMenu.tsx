@@ -19,14 +19,13 @@ import {
   MenuList,
   Stack,
   Typography,
-  useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { Session } from 'next-auth/core/types';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import * as React from 'react';
-import { ColorContext } from '../../../state/color/ColorContext';
+import { useAtomTheme } from '../../../state/atom-theme/useAtomTheme';
 
 export interface IUserMenu {
   session: Session;
@@ -39,9 +38,8 @@ const UserMenu: React.FC<IUserMenu> = ({
   anchorElUser,
   setAnchorElUser,
 }) => {
-  const theme = useTheme();
   const [showAppearance, setShowAppearance] = React.useState(false);
-  const colorMode = React.useContext(ColorContext);
+  const [theme, toggleTheme] = useAtomTheme();
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -202,31 +200,21 @@ const UserMenu: React.FC<IUserMenu> = ({
                 ธีม (แสดงผลเฉพาะในเบราว์เซอร์นี้เท่านั้น)
               </Typography>
             </MenuItem>
-            <MenuItem
-              onClick={colorMode.toggleColorMode}
-              disabled={theme.palette.mode === 'light'}
-            >
-              {theme.palette.mode === 'light' && (
+            <MenuItem onClick={toggleTheme} disabled={theme === 'light'}>
+              {theme === 'light' && (
                 <ListItemIcon>
                   <Check />
                 </ListItemIcon>
               )}
-              <ListItemText inset={theme.palette.mode !== 'light'}>
-                ธีมสว่าง
-              </ListItemText>
+              <ListItemText inset={theme !== 'light'}>ธีมสว่าง</ListItemText>
             </MenuItem>
-            <MenuItem
-              onClick={colorMode.toggleColorMode}
-              disabled={theme.palette.mode === 'dark'}
-            >
-              {theme.palette.mode === 'dark' && (
+            <MenuItem onClick={toggleTheme} disabled={theme === 'dark'}>
+              {theme === 'dark' && (
                 <ListItemIcon>
                   <Check />
                 </ListItemIcon>
               )}
-              <ListItemText inset={theme.palette.mode !== 'dark'}>
-                ธีมมืด
-              </ListItemText>
+              <ListItemText inset={theme !== 'dark'}>ธีมมืด</ListItemText>
             </MenuItem>
           </div>
         ) : (
