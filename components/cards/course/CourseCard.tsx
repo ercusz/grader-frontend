@@ -11,18 +11,15 @@ import {
 import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import React from 'react';
-import { TeacherClassroom } from '../../../types/types';
+import { Course } from '../../../types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
 
-export interface IClassroomTeacherCard {
-  classroom: TeacherClassroom;
+export interface ICourseCard {
+  course: Course;
   loading: boolean;
 }
 
-const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
-  classroom,
-  loading,
-}) => {
+const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
   return (
     <>
       {loading ? (
@@ -48,16 +45,16 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
             }),
           ]}
         >
-          <Link className="no-underline" href={`/c/t/${classroom.slug}`}>
+          <Link className="no-underline" href={`/c/t/${course.slug}`}>
             <CardHeader
               title={
                 <>
                   <Typography className="font-bold" noWrap variant="h6">
-                    {classroom.name}
+                    {course.name}
                   </Typography>
                 </>
               }
-              subheader={`${classroom.semester}/${classroom.year}`}
+              subheader={`${course.semester}/${course.year}`}
               subheaderTypographyProps={{ noWrap: true }}
               sx={{
                 display: 'flex',
@@ -74,8 +71,8 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
                 blurDataURL={`data:image/svg+xml;base64,LEHV6nWB2yk8pyo0adR*.7kCMdnj`}
                 layout="fill"
                 quality={60}
-                alt={`${classroom.name} classroom cover image`}
-                src={classroom.coverImageUrl}
+                alt={`${course.name} classroom cover image`}
+                src={course.coverImageUrl}
                 sizes="100vw"
               />
             </CardMedia>
@@ -89,10 +86,10 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
                 className="object-cover"
                 layout="fill"
                 quality={60}
-                alt={`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}
+                alt={`${course.instructor.first_name} ${course.instructor.last_name}`}
                 src={
-                  classroom.instructor.profile_img
-                    ? classroom.instructor.profile_img.url
+                  course.instructor.profile_img
+                    ? course.instructor.profile_img.url
                     : ''
                 }
                 sizes="100vw"
@@ -101,20 +98,20 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
             <Container className="flex flex-col pl-16">
               <Link
                 className="no-underline hover:underline"
-                href={`/p/@${classroom.instructor.username}`}
+                href={`/p/@${course.instructor.username}`}
               >
                 <Typography
                   variant="body2"
                   noWrap
                   className="font-semibold"
-                >{`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}</Typography>
+                >{`${course.instructor.first_name} ${course.instructor.last_name}`}</Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"
-                href={`/p/@${classroom.instructor.username}`}
+                href={`/p/@${course.instructor.username}`}
               >
                 <Typography noWrap variant="caption">
-                  @{classroom.instructor.username}
+                  @{course.instructor.username}
                 </Typography>
               </Link>
             </Container>
@@ -125,4 +122,4 @@ const ClassroomTeacherCard: React.FC<IClassroomTeacherCard> = ({
   );
 };
 
-export default ClassroomTeacherCard;
+export default CourseCard;

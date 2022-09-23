@@ -1,5 +1,10 @@
+import AddIcon from '@mui/icons-material/Add';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
+  Button,
   ButtonGroup,
   Container,
   IconButton,
@@ -7,33 +12,29 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { A11y, Keyboard, Mousewheel, Navigation, Pagination } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import ClassroomCard from '../../components/cards/classroom/ClassroomCard';
-import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import { NextPageWithLayout } from '../page';
-
-// Import Swiper styles
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import SearchIcon from '@mui/icons-material/Search';
 import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
+import { A11y, Keyboard, Mousewheel, Navigation, Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
 import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import ClassroomCardSkeleton from '../../components/cards/classroom-skeleton/ClassroomCardSkeleton';
-import { Classroom as ClassroomType } from '../../types/types';
-import { getClassrooms } from '../../utils/ClassroomService';
+import CourseCard from '../../components/cards/course/CourseCard';
+import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
+import { Course as CourseType } from '../../types/types';
+import { getCourses } from '../../utils/ClassroomService';
 import { useDebounce } from '../../utils/useDebounce';
+import { NextPageWithLayout } from '../page';
 
-const Classroom: NextPageWithLayout = () => {
+const Course: NextPageWithLayout = () => {
   const theme = useTheme();
   const medium = useMediaQuery(theme.breakpoints.up('md'));
   const small = useMediaQuery(theme.breakpoints.up('sm'));
@@ -47,10 +48,16 @@ const Classroom: NextPageWithLayout = () => {
 
   const debouncedFilter: string = useDebounce<string>(searchValue, 500);
   const { isSuccess, isError, isLoading, data, refetch } = useQuery<
-    ClassroomType[]
-  >(['classrooms', debouncedFilter], () => getClassrooms(debouncedFilter), {
-    enabled: false,
-  });
+    CourseType[]
+  >(
+    ['courses', debouncedFilter],
+    () => {
+      return getCourses(debouncedFilter);
+    },
+    {
+      enabled: false,
+    }
+  );
 
   const handleSearchButton = () => {
     refetch();
@@ -68,7 +75,18 @@ const Classroom: NextPageWithLayout = () => {
           justifyContent="flex-start"
           alignItems="center"
         >
-          <Container className="flex justify-end">
+          <Container className="flex justify-between">
+            <Box sx={{ height: '40px', marginTop: 2 }}>
+              <Link href="/course/create">
+                <Button
+                  size="small"
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                >
+                  เพิ่มรายวิชา
+                </Button>
+              </Link>
+            </Box>
             <Box sx={{ height: '40px', marginTop: 2 }}>
               <ButtonGroup size="large" disableElevation>
                 <IconButton className="prevBtn">
@@ -89,14 +107,14 @@ const Classroom: NextPageWithLayout = () => {
                 fullWidth
                 size="small"
                 type="search"
-                placeholder="ค้นหาคลาสเรียน"
+                placeholder="ค้นหารายวิชา"
                 autoComplete="off"
                 name="search"
                 helperText={
                   isSuccess
                     ? debouncedFilter
                       ? `ผลลัพธ์การค้นหา ${data?.length} รายการ`
-                      : `จำนวนคลาสเรียนทั้งหมด ${data?.length} รายการ`
+                      : `จำนวนรายวิชาทั้งหมด ${data?.length} รายการ`
                     : debouncedFilter
                     ? 'กด Enter เพื่อค้นหา'
                     : null
@@ -138,9 +156,9 @@ const Classroom: NextPageWithLayout = () => {
               </SwiperSlide>
             ))}
           {isSuccess &&
-            data?.map((classroom: ClassroomType) => (
-              <SwiperSlide key={classroom.id} className="mb-96">
-                <ClassroomCard classroom={classroom} loading={isLoading} />
+            data?.map((course: CourseType) => (
+              <SwiperSlide key={course.id} className="mb-96">
+                <CourseCard course={course} loading={isLoading} />
               </SwiperSlide>
             ))}
         </Swiper>
@@ -149,24 +167,24 @@ const Classroom: NextPageWithLayout = () => {
   );
 };
 
-export default Classroom;
+export default Course;
 
-Classroom.getLayout = (page) => {
-  return <PrimaryLayout title="คลาสเรียนของฉัน">{page}</PrimaryLayout>;
+Course.getLayout = (page) => {
+  return <PrimaryLayout title="รายวิชาของฉัน">{page}</PrimaryLayout>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
   const queryClient = new QueryClient();
-  await queryClient.fetchQuery<ClassroomType[]>(['classrooms', ''], () =>
-    getClassrooms()
+  await queryClient.prefetchQuery<CourseType[]>(['courses', ''], () =>
+    getCourses()
   );
 
-  if (session?.user.role.name === 'Teacher') {
+  if (session?.user.role.name !== 'Teacher') {
     return {
       redirect: {
-        destination: '/course',
+        destination: '/classroom',
         permanent: true,
       },
     };

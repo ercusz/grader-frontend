@@ -1,7 +1,7 @@
-import { IClassroomTeacherCard } from './ClassroomTeacherCard';
+import { ICourseCard } from './CourseCard';
 
-const base: IClassroomTeacherCard = {
-  classroom: {
+const base: ICourseCard = {
+  course: {
     id: 1,
     name: 'Data Structures',
     semester: 1,
@@ -43,6 +43,6 @@ const base: IClassroomTeacherCard = {
   loading: false,
 };
 
-export const mockClassroomTeacherCardProps = {
+export const mockCourseCardProps = {
   base,
 };
