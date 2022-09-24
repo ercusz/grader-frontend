@@ -29,14 +29,14 @@ import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
 import { VscOutput, VscPlay, VscRunAll } from 'react-icons/vsc';
-import CodeEditor, { ITab } from '../components/code-editor/CodeEditor';
+import CodeEditor from '../components/code-editor/CodeEditor';
 import InputDialog from '../components/input-dialog/InputDialog';
 import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
 import Branding from '../components/navigation/branding/Branding';
 import OutputBox from '../components/output-box/OutputBox';
-import TestCasesList, {
-  ITestCase,
-} from '../components/testcases-list/TestCasesList';
+import TestCasesList from '../components/testcases-list/TestCasesList';
+import { useIdeTabs } from '../state/grader/useIdeTabs';
+import { useTestcases } from '../state/grader/useTestcases';
 import { Submission } from '../types/types';
 import { compileStatus } from '../utils/compileStatuses';
 import { compressSourceCode, createSubmission } from '../utils/GraderService';
@@ -55,10 +55,8 @@ const Playground: NextPageWithLayout = () => {
   const openCopiedAlert = Boolean(anchorCopiedAlert);
   const [openInputDialog, setOpenInputDialog] = useState(false);
   const [customInput, setCustomInput] = useState('');
-  const [testcases, setTestcases] = useState<ITestCase[]>([]);
-  const [tabs, setTabs] = useState<ITab[]>([
-    { path: 'Main.java', value: Java.template },
-  ]);
+  const { testcases, runAllTestCases } = useTestcases();
+  const { ideTabs } = useIdeTabs();
   const queryClient = useQueryClient();
 
   const {
@@ -70,15 +68,16 @@ const Playground: NextPageWithLayout = () => {
   });
 
   const executeProgram = async (): Promise<Submission> => {
-    const src = await compressSourceCode(tabs);
+    const src = await compressSourceCode(ideTabs);
     const params = {
       languageId: 89,
       sourceCode: undefined,
       additionalFiles: src,
       stdin: customInput,
     };
+    const submission = await createSubmission(params);
 
-    return (await createSubmission(params)) as Submission;
+    return submission as Submission;
   };
 
   const handleExecProgram = () => {
@@ -91,54 +90,6 @@ const Playground: NextPageWithLayout = () => {
 
   const handleOutputDidMount = (editor: any, monaco: Monaco) => {
     outputRef.current = editor;
-  };
-
-  const handleRunAllTestCasesButton = async () => {
-    await runAllTestCases();
-  };
-
-  const runTestCase = async (testcase: ITestCase) => {
-    const src = await compressSourceCode(tabs);
-
-    const params = {
-      languageId: 89,
-      sourceCode: undefined,
-      additionalFiles: src,
-      stdin: testcase.input,
-      expectedOutput: testcase.expectedOutput,
-    };
-
-    setTestcases((currentTestcases) =>
-      currentTestcases.map((t) =>
-        t.id === testcase.id ? { ...t, loading: true, status: 0 } : t
-      )
-    );
-
-    const submission = await createSubmission(params);
-
-    if (!submission) {
-      setTestcases((currentTestcases) =>
-        currentTestcases.map((t) =>
-          t.id === testcase.id ? { ...t, status: 15, loading: false } : t
-        )
-      );
-
-      return;
-    }
-
-    setTestcases((currentTestcases) =>
-      currentTestcases.map((t) =>
-        t.id === testcase.id
-          ? { ...t, status: submission.status_id, loading: false }
-          : t
-      )
-    );
-  };
-
-  const runAllTestCases = async () => {
-    testcases.forEach(async (testcase) => {
-      runTestCase(testcase);
-    });
   };
 
   const handleOutputMenuClick = (
@@ -255,7 +206,7 @@ const Playground: NextPageWithLayout = () => {
                       variant="h5"
                       marginBottom={1}
                     >
-                      Java Code Editor
+                      Code Editor
                     </Typography>
                   </Stack>
                 }
@@ -272,8 +223,6 @@ const Playground: NextPageWithLayout = () => {
               />
               <CardMedia>
                 <CodeEditor
-                  tabs={tabs}
-                  setTabs={setTabs}
                   language={Java.lang}
                   template={Java.template}
                   onMount={handleEditorDidMount}
@@ -432,7 +381,7 @@ const Playground: NextPageWithLayout = () => {
                     className="font-bold"
                     variant="contained"
                     startIcon={<VscRunAll />}
-                    onClick={handleRunAllTestCasesButton}
+                    onClick={runAllTestCases}
                     disabled={testcases.length === 0 ? true : false}
                   >
                     Run All
@@ -440,11 +389,7 @@ const Playground: NextPageWithLayout = () => {
                 }
               />
               <CardContent>
-                <TestCasesList
-                  testcases={testcases}
-                  setTestcases={setTestcases}
-                  runTestCase={runTestCase}
-                />
+                <TestCasesList />
               </CardContent>
             </Card>
           </Container>

@@ -1,5 +1,6 @@
+import { AxiosError } from 'axios';
 import JSZip from 'jszip';
-import { ITab } from '../components/code-editor/CodeEditor';
+import { IDETabs } from '../state/grader/useIdeTabs';
 import { Submission } from '../types/types';
 import { mainHttpClient, Response } from './APIHelper';
 
@@ -15,11 +16,23 @@ export interface IGetSubmission {
   token: string;
 }
 
-export const createSubmission = async (submission: ICreateSubmission): Promise<Submission> => {
-  const { res }: Response = await mainHttpClient.post(
+export const createSubmission = async (
+  submission: ICreateSubmission
+): Promise<Submission | AxiosError> => {
+  const { res, err }: Response = await mainHttpClient.post(
     '/api/grader',
     submission
   );
+  if (err) {
+    return {
+      stdout: '',
+      status_id: 15,
+      time: 0,
+      memory: 0,
+      stderr: '',
+      compile_output: '',
+    };
+  }
 
   return decodeSubmission(res.data) as Submission;
 };
@@ -40,7 +53,7 @@ export const decodeSubmission = (submission: any): Submission => {
   return submission as Submission;
 };
 
-export const compressSourceCode = (files: ITab[]) => {
+export const compressSourceCode = (files: IDETabs[]) => {
   var zip = new JSZip();
   zip.file('compile', '/usr/local/openjdk14/bin/javac Main.java');
   zip.file('run', '/usr/local/openjdk14/bin/java Main');

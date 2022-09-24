@@ -44,7 +44,7 @@ export type CreateCourseReq = {
   year: number;
   teacherId: number;
   classrooms: string[];
-}
+};
 
 export type CourseDetail = {
   name: string;
@@ -69,7 +69,16 @@ export type Submission = {
   stdout: string;
   status_id: number;
   time: number;
-  memory: number
+  memory: number;
   stderr: string;
   compile_output: string;
-}
+};
+
+export type TestCase = {
+  id: number;
+  name: string;
+  input: string;
+  expectedOutput: string;
+  status: number;
+  loading: boolean;
+};

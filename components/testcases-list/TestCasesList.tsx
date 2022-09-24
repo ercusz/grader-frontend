@@ -18,34 +18,20 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { MdOutlineAddCircleOutline, MdPostAdd } from 'react-icons/md';
+import { useTestcases } from '../../state/grader/useTestcases';
 import { compileStatus } from '../../utils/compileStatuses';
 
-export interface ITestCase {
-  id: number;
-  name: string;
-  input: string;
-  expectedOutput: string;
-  status: number;
-  loading: boolean;
-}
+export interface ITestCasesList {}
 
-export interface ITestCasesList {
-  testcases: ITestCase[];
-  setTestcases: React.Dispatch<React.SetStateAction<ITestCase[]>>;
-  runTestCase: (testcase: ITestCase) => Promise<void>;
-}
-
-const TestCasesList: React.FC<ITestCasesList> = ({
-  testcases,
-  setTestcases,
-  runTestCase,
-}) => {
+const TestCasesList: React.FC = () => {
   const [openTestCaseList, setOpenTestCaseList] = useState([false]);
   const [openNewTestCase, setOpenNewTestCase] = useState(true);
   const [input, setInput] = useState('');
   const [expectedOutput, setExpectedOutput] = useState('');
   const [name, setName] = useState('');
   const [passedTestCases, setPassedTestCases] = useState(0);
+  const { testcases, addTestcase, removeTestcase, runTestCase } =
+    useTestcases();
 
   useEffect(() => {
     if (testcases) {
@@ -88,7 +74,7 @@ const TestCasesList: React.FC<ITestCasesList> = ({
 
   const handleAddTestCaseButton = () => {
     if (testcases && name != '' && expectedOutput != '') {
-      let testcase: ITestCase = {
+      const testcase = {
         id: new Date().getUTCMilliseconds(),
         name: name,
         input: input,
@@ -96,14 +82,12 @@ const TestCasesList: React.FC<ITestCasesList> = ({
         status: 0,
         loading: false,
       };
-      setTestcases((prevTestcases) => [...prevTestcases, testcase]);
+      addTestcase(testcase);
     }
   };
 
   const handleRemoveTestCaseButton = (id: number) => {
-    setTestcases((currentTestcases) =>
-      currentTestcases.filter((testcase) => testcase.id !== id)
-    );
+    removeTestcase(id);
   };
 
   return (

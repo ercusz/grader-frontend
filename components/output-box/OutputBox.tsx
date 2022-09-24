@@ -1,7 +1,6 @@
 import Editor, { OnMount } from '@monaco-editor/react';
 import { useTheme } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
-import { Submission } from '../../types/types';
 
 export interface IOutputBox {
   language: string;

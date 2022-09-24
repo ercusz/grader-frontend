@@ -6,30 +6,22 @@ import { useTheme } from '@mui/material/styles';
 import { SyntheticEvent, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { SiJava } from 'react-icons/si';
+import { useIdeTabs } from '../../state/grader/useIdeTabs';
 import NewFileDialog from '../newfile-dialog/NewFileDialog';
 
 export interface ICodeEditor {
   language: string;
-  tabs: ITab[];
-  setTabs: any;
   template?: string;
   onMount?: OnMount;
 }
 
-export interface ITab {
-  path: string;
-  value: string;
-}
-
 const CodeEditor: React.FC<ICodeEditor> = ({
   language,
-  tabs,
-  setTabs,
   template,
   onMount,
 }) => {
   const theme = useTheme();
-
+  const { ideTabs, setIdeTabs, addIdeTab, removeIdeTab } = useIdeTabs();
   const [currentTabIdx, setCurrentTabIdx] = useState(0);
   const [openNewFileDialog, setOpenNewFileDialog] = useState(false);
   const newFileFormContext = useForm<{ filename: string }>({
@@ -49,7 +41,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({
   };
 
   const onSubmitFileName = () => {
-    let index = tabs.length;
+    let index = ideTabs.length;
 
     const newTab = {
       path: fileName + '.java',
@@ -58,7 +50,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({
 }`,
     };
 
-    setTabs((prevState: ITab[]) => [...prevState, newTab]);
+    addIdeTab(newTab);
 
     setOpenNewFileDialog(false);
 
@@ -70,7 +62,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({
   };
 
   const removeTab = (index: number) => {
-    setTabs(tabs.filter((t, idx) => idx !== index));
+    removeIdeTab(index);
   };
 
   const handleCloseTab = (index: number) => {
@@ -83,14 +75,14 @@ const CodeEditor: React.FC<ICodeEditor> = ({
   };
 
   const onChange = (value: any, event: any) => {
-    let updatedTabs = tabs.map((tab, idx) => {
+    const updatedTabs = ideTabs.map((tab, idx) => {
       if (idx === currentTabIdx) {
         return { ...tab, value: value };
       }
 
       return tab;
     });
-    setTabs(updatedTabs);
+    setIdeTabs(updatedTabs);
   };
 
   return (
@@ -109,7 +101,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({
           scrollButtons="auto"
           aria-label="Code Editor Tabs"
         >
-          {tabs.map((tab, index) => (
+          {ideTabs.map((tab, index) => (
             <Tab
               component="div"
               key={tab.path}
@@ -171,9 +163,9 @@ const CodeEditor: React.FC<ICodeEditor> = ({
         height="50vh"
         onChange={onChange}
         onMount={onMount}
-        defaultValue={tabs[currentTabIdx]?.value}
+        defaultValue={ideTabs[currentTabIdx]?.value}
         defaultLanguage={language}
-        path={tabs[currentTabIdx].path}
+        path={ideTabs[currentTabIdx].path}
         theme={theme.palette.mode === 'dark' ? 'vs-dark' : 'github'}
         loading={'กำลังโหลด'}
         options={{

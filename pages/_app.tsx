@@ -5,7 +5,8 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { Provider } from 'jotai';
+import { Atom, Provider } from 'jotai';
+import { queryClientAtom } from 'jotai/query';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -38,7 +39,13 @@ function MyApp(props: AppPropsWithLayout) {
     <SessionProvider session={pageProps.session}>
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
-          <Provider>
+          <Provider
+            initialValues={
+              [[queryClientAtom, queryClient]] as Iterable<
+                readonly [Atom<unknown>, unknown]
+              >
+            }
+          >
             <CacheProvider value={emotionCache}>
               <Head>
                 <meta
