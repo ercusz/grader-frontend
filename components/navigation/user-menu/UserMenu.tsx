@@ -33,6 +33,68 @@ export interface IUserMenu {
   setAnchorElUser: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
 }
 
+type Setting = {
+  name: string;
+  icon: React.ReactNode;
+  link: string | undefined;
+  action: any;
+};
+
+interface ISettings {
+  settings: Setting[];
+}
+
+const Settings: React.FC<ISettings> = ({ settings }) => {
+  const renderListItemText = (name: string, icon: React.ReactNode) => {
+    let listItemTextElem = null;
+
+    if (icon) {
+      listItemTextElem = (
+        <>
+          <ListItemIcon>{icon}</ListItemIcon>
+          {name}
+        </>
+      );
+    } else {
+      listItemTextElem = <ListItemText inset>{name}</ListItemText>;
+    }
+
+    return listItemTextElem;
+  };
+
+  interface IRenderMenuItem {
+    key?: string | undefined;
+    setting: Setting;
+  }
+
+  const renderMenuItem = ({ key, setting }: IRenderMenuItem) => {
+    return (
+      <MenuItem
+        key={key}
+        onClick={setting.action ? () => setting.action() : undefined}
+      >
+        {renderListItemText(setting.name, setting.icon)}
+      </MenuItem>
+    );
+  };
+
+  return (
+    <>
+      {settings.map((setting: Setting) => {
+        if (setting.link) {
+          return (
+            <Link key={setting.name} href={setting.link}>
+              {renderMenuItem({ key: undefined, setting: setting })}
+            </Link>
+          );
+        }
+
+        return renderMenuItem({ key: setting.name, setting: setting });
+      })}
+    </>
+  );
+};
+
 const UserMenu: React.FC<IUserMenu> = ({
   session,
   anchorElUser,
@@ -218,30 +280,7 @@ const UserMenu: React.FC<IUserMenu> = ({
             </MenuItem>
           </div>
         ) : (
-          <div>
-            {settings &&
-              settings.map((setting) => (
-                <Link
-                  key={setting.name}
-                  href={setting.link ? setting.link : ''}
-                >
-                  <MenuItem
-                    onClick={
-                      setting.action ? () => setting.action() : undefined
-                    }
-                  >
-                    {setting.icon ? (
-                      <>
-                        <ListItemIcon>{setting.icon}</ListItemIcon>
-                        {setting.name}
-                      </>
-                    ) : (
-                      <ListItemText inset>{setting.name}</ListItemText>
-                    )}
-                  </MenuItem>
-                </Link>
-              ))}
-          </div>
+          <div>{settings && <Settings settings={settings} />}</div>
         )}
       </MenuList>
     </Menu>
