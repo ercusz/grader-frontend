@@ -1,5 +1,6 @@
 import Container from '@mui/material/Container';
 import Head from 'next/head';
+import { Suspense } from 'react';
 import Header from '../../navigation/header/Header';
 
 export interface IPrimaryLayout extends React.ComponentPropsWithoutRef<'div'> {
@@ -21,7 +22,9 @@ const PrimaryLayout: React.FC<IPrimaryLayout> = ({
       </Head>
       <div {...divProps} className={`min-h-screen flex flex-col`}>
         <Header />
-        <Container className="min-w-full p-0 m-0">{children}</Container>
+        <Suspense fallback={'Loading...'}>
+          <Container className="min-w-full p-0 m-0">{children}</Container>
+        </Suspense>
       </div>
     </>
   );

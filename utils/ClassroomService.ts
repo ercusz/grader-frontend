@@ -11,14 +11,21 @@ export const getClassrooms = async (filter?: string): Promise<Classroom[]> => {
   return res.data as Classroom[];
 };
 
-export const getCourses = async (filter?: string): Promise<Course[]> => {
+export const getCourses = async (): Promise<Course[]> => {
   const { res }: Response = await contentHttpClient.get('/api/courses/me');
 
-  if (filter) {
-    return filterData(res.data, filter) as Course[];
+  return res.data as Course[];
+};
+
+export const getCourseBySlug = async (slug: string) => {
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/course/${slug}`
+  );
+  if (err) {
+    throw new Error('Get course data failed.');
   }
 
-  return res.data as Course[];
+  return res.data;
 };
 
 export const filterData = (

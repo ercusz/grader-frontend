@@ -12,7 +12,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -29,12 +29,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import ClassroomCardSkeleton from '../../components/cards/classroom-skeleton/ClassroomCardSkeleton';
 import CourseCard from '../../components/cards/course/CourseCard';
 import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
+import { useCoursesFilter } from '../../state/courses/useCourses';
 import { Course as CourseType } from '../../types/types';
 import { getCourses } from '../../utils/ClassroomService';
 import { useDebounce } from '../../utils/useDebounce';
 import { NextPageWithLayout } from '../page';
 
-const Course: NextPageWithLayout = () => {
+const Courses: NextPageWithLayout = () => {
   const theme = useTheme();
   const medium = useMediaQuery(theme.breakpoints.up('md'));
   const small = useMediaQuery(theme.breakpoints.up('sm'));
@@ -47,17 +48,10 @@ const Course: NextPageWithLayout = () => {
   const searchValue = watch('search');
 
   const debouncedFilter: string = useDebounce<string>(searchValue, 500);
-  const { isSuccess, isError, isLoading, data, refetch } = useQuery<
-    CourseType[]
-  >(
-    ['courses', debouncedFilter],
-    () => {
-      return getCourses(debouncedFilter);
-    },
-    {
-      enabled: false,
-    }
-  );
+  const { isSuccess, isError, isLoading, data, refetch } = useCoursesFilter({
+    enabled: false,
+    filter: debouncedFilter,
+  });
 
   const handleSearchButton = () => {
     refetch();
@@ -167,9 +161,9 @@ const Course: NextPageWithLayout = () => {
   );
 };
 
-export default Course;
+export default Courses;
 
-Course.getLayout = (page) => {
+Courses.getLayout = (page) => {
   return <PrimaryLayout title="รายวิชาของฉัน">{page}</PrimaryLayout>;
 };
 

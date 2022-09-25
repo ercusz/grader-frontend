@@ -5,11 +5,12 @@ import {
   CardHeader,
   CardMedia,
   Container,
-  Link,
+  Link as MuiLink,
   Typography,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { Course } from '../../../types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
@@ -45,37 +46,42 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
             }),
           ]}
         >
-          <Link className="no-underline" href={`/c/t/${course.slug}`}>
-            <CardHeader
-              title={
-                <>
-                  <Typography className="font-bold" noWrap variant="h6">
-                    {course.name}
-                  </Typography>
-                </>
-              }
-              subheader={`${course.semester}/${course.year}`}
-              subheaderTypographyProps={{ noWrap: true }}
-              sx={{
-                display: 'flex',
-                overflow: 'hidden',
-                '& .MuiCardHeader-content': {
+          <Link
+            href={`/course/${course.slug}`}
+            passHref
+          >
+            <MuiLink className="no-underline" variant="body2">
+              <CardHeader
+                title={
+                  <>
+                    <Typography className="font-bold" noWrap variant="h6">
+                      {course.name}
+                    </Typography>
+                  </>
+                }
+                subheader={`${course.semester}/${course.year}`}
+                subheaderTypographyProps={{ noWrap: true }}
+                sx={{
+                  display: 'flex',
                   overflow: 'hidden',
-                },
-              }}
-            />
-            <CardMedia className="relative h-[136px]">
-              <Image
-                className="w-full object-cover"
-                placeholder="blur"
-                blurDataURL={`data:image/svg+xml;base64,LEHV6nWB2yk8pyo0adR*.7kCMdnj`}
-                layout="fill"
-                quality={60}
-                alt={`${course.name} classroom cover image`}
-                src={course.coverImageUrl}
-                sizes="100vw"
+                  '& .MuiCardHeader-content': {
+                    overflow: 'hidden',
+                  },
+                }}
               />
-            </CardMedia>
+              <CardMedia className="relative h-[136px]">
+                <Image
+                  className="w-full object-cover"
+                  placeholder="blur"
+                  blurDataURL={`data:image/svg+xml;base64,LEHV6nWB2yk8pyo0adR*.7kCMdnj`}
+                  layout="fill"
+                  quality={60}
+                  alt={`${course.name} classroom cover image`}
+                  src={course.coverImageUrl}
+                  sizes="100vw"
+                />
+              </CardMedia>
+            </MuiLink>
           </Link>
           <CardActions
             sx={{ bgcolor: (theme) => theme.palette.background.paper }}
