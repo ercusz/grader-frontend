@@ -132,7 +132,7 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                 <>
                   <Chip
                     className="font-bold cursor-pointer"
-                    label={`Section ${classroom.section}`}
+                    label={classroom.section}
                     color="primary"
                     size="small"
                   />

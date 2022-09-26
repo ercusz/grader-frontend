@@ -14,7 +14,7 @@ export type Classroom = {
   name: string;
   semester: number;
   year: number;
-  section: number;
+  section: string;
   coverImageUrl: string;
   instructor: User;
   success: number;
@@ -24,11 +24,13 @@ export type Classroom = {
 export type Section = {
   id: number;
   name: string;
+  // slug: string;
 };
 
 export type Course = {
   id: number;
   name: string;
+  // code: string;
   semester: number;
   year: number;
   section: Section[];

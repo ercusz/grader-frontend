@@ -12,7 +12,7 @@ export const handlers = [
           name: 'Data Structures',
           semester: 1,
           year: 2565,
-          section: 2,
+          section: 'Section 2',
           coverImageUrl:
             'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
           instructor: {
@@ -39,7 +39,7 @@ export const handlers = [
           name: 'Cyber Security',
           semester: 1,
           year: 2565,
-          section: 1,
+          section: 'กลุ่มการเรียนที่ 1',
           coverImageUrl:
             'https://images.unsplash.com/photo-1504639725590-34d0984388bd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80',
           instructor: {
@@ -66,7 +66,7 @@ export const handlers = [
           name: 'วิทยาการคำนวณ',
           semester: 1,
           year: 2565,
-          section: 3,
+          section: 'ไก่ทอด',
           coverImageUrl:
             'https://images.unsplash.com/photo-1597008641621-cefdcf718025?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1939&q=80',
           instructor: {
@@ -93,7 +93,7 @@ export const handlers = [
           name: 'Database Design',
           semester: 1,
           year: 2565,
-          section: 4,
+          section: 'ไก่ย่าง',
           coverImageUrl:
             'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
           instructor: {
@@ -120,7 +120,7 @@ export const handlers = [
           name: 'Data Engineer',
           semester: 1,
           year: 2565,
-          section: 8,
+          section: 'กลุ่มพิเศษ',
           coverImageUrl:
             'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
           instructor: {
@@ -147,7 +147,7 @@ export const handlers = [
           name: 'Information & Data Security',
           semester: 2,
           year: 2565,
-          section: 1,
+          section: 'ห้องยอดมนุษย์',
           coverImageUrl:
             'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
           instructor: {
@@ -248,7 +248,7 @@ export const handlers = [
             },
           },
           slug: '0TQlAocpPeBC',
-        }
+        },
       ])
     );
   }),

@@ -1,8 +1,21 @@
-import { Box, Container, Grid, Paper, Typography } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import CourseClassroomCard from '../../components/cards/course-classroom/CourseClassroomCard';
+import CourseHeader from '../../components/header/course-header/CourseHeader';
 import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
 import { useCourseSlug } from '../../state/courses/useCourses';
 import { getCourseBySlug } from '../../utils/ClassroomService';
@@ -18,78 +31,66 @@ const Course: NextPageWithLayout = ({
     data: course,
   } = useCourseSlug({ slug: slug });
 
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isError) {
+      router.push('/404');
+    }
+  }, [isError, router]);
+
   return (
     <section>
       <Head>
         <title>{course ? course.name : 'ไม่พบรายวิชา'}</title>
       </Head>
       <Container maxWidth="lg">
-        {isLoading && <Typography>Loading...</Typography>}
-        {isError && <Typography>Oops, something went wrong...</Typography>}
+        {isLoading && (
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={true}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
+        )}
         {isSuccess && course && (
           <>
-            <Paper
-              sx={{
-                position: 'relative',
-                backgroundColor: 'grey.800',
-                color: '#fff',
-                mb: 4,
-                borderBottomLeftRadius: 20,
-                borderBottomRightRadius: 20,
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundPosition: 'center',
-                backgroundImage: `url(${course?.coverImageUrl})`,
-                boxShadow: 1,
-              }}
-            >
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: 0,
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  backgroundColor: 'rgba(0,0,0,.5)',
-                  borderBottomLeftRadius: 20,
-                  borderBottomRightRadius: 20,
-                }}
-              />
-              <Grid container>
-                <Grid item md={6}>
-                  <Box
-                    sx={{
-                      position: 'relative',
-                      px: { xs: 3, md: 6 },
-                      pb: 1,
-                      pr: { md: 0 },
-                    }}
+            <CourseHeader course={course} />
+            <Grid container spacing={2} pb={8}>
+              <Grid item xs={12}>
+                <Stack direction="row" spacing={2}>
+                  <Typography
+                    className="font-bold"
+                    variant="h5"
+                    color="inherit"
                   >
-                    <Typography
-                      sx={{ pt: 14 }}
-                      component="h1"
-                      variant="h3"
-                      color="inherit"
-                      gutterBottom
-                    >
-                      {course.name}
-                    </Typography>
-                    <Typography variant="h5" color="inherit" paragraph>
-                      {`${course.semester}/${course.year}`}
-                    </Typography>
-                    <Typography variant="subtitle1" color="inherit" paragraph>
-                      {`ผู้สอน: ${course.instructor.first_name} ${course.instructor.last_name}`}
-                    </Typography>
-                  </Box>
-                </Grid>
+                    กลุ่มการเรียน
+                  </Typography>
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    size="small"
+                  >
+                    เพิ่มกลุ่มการเรียน
+                  </Button>
+                </Stack>
               </Grid>
-            </Paper>
-            <Grid container>
-              <Grid item md={6}>
-                <Typography className="font-bold" variant="h4" color="inherit">
-                  กลุ่มการเรียน
-                </Typography>
-              </Grid>
+              {course.section.map((sec) => {
+                const postfix =
+                  course.semester && course.year
+                    ? ` (${course.semester}/${course.year})`
+                    : '';
+                const courseName = `${course.name}${postfix}`;
+
+                return (
+                  <Grid key={sec.id} item xs={12} sm={6} md={4} mt={4}>
+                    <CourseClassroomCard
+                      courseName={courseName}
+                      classroom={sec}
+                    />
+                  </Grid>
+                );
+              })}
             </Grid>
           </>
         )}
