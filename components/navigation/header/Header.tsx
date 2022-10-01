@@ -42,6 +42,22 @@ const Header: React.FC<IHeader> = () => {
 
   const router = useRouter();
   const [isInSignInPage, setIsInSignInPage] = React.useState(false);
+  const [isTop, setIsTop] = React.useState(true);
+
+  const onScroll = () => {
+    const { pageYOffset } = window;
+    if (pageYOffset === 0) {
+      setIsTop(true);
+    } else {
+      setIsTop(false);
+    }
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   React.useEffect(() => {
     if (
@@ -85,12 +101,17 @@ const Header: React.FC<IHeader> = () => {
               backdropFilter: 'blur(6px)',
               WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
               backgroundColor: (theme) =>
-                alpha(theme.palette.background.default, 0.72),
+                alpha(theme.palette.background.default, isTop ? 1 : 0.72),
               transition: 'all 0.2s ease-in-out',
+              borderBottom: (theme) =>
+                `1px double ${alpha(
+                  theme.palette.text.primary,
+                  isTop ? 0 : 0.2
+                )}`,
             }
       }
       color={isInSignInPage ? 'transparent' : undefined}
-      elevation={0}
+      elevation={isInSignInPage ? 0 : isTop ? 0 : 1}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
