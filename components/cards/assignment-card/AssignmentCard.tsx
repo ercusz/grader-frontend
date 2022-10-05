@@ -8,7 +8,6 @@ import {
   CardHeader,
   Chip,
   IconButton,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import Link from 'next/link';
@@ -19,28 +18,15 @@ export interface IAssignmentCard {
 }
 
 const AssignmentCard: React.FC<IAssignmentCard> = ({ idx }) => {
-  // const [_, setPage] = useAtom(pageAtom);
-
-  const stopPropagation = (e: MouseEvent<HTMLElement>) => {
+  const handleMoreButtonClick = (e: MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
     e.preventDefault();
-  };
-
-  const handleAssignmentChipClick = (e: MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // setPage(2);
-  };
-
-  const handleMaterialChipClick = (e: MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // setPage(3);
   };
 
   return (
     <Card className="shadow-md w-full" variant="outlined">
-      <Link href="#" passHref>
-        <CardActionArea>
+      <Link href="#">
+        <CardActionArea component="a">
           <CardHeader
             sx={{
               display: 'flex',
@@ -56,10 +42,12 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({ idx }) => {
             }
             action={
               <IconButton
+                onTouchStart={(event) => event.stopPropagation()}
+                onMouseDown={(event) => event.stopPropagation()}
                 onClick={(e) => {
-                  stopPropagation(e);
+                  handleMoreButtonClick(e);
                 }}
-                aria-label="settings"
+                aria-label="more"
               >
                 <MoreVertIcon />
               </IconButton>
@@ -75,13 +63,7 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({ idx }) => {
             <Typography variant="caption" sx={{ pr: 1 }}>
               แท็ก
             </Typography>
-            <Tooltip title={`แสดงหมวดหมู่ ${"บทที่ 1"}`}>
-              <Chip
-                label={"บทที่ 1"}
-                size="small"
-                onClick={handleAssignmentChipClick}
-              />
-            </Tooltip>
+            <Chip label={'บทที่ 1'} size="small" />
           </CardActions>
         </CardActionArea>
       </Link>
