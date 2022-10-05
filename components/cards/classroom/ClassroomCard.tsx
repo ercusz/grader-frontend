@@ -11,12 +11,13 @@ import {
   CircularProgressProps,
   Container,
   Fab,
-  Link,
+  Link as MuiLink,
   Tooltip,
   Typography,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { Classroom } from '../../../types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
@@ -126,48 +127,50 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
             }),
           ]}
         >
-          <Link className="no-underline" href={`/c/${classroom.slug}`}>
-            <CardHeader
-              title={
-                <>
-                  <Chip
-                    className="font-bold cursor-pointer"
-                    label={classroom.section}
-                    color="primary"
-                    size="small"
-                  />
-                  <Typography className="font-bold" noWrap variant="h6">
-                    {classroom.name}
-                  </Typography>
-                </>
-              }
-              subheader={`${classroom.semester}/${classroom.year}`}
-              subheaderTypographyProps={{ noWrap: true }}
-              action={
-                <Box className="m-auto h-full">
-                  <CircularProgressWithLabel value={percent} />
-                </Box>
-              }
-              sx={{
-                display: 'flex',
-                overflow: 'hidden',
-                '& .MuiCardHeader-content': {
+          <Link href={`/classroom/${classroom.slug}`} passHref>
+            <MuiLink className="no-underline" variant="body2">
+              <CardHeader
+                title={
+                  <>
+                    <Chip
+                      className="font-bold cursor-pointer"
+                      label={classroom.section}
+                      color="primary"
+                      size="small"
+                    />
+                    <Typography className="font-bold" noWrap variant="h6">
+                      {classroom.name}
+                    </Typography>
+                  </>
+                }
+                subheader={`${classroom.semester}/${classroom.year}`}
+                subheaderTypographyProps={{ noWrap: true }}
+                action={
+                  <Box className="m-auto h-full">
+                    <CircularProgressWithLabel value={percent} />
+                  </Box>
+                }
+                sx={{
+                  display: 'flex',
                   overflow: 'hidden',
-                },
-              }}
-            />
-            <CardMedia className="relative h-[136px]">
-              <Image
-                className="w-full object-cover"
-                placeholder="blur"
-                blurDataURL={`data:image/svg+xml;base64,LEHV6nWB2yk8pyo0adR*.7kCMdnj`}
-                layout="fill"
-                quality={60}
-                alt={`${classroom.name} classroom cover image`}
-                src={classroom.coverImageUrl}
-                sizes="100vw"
+                  '& .MuiCardHeader-content': {
+                    overflow: 'hidden',
+                  },
+                }}
               />
-            </CardMedia>
+              <CardMedia className="relative h-[136px]">
+                <Image
+                  className="w-full object-cover"
+                  placeholder="blur"
+                  blurDataURL={`data:image/svg+xml;base64,LEHV6nWB2yk8pyo0adR*.7kCMdnj`}
+                  layout="fill"
+                  quality={60}
+                  alt={`${classroom.name} classroom cover image`}
+                  src={classroom.coverImageUrl}
+                  sizes="100vw"
+                />
+              </CardMedia>
+            </MuiLink>
           </Link>
           <CardActions
             sx={{ bgcolor: (theme) => theme.palette.background.paper }}
@@ -178,10 +181,10 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                 className="object-cover"
                 layout="fill"
                 quality={60}
-                alt={`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}
+                alt={`${classroom.instructor.firstName} ${classroom.instructor.lastName}`}
                 src={
-                  classroom.instructor.profile_img
-                    ? classroom.instructor.profile_img.url
+                  classroom.instructor.profileImage
+                    ? classroom.instructor.profileImage.url
                     : ''
                 }
                 sizes="100vw"
@@ -196,7 +199,7 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                   variant="body2"
                   noWrap
                   className="font-semibold"
-                >{`${classroom.instructor.first_name} ${classroom.instructor.last_name}`}</Typography>
+                >{`${classroom.instructor.firstName} ${classroom.instructor.lastName}`}</Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"

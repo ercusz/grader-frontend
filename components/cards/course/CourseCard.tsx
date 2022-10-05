@@ -46,10 +46,7 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
             }),
           ]}
         >
-          <Link
-            href={`/course/${course.slug}`}
-            passHref
-          >
+          <Link href={`/course/${course.slug}`} passHref>
             <MuiLink className="no-underline" variant="body2">
               <CardHeader
                 title={
@@ -92,10 +89,10 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                 className="object-cover"
                 layout="fill"
                 quality={60}
-                alt={`${course.instructor.first_name} ${course.instructor.last_name}`}
+                alt={`${course.instructor.firstName} ${course.instructor.lastName}`}
                 src={
-                  course.instructor.profile_img
-                    ? course.instructor.profile_img.url
+                  course.instructor.profileImage
+                    ? course.instructor.profileImage.url
                     : ''
                 }
                 sizes="100vw"
@@ -110,7 +107,7 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                   variant="body2"
                   noWrap
                   className="font-semibold"
-                >{`${course.instructor.first_name} ${course.instructor.last_name}`}</Typography>
+                >{`${course.instructor.firstName} ${course.instructor.lastName}`}</Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"

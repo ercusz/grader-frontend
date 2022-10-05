@@ -13,14 +13,14 @@ const base: IClassroomCard = {
       id: 1234,
       username: 'johndoe69',
       email: 'johnny@kku.edu',
-      student_id: undefined,
-      first_name: 'John',
-      last_name: 'Doe',
+      studentId: null,
+      firstName: 'John',
+      lastName: 'Doe',
       role: {
         id: 999999,
         name: 'Teacher',
       },
-      profile_img: {
+      profileImage: {
         id: 1,
         url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
       },
