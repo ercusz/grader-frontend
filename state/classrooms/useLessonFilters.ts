@@ -1,5 +1,4 @@
 import { atom, useAtom } from 'jotai';
-import { ideTabsAtom } from '../grader/useIdeTabs';
 
 type LessonType = {
   num: number;
@@ -61,5 +60,11 @@ export function useLessonFilters() {
   const [isUnFilterAll] = useAtom(readLessonsUnCheckedAtom);
   const [_, setFilterAll] = useAtom(writeLessonsCheckAllAtom);
 
-  return { lessons, setLessons, isFilterAll, isUnFilterAll, setFilterAll } as const;
+  return {
+    lessons,
+    setLessons,
+    isFilterAll,
+    isUnFilterAll,
+    setFilterAll,
+  } as const;
 }
