@@ -55,7 +55,7 @@ const Course: NextPageWithLayout = ({
         )}
         {isSuccess && course && (
           <>
-            <CourseHeader course={course} />
+            <CourseHeader />
             <Grid container spacing={2} pb={8}>
               <Grid item xs={12}>
                 <Stack direction="row" spacing={2}>
@@ -121,22 +121,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const queryClient = new QueryClient();
 
-  let isError = false;
-  let course = null;
-
   try {
-    course = await queryClient.fetchQuery(['course', { slug: slug }], () =>
+    await queryClient.fetchQuery(['course', { slug: slug }], () =>
       getCourseBySlug(slug)
     );
   } catch (error) {
-    isError = true;
+    return {
+      notFound: true,
+    };
   }
 
   return {
     props: {
       slug: slug,
-      isError: isError,
-      course: course,
       dehydratedState: dehydrate(queryClient),
     },
   };
