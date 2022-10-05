@@ -19,20 +19,20 @@ export const handlers = [
             id: 1234,
             username: 'johndoe69',
             email: 'johnny@kku.edu',
-            student_id: undefined,
-            first_name: 'John',
-            last_name: 'Doe',
+            studentId: null,
+            firstName: 'John',
+            lastName: 'Doe',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 1,
               url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
             },
           },
           success: 91.67,
-          slug: 'YXNkZm9ya3Ys',
+          slug: 'GfPz2RAAbAEt',
         },
         {
           id: 2,
@@ -46,14 +46,14 @@ export const handlers = [
             id: 1235,
             username: 'bobby',
             email: 'bobby@kku.edu',
-            student_id: undefined,
-            first_name: 'Albert',
-            last_name: 'Bob',
+            studentId: null,
+            firstName: 'Albert',
+            lastName: 'Bob',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 12345,
               url: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1780&q=80',
             },
@@ -73,14 +73,14 @@ export const handlers = [
             id: 1236,
             username: 'somsak1112',
             email: 'somsak@kku.edu',
-            student_id: undefined,
-            first_name: 'สมศักดิ์',
-            last_name: 'เกรดเด้อ',
+            studentId: null,
+            firstName: 'สมศักดิ์',
+            lastName: 'เกรดเด้อ',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 12312,
               url: 'https://i.pravatar.cc/',
             },
@@ -100,14 +100,14 @@ export const handlers = [
             id: 1234,
             username: 'somsakjung',
             email: 'somsakjung@kku.edu',
-            student_id: undefined,
-            first_name: 'อัลเบิร์ต',
-            last_name: 'สมศักดิ์',
+            studentId: null,
+            firstName: 'อัลเบิร์ต',
+            lastName: 'สมศักดิ์',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 7777,
               url: 'https://i.pravatar.cc/?u=somsak',
             },
@@ -127,14 +127,14 @@ export const handlers = [
             id: 1234,
             username: 'johndoe69',
             email: 'yingkaa91@kku.edu',
-            student_id: undefined,
-            first_name: 'สมหญิง',
-            last_name: 'กระทิงเขียว',
+            studentId: null,
+            firstName: 'สมหญิง',
+            lastName: 'กระทิงเขียว',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 89798,
               url: 'https://i.pravatar.cc/?u=somying',
             },
@@ -154,14 +154,14 @@ export const handlers = [
             id: 1234,
             username: 'monkey_d_somporn',
             email: 'sompornhub@kku.edu',
-            student_id: undefined,
-            first_name: 'มังกี้ ดี',
-            last_name: 'สมพร',
+            studentId: null,
+            firstName: 'มังกี้ ดี',
+            lastName: 'สมพร',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 1234556,
               url: 'https://i.pravatar.cc/?u=somporn',
             },
@@ -170,6 +170,47 @@ export const handlers = [
           slug: 'YXNkZm9ya3Ys',
         },
       ])
+    );
+  }),
+  rest.get(`${strapiUrl}/api/classroom/:slug`, (_req, res, ctx) => {
+    const { slug } = _req.params;
+    if (slug !== 'GfPz2RAAbAEt') {
+      return res(
+        ctx.status(404),
+        ctx.json({
+          message: 'Classroom not found.',
+        })
+      );
+    }
+
+    return res(
+      ctx.json<Classroom>({
+        id: 1,
+        name: 'Data Structures',
+        semester: 1,
+        year: 2565,
+        section: 'Section 2',
+        coverImageUrl:
+          'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
+        instructor: {
+          id: 1234,
+          username: 'johndoe69',
+          email: 'johnny@kku.edu',
+          studentId: null,
+          firstName: 'John',
+          lastName: 'Doe',
+          role: {
+            id: 999999,
+            name: 'Teacher',
+          },
+          profileImage: {
+            id: 1,
+            url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+          },
+        },
+        success: 91.67,
+        slug: 'GfPz2RAAbAEt',
+      })
     );
   }),
   rest.get(`${strapiUrl}/api/courses/me`, (_req, res, ctx) => {
@@ -200,14 +241,14 @@ export const handlers = [
             id: 1234,
             username: 'johndoe69',
             email: 'johnny@kku.edu',
-            student_id: undefined,
-            first_name: 'John',
-            last_name: 'Doe',
+            studentId: null,
+            firstName: 'John',
+            lastName: 'Doe',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 1,
               url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
             },
@@ -235,14 +276,14 @@ export const handlers = [
             id: 1234,
             username: 'johndoe69',
             email: 'johnny@kku.edu',
-            student_id: undefined,
-            first_name: 'John',
-            last_name: 'Doe',
+            studentId: null,
+            firstName: 'John',
+            lastName: 'Doe',
             role: {
               id: 999999,
               name: 'Teacher',
             },
-            profile_img: {
+            profileImage: {
               id: 1,
               url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
             },
@@ -308,14 +349,14 @@ export const handlers = [
           id: 1234,
           username: 'johndoe69',
           email: 'johnny@kku.edu',
-          student_id: undefined,
-          first_name: 'John',
-          last_name: 'Doe',
+          studentId: null,
+          firstName: 'John',
+          lastName: 'Doe',
           role: {
             id: 999999,
             name: 'Teacher',
           },
-          profile_img: {
+          profileImage: {
             id: 1,
             url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
           },

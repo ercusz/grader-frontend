@@ -70,8 +70,8 @@ export async function getUserInfo() {
     return;
   }
 
-  if (res.data.profile_img !== null) {
-    res.data.profile_img.url = strapiUrl + res.data.profile_img.url;
+  if (res.data.profileImage !== null) {
+    res.data.profileImage.url = strapiUrl + res.data.profileImage.url;
   }
 
   return res.data;

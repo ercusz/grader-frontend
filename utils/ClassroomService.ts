@@ -1,14 +1,21 @@
 import { Classroom, Course, CreateCourseReq } from '../types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
-export const getClassrooms = async (filter?: string): Promise<Classroom[]> => {
+export const getClassrooms = async (): Promise<Classroom[]> => {
   const { res }: Response = await contentHttpClient.get('/api/classrooms/me');
 
-  if (filter) {
-    return filterData(res.data, filter) as Classroom[];
+  return res.data as Classroom[];
+};
+
+export const getClassroomBySlug = async (slug: string) => {
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/classroom/${slug}`
+  );
+  if (err) {
+    throw new Error('Get classroom data failed.');
   }
 
-  return res.data as Classroom[];
+  return res.data;
 };
 
 export const getCourses = async (): Promise<Course[]> => {
@@ -39,10 +46,10 @@ export const filterData = (
     return (
       rule.test(classroom.name) ||
       rule.test(
-        classroom.instructor.first_name ? classroom.instructor.first_name : ''
+        classroom.instructor.firstName ? classroom.instructor.firstName : ''
       ) ||
       rule.test(
-        classroom.instructor.last_name ? classroom.instructor.last_name : ''
+        classroom.instructor.lastName ? classroom.instructor.lastName : ''
       )
     );
   }) as Course[] | Classroom[];

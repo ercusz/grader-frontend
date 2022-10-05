@@ -1,12 +1,12 @@
 export type User = {
   id: number;
-  username: string | undefined;
+  username: string;
   email: string;
-  student_id: string | undefined;
-  first_name: string | undefined;
-  last_name: string | undefined;
+  studentId: string | null;
+  firstName: string | null;
+  lastName: string | null;
   role: { id: number; name: string };
-  profile_img: { id: number; url: string } | undefined;
+  profileImage: { id: number; url: string } | undefined;
 };
 
 export type Classroom = {
