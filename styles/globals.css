@@ -47,3 +47,10 @@
 body {
   transition: all 0.2s ease-in-out;
 }
+
+.swiper-slide.swiper-slide-visible.swiper-slide-active
+  > #post-card-container
+  > .MuiCard-root {
+  border-width: 1px;
+  border-radius: 20px;
+}

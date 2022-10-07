@@ -19,7 +19,7 @@ const PinList: React.FC<IPinList> = () => {
   return (
     <List>
       <ListItem>
-        <Card>
+        <Card variant="outlined">
           <CardHeader
             sx={{
               display: 'flex',
@@ -37,20 +37,26 @@ const PinList: React.FC<IPinList> = () => {
               effect={'creative'}
               creativeEffect={{
                 prev: {
+                  opacity: 0.4,
                   shadow: false,
                   translate: ['-100%', 0, -500],
                 },
                 next: {
+                  opacity: 0.4,
                   shadow: false,
                   translate: ['100%', 0, -500],
                 },
               }}
               modules={[EffectCreative]}
-              className="mySwiper2"
+              className="pinList-swiper"
             >
               {[...Array(4)].map((_, idx) => (
                 <SwiperSlide key={idx}>
-                  <Container sx={{ p: 2 }} className="shadow-lg">
+                  <Container
+                    sx={{ p: 2 }}
+                    className="shadow-lg"
+                    id="post-card-container"
+                  >
                     <PostCard compact />
                   </Container>
                 </SwiperSlide>

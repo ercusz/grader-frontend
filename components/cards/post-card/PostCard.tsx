@@ -85,14 +85,29 @@ const PostCard: React.FC<IPostCard> = ({ compact }) => {
         }
       />
       <CardContent>
-        <Typography variant="body2" sx={{ whiteSpace: 'break-spaces' }}>
+        <Typography
+          variant="body2"
+          sx={
+            compact
+              ? {
+                  whiteSpace: 'break-spaces',
+                  display: '-webkit-box',
+                  overflow: 'hidden',
+                  WebkitBoxOrient: 'vertical',
+                  WebkitLineClamp: 4,
+                }
+              : {
+                  whiteSpace: 'break-spaces',
+                }
+          }
+        >
           {`Lizards are a widespread group of squamate reptiles, with over 6,000
               species, ranging across all continents except Antarctica.
               
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est commodi qui consequatur nisi eum magnam recusandae impedit aliquid voluptas, voluptatibus officiis labore voluptatum necessitatibus assumenda esse magni! Optio, laudantium eum.`}
         </Typography>
       </CardContent>
-      {!compact && (
+      {!compact ? (
         <CardActions sx={{ px: 3 }}>
           <IconButton size="small" sx={{ ml: -1 }}>
             <Face />
@@ -103,7 +118,13 @@ const PostCard: React.FC<IPostCard> = ({ compact }) => {
             sx={{ flexGrow: 1, mr: 1, '& fieldset': { border: 'none' } }}
           />
           <Button disabled variant="text">
-            Post
+            โพสต์
+          </Button>
+        </CardActions>
+      ) : (
+        <CardActions>
+          <Button variant="text" sx={{ borderRadius: '20px' }}>
+            ดูโพสต์
           </Button>
         </CardActions>
       )}
