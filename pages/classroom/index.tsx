@@ -1,3 +1,6 @@
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   ButtonGroup,
@@ -7,32 +10,27 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { A11y, Keyboard, Mousewheel, Navigation, Pagination } from 'swiper';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import ClassroomCard from '../../components/cards/classroom/ClassroomCard';
-import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import { NextPageWithLayout } from '../page';
-
-// Import Swiper styles
-import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import SearchIcon from '@mui/icons-material/Search';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
+import { A11y, Keyboard, Mousewheel, Navigation, Pagination } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/a11y';
 import 'swiper/css/keyboard';
 import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import { Swiper, SwiperSlide } from 'swiper/react';
 import ClassroomCardSkeleton from '../../components/cards/classroom-skeleton/ClassroomCardSkeleton';
+import ClassroomCard from '../../components/cards/classroom/ClassroomCard';
+import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
 import { useClassroomsFilter } from '../../state/classrooms/useClassrooms';
 import { Classroom as ClassroomType } from '../../types/types';
 import { getClassrooms } from '../../utils/ClassroomService';
 import { useDebounce } from '../../utils/useDebounce';
+import { NextPageWithLayout } from '../page';
 
 const Classrooms: NextPageWithLayout = () => {
   const theme = useTheme();

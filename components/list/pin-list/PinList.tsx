@@ -1,13 +1,17 @@
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import PushPinIcon from '@mui/icons-material/PushPin';
 import {
+  ButtonGroup,
   Card,
   CardContent,
   CardHeader,
   Container,
+  IconButton,
   List,
   ListItem,
 } from '@mui/material';
-import { EffectCreative } from 'swiper';
+import { EffectCreative, Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/effect-creative';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -18,7 +22,7 @@ export interface IPinList {}
 const PinList: React.FC<IPinList> = () => {
   return (
     <List>
-      <ListItem>
+      <ListItem disableGutters>
         <Card variant="outlined">
           <CardHeader
             sx={{
@@ -30,25 +34,40 @@ const PinList: React.FC<IPinList> = () => {
             }}
             avatar={<PushPinIcon />}
             title="โพสต์ปักหมุด"
+            action={
+              <ButtonGroup size="large" disableElevation>
+                <IconButton className="prevBtn">
+                  <NavigateBeforeIcon />
+                </IconButton>
+                <IconButton className="nextBtn">
+                  <NavigateNextIcon />
+                </IconButton>
+              </ButtonGroup>
+            }
           />
           <CardContent sx={{ p: 0 }}>
             <Swiper
+              className="pinList-swiper"
+              modules={[Navigation, EffectCreative]}
               grabCursor={true}
               effect={'creative'}
+              rewind={true}
+              navigation={{
+                prevEl: '.prevBtn',
+                nextEl: '.nextBtn',
+              }}
               creativeEffect={{
                 prev: {
                   opacity: 0.4,
                   shadow: false,
-                  translate: ['-100%', 0, -500],
+                  translate: ['-70%', 0, -500],
                 },
                 next: {
                   opacity: 0.4,
                   shadow: false,
-                  translate: ['100%', 0, -500],
+                  translate: ['70%', 0, -500],
                 },
               }}
-              modules={[EffectCreative]}
-              className="pinList-swiper"
             >
               {[...Array(4)].map((_, idx) => (
                 <SwiperSlide key={idx}>

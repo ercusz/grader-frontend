@@ -54,3 +54,11 @@ body {
   border-width: 1px;
   border-radius: 20px;
 }
+
+.swiper-slide.swiper-slide-prev > #post-card-container > .MuiCard-root {
+  filter: blur(2px);
+}
+
+.swiper-slide.swiper-slide-next > #post-card-container > .MuiCard-root {
+  filter: blur(2px);
+}
