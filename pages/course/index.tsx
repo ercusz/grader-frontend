@@ -26,13 +26,13 @@ import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import ClassroomCardSkeleton from '../../components/cards/classroom-skeleton/ClassroomCardSkeleton';
-import CourseCard from '../../components/cards/course/CourseCard';
-import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import { useCoursesFilter } from '../../state/courses/useCourses';
-import { Course as CourseType } from '../../types/types';
-import { getCourses } from '../../utils/ClassroomService';
-import { useDebounce } from '../../utils/useDebounce';
+import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
+import CourseCard from '@/components/cards/course/CourseCard';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { useCoursesFilter } from '@/states/courses/useCourses';
+import { Course as CourseType } from '@/types/types';
+import { getCourses } from '@/utils/ClassroomService';
+import { useDebounce } from '@/utils/useDebounce';
 import { NextPageWithLayout } from '../page';
 
 const Courses: NextPageWithLayout = () => {

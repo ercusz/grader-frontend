@@ -19,7 +19,7 @@ import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { Classroom } from '../../../types/types';
+import { Classroom } from '@/types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
 
 const CircularProgressWithLabel = (

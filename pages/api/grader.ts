@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { graderHttpClient, Response } from '../../utils/APIHelper';
-import { ICreateSubmission, IGetSubmission } from '../../utils/GraderService';
+import { graderHttpClient, Response } from '@/utils/APIHelper';
+import { ICreateSubmission, IGetSubmission } from '@/utils/GraderService';
 
 const createSubmission = async ({
   languageId,

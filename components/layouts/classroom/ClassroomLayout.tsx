@@ -1,9 +1,9 @@
 import Container from '@mui/material/Container';
 import Head from 'next/head';
 import { Suspense } from 'react';
-import CourseHeader from '../../header/course-header/CourseHeader';
-import ClassroomMenu from '../../menu/classroom-menu/ClassroomMenu';
-import Header from '../../navigation/header/Header';
+import CourseHeader from '../../headers/course-header/CourseHeader';
+import ClassroomMenu from '../../menus/classroom-menu/ClassroomMenu';
+import Header from '../../navigations/header/Header';
 
 export interface IClassroomLayout
   extends React.ComponentPropsWithoutRef<'div'> {

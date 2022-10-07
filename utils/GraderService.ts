@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import JSZip from 'jszip';
-import { IDETabs } from '../state/grader/useIdeTabs';
-import { Submission } from '../types/types';
+import { IDETabs } from '@/states/grader/useIdeTabs';
+import { Submission } from '@/types/types';
 import { mainHttpClient, Response } from './APIHelper';
 
 export interface ICreateSubmission {

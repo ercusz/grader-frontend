@@ -1,6 +1,6 @@
 import { atom, useAtom } from 'jotai';
 import { useEffect } from 'react';
-import { theme } from '../../store/theme';
+import { theme } from '@/stores/theme';
 
 const browser = typeof window !== 'undefined';
 

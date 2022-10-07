@@ -14,11 +14,11 @@ import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import CourseClassroomCard from '../../components/cards/course-classroom/CourseClassroomCard';
-import CourseHeader from '../../components/header/course-header/CourseHeader';
-import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import { useCourseSlug } from '../../state/courses/useCourses';
-import { getCourseBySlug } from '../../utils/ClassroomService';
+import CourseClassroomCard from '@/components/cards/course-classroom/CourseClassroomCard';
+import CourseHeader from '@/components/headers/course-header/CourseHeader';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { useCourseSlug } from '@/states/courses/useCourses';
+import { getCourseBySlug } from '@/utils/ClassroomService';
 import { NextPageWithLayout } from '../page';
 
 const Course: NextPageWithLayout = ({

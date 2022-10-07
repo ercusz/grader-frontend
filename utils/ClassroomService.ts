@@ -1,4 +1,4 @@
-import { Classroom, Course, CreateCourseReq } from '../types/types';
+import { Classroom, Course, CreateCourseReq } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
 export const getClassrooms = async (): Promise<Classroom[]> => {

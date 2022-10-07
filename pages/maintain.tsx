@@ -4,7 +4,7 @@ import Container from '@mui/material/Container';
 import type { LottiePlayer } from 'lottie-web';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import PrimaryLayout from '../components/layouts/primary/PrimaryLayout';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { NextPageWithLayout } from './page';
 
 const Maintain: NextPageWithLayout = () => {

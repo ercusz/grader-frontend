@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { contentHttpClient } from '../../../utils/APIHelper';
-import { getUserInfo, signIn } from '../../../utils/AuthService';
+import { contentHttpClient } from '@/utils/APIHelper';
+import { getUserInfo, signIn } from '@/utils/AuthService';
 
 export default NextAuth({
   // Configure one or more authentication providers

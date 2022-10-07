@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
-import { Classroom } from '../../types/types';
+import { Classroom } from '@/types/types';
 import {
   filterData,
   getClassroomBySlug,
   getClassrooms,
-} from '../../utils/ClassroomService';
+} from '@/utils/ClassroomService';
 
 export const useClassrooms = () => useQuery(['classrooms'], getClassrooms);
 

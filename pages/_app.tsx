@@ -11,8 +11,8 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
-import '../styles/globals.css';
-import createEmotionCache from '../utils/createEmotionCache';
+import '@/styles/globals.css';
+import createEmotionCache from '@/utils/createEmotionCache';
 import { NextPageWithLayout } from './page';
 import ThemeProvider from './ThemeProvider';
 

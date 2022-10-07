@@ -1,31 +1,22 @@
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import BookIcon from '@mui/icons-material/Book';
-import PublicIcon from '@mui/icons-material/Public';
+import { Section } from '@/types/types';
 import {
-  Avatar,
-  AvatarGroup,
   Button,
   Card,
   CardActions,
   CardContent,
-  Chip,
-  Divider,
-  Stack,
   Typography,
 } from '@mui/material';
 import React from 'react';
-import { Course, Section } from '../../../types/types';
 
 export interface ICourseClassroomCard {
   courseName: string;
-  classroom: Section
+  classroom: Section;
 }
 
 const CourseClassroomCard: React.FC<ICourseClassroomCard> = ({
   courseName,
   classroom,
 }) => {
-
   return (
     <Card variant="outlined">
       <CardContent>

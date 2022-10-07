@@ -8,7 +8,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useClassroomSlug } from '../../../state/classrooms/useClassrooms';
+import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 
 export interface ICourseHeader {
   classroomSlug?: string;

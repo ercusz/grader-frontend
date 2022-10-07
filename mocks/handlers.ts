@@ -1,5 +1,5 @@
 import { rest } from 'msw';
-import { Classroom, Course, CreateCourseReq } from '../types/types';
+import { Classroom, Course, CreateCourseReq } from '@/types/types';
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_HOST;
 

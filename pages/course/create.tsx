@@ -16,12 +16,12 @@ import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import AddSectionForm from '../../components/add-section-form/AddSectionForm';
-import AddStudentForm from '../../components/add-student-form/AddStudentForm';
-import CreateCourseForm from '../../components/create-course-form/CreateCourseForm';
-import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import { CourseDetail, CreateCourseClassroom } from '../../types/types';
-import { mainHttpClient, Response } from '../../utils/APIHelper';
+import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
+import AddSectionForm from '@/components/forms/add-section-form/AddSectionForm';
+import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { CourseDetail, CreateCourseClassroom } from '@/types/types';
+import { mainHttpClient, Response } from '@/utils/APIHelper';
 import { NextPageWithLayout } from '../page';
 
 const CreateCourse: NextPageWithLayout = ({

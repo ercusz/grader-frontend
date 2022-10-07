@@ -18,8 +18,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { MdOutlineAddCircleOutline, MdPostAdd } from 'react-icons/md';
-import { useTestcases } from '../../state/grader/useTestcases';
-import { compileStatus } from '../../utils/compileStatuses';
+import { useTestcases } from '@/states/grader/useTestcases';
+import { compileStatus } from '@/utils/compileStatuses';
 
 export interface ITestCasesList {}
 

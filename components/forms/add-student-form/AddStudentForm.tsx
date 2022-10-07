@@ -1,7 +1,6 @@
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import WarningIcon from '@mui/icons-material/Warning';
 import {
-  Chip,
   IconButton,
   Link,
   Stack,
@@ -16,8 +15,8 @@ import {
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { read, utils } from 'xlsx';
-import { CreateCourseClassroom } from '../../types/types';
-import UploadedStudentsDialog from '../uploaded-students-dialog/UploadedStudentsDialog';
+import { CreateCourseClassroom } from '@/types/types';
+import UploadedStudentsDialog from '../../dialogs/uploaded-students-dialog/UploadedStudentsDialog';
 
 export interface IAddStudentForm {
   classrooms?: CreateCourseClassroom[];
@@ -162,8 +161,8 @@ const AddStudentForm: React.FC<IAddStudentForm> = ({
           </TableBody>
         </Table>
       ) : (
-        <Stack direction="row" sx={{py: 2}} alignItems="center">
-          <WarningIcon color="warning" sx={{pr: 0.5}}/>
+        <Stack direction="row" sx={{ py: 2 }} alignItems="center">
+          <WarningIcon color="warning" sx={{ pr: 0.5 }} />
           <Typography>กรุณาเพิ่มกลุ่มการเรียนก่อนเพิ่มนักศึกษา</Typography>
         </Stack>
       )}

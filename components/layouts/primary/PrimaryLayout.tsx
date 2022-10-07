@@ -1,7 +1,7 @@
 import Container from '@mui/material/Container';
 import Head from 'next/head';
 import { Suspense } from 'react';
-import Header from '../../navigation/header/Header';
+import Header from '../../navigations/header/Header';
 
 export interface IPrimaryLayout extends React.ComponentPropsWithoutRef<'div'> {
   title?: string;

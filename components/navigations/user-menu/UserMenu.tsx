@@ -25,7 +25,7 @@ import { Session } from 'next-auth/core/types';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import * as React from 'react';
-import { useAtomTheme } from '../../../state/atom-theme/useAtomTheme';
+import { useAtomTheme } from '@/states/atom-theme/useAtomTheme';
 
 export interface IUserMenu {
   session: Session;

@@ -8,11 +8,11 @@ import {
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
-import MaterialCard from '../../../../components/cards/material-card/MaterialCard';
-import ClassroomLayout from '../../../../components/layouts/classroom/ClassroomLayout';
-import LessonFiltersList from '../../../../components/list/lessonfilters-list/LessonFiltersList';
-import { useClassroomSlug } from '../../../../state/classrooms/useClassrooms';
-import { getClassroomBySlug } from '../../../../utils/ClassroomService';
+import MaterialCard from '@/components/cards/material-card/MaterialCard';
+import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
+import LessonFiltersList from '@/components/lists/lessonfilters-list/LessonFiltersList';
+import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { NextPageWithLayout } from '../../../page';
 
 const ClassroomMaterials: NextPageWithLayout = ({

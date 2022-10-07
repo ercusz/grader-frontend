@@ -12,7 +12,7 @@ import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { Course } from '../../../types/types';
+import { Course } from '@/types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
 
 export interface ICourseCard {

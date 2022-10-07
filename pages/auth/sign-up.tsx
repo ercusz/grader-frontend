@@ -4,9 +4,9 @@ import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import SignUpForm from '../../components/sign-up-form/SignUpForm';
-import { mainHttpClient, Response } from '../../utils/APIHelper';
+import SignUpForm from '@/components/forms/sign-up-form/SignUpForm';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { mainHttpClient, Response } from '@/utils/APIHelper';
 import { NextPageWithLayout } from '../page';
 
 const SignUp: NextPageWithLayout = () => {

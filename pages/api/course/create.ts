@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { createCourse } from '../../../utils/ClassroomService';
+import { createCourse } from '@/utils/ClassroomService';
 
 export default async function handler(
   req: NextApiRequest,

@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import * as React from 'react';
-import { CreateCourseClassroom } from '../../types/types';
+import { CreateCourseClassroom } from '@/types/types';
 
 export interface IUploadedStudentsDialog {
   open: boolean;

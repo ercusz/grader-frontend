@@ -8,7 +8,7 @@ import {
   ListItemText,
   ListSubheader,
 } from '@mui/material';
-import { useLessonFilters } from '../../../state/classrooms/useLessonFilters';
+import { useLessonFilters } from '@/states/classrooms/useLessonFilters';
 
 export interface ILessonFiltersList {}
 

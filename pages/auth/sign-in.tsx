@@ -12,8 +12,8 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import PrimaryLayout from '../../components/layouts/primary/PrimaryLayout';
-import SignInForm from '../../components/sign-in-form/SignInForm';
+import SignInForm from '@/components/forms/sign-in-form/SignInForm';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { NextPageWithLayout } from '../page';
 
 const SignIn: NextPageWithLayout = () => {

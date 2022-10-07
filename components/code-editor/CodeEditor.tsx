@@ -6,8 +6,8 @@ import { useTheme } from '@mui/material/styles';
 import { SyntheticEvent, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { SiJava } from 'react-icons/si';
-import { useIdeTabs } from '../../state/grader/useIdeTabs';
-import NewFileDialog from '../newfile-dialog/NewFileDialog';
+import { useIdeTabs } from '@/states/grader/useIdeTabs';
+import NewFileDialog from '../dialogs/newfile-dialog/NewFileDialog';
 
 export interface ICodeEditor {
   language: string;
@@ -15,11 +15,7 @@ export interface ICodeEditor {
   onMount?: OnMount;
 }
 
-const CodeEditor: React.FC<ICodeEditor> = ({
-  language,
-  template,
-  onMount,
-}) => {
+const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
   const theme = useTheme();
   const { ideTabs, setIdeTabs, addIdeTab, removeIdeTab } = useIdeTabs();
   const [currentTabIdx, setCurrentTabIdx] = useState(0);
