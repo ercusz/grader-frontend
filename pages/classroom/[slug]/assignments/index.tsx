@@ -110,7 +110,9 @@ const ClassroomAssignments: NextPageWithLayout = ({
 export default ClassroomAssignments;
 
 ClassroomAssignments.getLayout = (page) => {
-  return <ClassroomLayout>{page}</ClassroomLayout>;
+  const { props } = page;
+  const { slug } = props;
+  return <ClassroomLayout slug={slug}>{page}</ClassroomLayout>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

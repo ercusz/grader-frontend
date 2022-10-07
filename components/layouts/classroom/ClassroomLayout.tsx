@@ -9,12 +9,14 @@ export interface IClassroomLayout
   extends React.ComponentPropsWithoutRef<'div'> {
   title?: string;
   description?: string;
+  slug?: string;
 }
 
 const ClassroomLayout: React.FC<IClassroomLayout> = ({
   children,
   title,
   description = 'grade้r — helps you improve your coding skills.',
+  slug,
 }) => {
   return (
     <>
@@ -32,7 +34,7 @@ const ClassroomLayout: React.FC<IClassroomLayout> = ({
           }}
         >
           <Suspense fallback={'Loading...'}>
-            <CourseHeader />
+            <CourseHeader classroomSlug={slug} />
             <ClassroomMenu />
             {children}
           </Suspense>

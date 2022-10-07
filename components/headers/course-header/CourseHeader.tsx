@@ -16,8 +16,6 @@ export interface ICourseHeader {
 
 const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
   const {
-    isLoading,
-    isSuccess,
     data: classroom,
   } = useClassroomSlug({ slug: classroomSlug });
 
@@ -104,7 +102,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
                 color="primary"
                 label={
                   <Typography className="font-bold" color="inherit">
-                    {classroom.name}
+                    {classroom.section}
                   </Typography>
                 }
               />

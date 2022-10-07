@@ -110,7 +110,9 @@ const Classroom: NextPageWithLayout = ({
 export default Classroom;
 
 Classroom.getLayout = (page) => {
-  return <ClassroomLayout>{page}</ClassroomLayout>;
+  const { props } = page;
+  const { slug } = props;
+  return <ClassroomLayout slug={slug}>{page}</ClassroomLayout>;
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
