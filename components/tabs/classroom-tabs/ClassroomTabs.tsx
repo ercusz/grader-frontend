@@ -46,6 +46,9 @@ const ClassroomTabs: React.FC<IClassroomTabs> = () => {
 
   return (
     <Tabs
+      variant="scrollable"
+      scrollButtons="auto"
+      allowScrollButtonsMobile
       value={getActiveTabIndex}
       onChange={handleChange}
       TabIndicatorProps={{
@@ -72,6 +75,9 @@ const ClassroomTabs: React.FC<IClassroomTabs> = () => {
               `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
             backgroundColor: (theme) => alpha(theme.palette.text.primary, 0.1),
           },
+        },
+        '& .MuiTabs-scrollButtons.Mui-disabled': {
+          opacity: 0.3,
         },
       }}
     >
