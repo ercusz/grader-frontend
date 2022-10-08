@@ -1,3 +1,10 @@
+import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
+import CourseCard from '@/components/cards/course/CourseCard';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { useCoursesFilter } from '@/states/courses/useCourses';
+import { Course, MyCoursesResponse } from '@/types/types';
+import { getCourses } from '@/utils/ClassroomService';
+import { useDebounce } from '@/utils/useDebounce';
 import AddIcon from '@mui/icons-material/Add';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
@@ -26,13 +33,6 @@ import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
-import CourseCard from '@/components/cards/course/CourseCard';
-import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { useCoursesFilter } from '@/states/courses/useCourses';
-import { Course as CourseType } from '@/types/types';
-import { getCourses } from '@/utils/ClassroomService';
-import { useDebounce } from '@/utils/useDebounce';
 import { NextPageWithLayout } from '../page';
 
 const Courses: NextPageWithLayout = () => {
@@ -150,7 +150,7 @@ const Courses: NextPageWithLayout = () => {
               </SwiperSlide>
             ))}
           {isSuccess &&
-            data?.map((course: CourseType) => (
+            data?.map((course: Course) => (
               <SwiperSlide key={course.id} className="mb-96">
                 <CourseCard course={course} loading={isLoading} />
               </SwiperSlide>
@@ -171,7 +171,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery<CourseType[]>(['courses', ''], () =>
+  await queryClient.prefetchQuery<MyCoursesResponse>(['courses', ''], () =>
     getCourses()
   );
 

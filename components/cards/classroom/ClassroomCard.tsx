@@ -1,3 +1,4 @@
+import { MyClassroom } from '@/types/types';
 import CheckIcon from '@mui/icons-material/Check';
 import {
   Avatar,
@@ -19,7 +20,6 @@ import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { Classroom } from '@/types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
 
 const CircularProgressWithLabel = (
@@ -82,7 +82,7 @@ const CircularProgressWithLabel = (
 };
 
 export interface IClassroomCard {
-  classroom: Classroom;
+  classroom: MyClassroom;
   loading: boolean;
 }
 
@@ -134,16 +134,16 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                   <>
                     <Chip
                       className="font-bold cursor-pointer"
-                      label={classroom.section}
+                      label={classroom.name}
                       color="primary"
                       size="small"
                     />
                     <Typography className="font-bold" noWrap variant="h6">
-                      {classroom.name}
+                      {classroom.course.name}
                     </Typography>
                   </>
                 }
-                subheader={`${classroom.semester}/${classroom.year}`}
+                subheader={`${classroom.course.semester}/${classroom.course.year}`}
                 subheaderTypographyProps={{ noWrap: true }}
                 action={
                   <Box className="m-auto h-full">
@@ -162,11 +162,17 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                 <Image
                   className="w-full object-cover"
                   placeholder="blur"
-                  blurDataURL={`data:image/svg+xml;base64,LEHV6nWB2yk8pyo0adR*.7kCMdnj`}
+                  blurDataURL={
+                    'data:image/svg+xml;base64,LEHV6nWB2yk8pyo0adR*.7kCMdnj'
+                  }
                   layout="fill"
                   quality={60}
                   alt={`${classroom.name} classroom cover image`}
-                  src={classroom.coverImageUrl}
+                  src={
+                    classroom.course.coverImage
+                      ? classroom.course.coverImage.url
+                      : ''
+                  }
                   sizes="100vw"
                 />
               </CardMedia>
@@ -181,10 +187,10 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                 className="object-cover"
                 layout="fill"
                 quality={60}
-                alt={`${classroom.instructor.firstName} ${classroom.instructor.lastName}`}
+                alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
                 src={
-                  classroom.instructor.profileImage
-                    ? classroom.instructor.profileImage.url
+                  classroom.course.teachers[0].profileImage
+                    ? classroom.course.teachers[0].profileImage.url
                     : ''
                 }
                 sizes="100vw"
@@ -193,20 +199,20 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
             <Container className="flex flex-col pl-16">
               <Link
                 className="no-underline hover:underline"
-                href={`/p/@${classroom.instructor.username}`}
+                href={`/p/@${classroom.course.teachers[0].username}`}
               >
                 <Typography
                   variant="body2"
                   noWrap
                   className="font-semibold"
-                >{`${classroom.instructor.firstName} ${classroom.instructor.lastName}`}</Typography>
+                >{`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}</Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"
-                href={`/p/@${classroom.instructor.username}`}
+                href={`/p/@${classroom.course.teachers[0].username}`}
               >
                 <Typography noWrap variant="caption">
-                  @{classroom.instructor.username}
+                  @{classroom.course.teachers[0].username}
                 </Typography>
               </Link>
             </Container>

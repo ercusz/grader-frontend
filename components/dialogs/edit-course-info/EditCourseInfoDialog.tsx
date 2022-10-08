@@ -1,8 +1,9 @@
+import CourseCard from '@/components/cards/course/CourseCard';
 import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
 import UploadCoverImageForm from '@/components/forms/upload-cover-image/UploadCoverImageForm';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useCourseSlug } from '@/states/courses/useCourses';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
-import { CourseDetail } from '@/types/types';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import {
@@ -17,20 +18,23 @@ import {
   Typography,
 } from '@mui/material';
 import { atom, useAtom } from 'jotai';
-import { SyntheticEvent } from 'react';
+import { SyntheticEvent, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 
 export interface IEditCourseInfoDialog {
   classroomSlug?: string;
+  courseSlug?: string;
 }
 
 const tabsValueAtom = atom('info');
 
 const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
   classroomSlug,
+  courseSlug,
 }) => {
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
+  const { data: course } = useCourseSlug({ slug: courseSlug });
   const [openDialog, setOpenDialog] = useAtom(openEditCourseDialogAtom);
   const [tabsValue, setTabsValue] = useAtom(tabsValueAtom);
 
@@ -38,8 +42,15 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
     setTabsValue(newValue);
   };
 
-  const courseFormContext = useForm<CourseDetail>({
-    defaultValues: {},
+  const courseFormContext = useForm({
+    defaultValues: useMemo(() => {
+      return {
+        name: course?.name,
+        code: course?.code,
+        semester: course?.semester,
+        year: course?.year,
+      };
+    }, [course]),
   });
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({

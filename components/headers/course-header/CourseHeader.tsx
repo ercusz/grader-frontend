@@ -1,5 +1,6 @@
 import EditCourseInfoDialog from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useCourseSlug } from '@/states/courses/useCourses';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import EditIcon from '@mui/icons-material/Edit';
 import {
@@ -15,56 +16,77 @@ import { useAtom } from 'jotai';
 
 export interface ICourseHeader {
   classroomSlug?: string;
+  courseSlug?: string;
 }
 
-const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
+const CourseHeader: React.FC<ICourseHeader> = ({
+  classroomSlug,
+  courseSlug,
+}) => {
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
+  const { data: course } = useCourseSlug({ slug: courseSlug });
 
   const [_, setOpenEditCourseDialog] = useAtom(openEditCourseDialogAtom);
 
-  const course = {
-    id: 1,
-    name: 'Data Structures',
-    semester: 1,
-    year: 2565,
-    section: [
-      {
-        id: 1,
-        name: 'Section 1',
-      },
-      {
-        id: 2,
-        name: 'Section 2',
-      },
-      {
-        id: 3,
-        name: 'Section พิเศษ',
-      },
-    ],
-    coverImageUrl:
-      'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-    instructor: {
-      id: 1234,
-      username: 'johndoe69',
-      email: 'johnny@kku.edu',
-      studentId: null,
-      firstName: 'John',
-      lastName: 'Doe',
-      role: {
-        id: 999999,
-        name: 'Teacher',
-      },
-      profileImage: {
-        id: 1,
-        url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
-      },
-    },
-    slug: 'YXNkZm9ya3Ys',
+  const getCoverImage = () => {
+    if (
+      classroom &&
+      classroom.course.coverImage &&
+      classroom.course.coverImage.url
+    ) {
+      return `url(${classroom.course.coverImage.url})`;
+    } else if (course && course.coverImage && course.coverImage.url) {
+      return `url(${course.coverImage.url})`;
+    }
+
+    return '';
+  };
+
+  const getName = () => {
+    if (classroom) {
+      return classroom.course.name;
+    } else if (course) {
+      return course.name;
+    }
+
+    return '';
+  };
+
+  const getSemesterYear = () => {
+    if (classroom && classroom.course.semester && classroom.course.year) {
+      return `${classroom.course.semester}/${classroom.course.year}`;
+    } else if (course && course.semester && course.year) {
+      return `${course.semester}/${course.year}`;
+    }
+
+    return '';
+  };
+
+  const getTeacher = () => {
+    if (
+      classroom &&
+      classroom.course.teachers[0].firstName &&
+      classroom.course.teachers[0].lastName
+    ) {
+      const { course } = classroom;
+      return `ผู้สอน: ${course.teachers[0].firstName} ${course.teachers[0].lastName}`;
+    } else if (
+      course &&
+      course.teachers[0].firstName &&
+      course.teachers[0].lastName
+    ) {
+      return `ผู้สอน: ${course.teachers[0].firstName} ${course.teachers[0].lastName}`;
+    }
+
+    return '';
   };
 
   return (
     <>
-      <EditCourseInfoDialog classroomSlug={classroomSlug} />
+      <EditCourseInfoDialog
+        classroomSlug={classroomSlug}
+        courseSlug={courseSlug}
+      />
       <Paper
         sx={{
           position: 'relative',
@@ -76,7 +98,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
           backgroundSize: 'cover',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
-          backgroundImage: `url(${course?.coverImageUrl})`,
+          backgroundImage: getCoverImage(),
           boxShadow: 1,
         }}
       >
@@ -107,7 +129,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
                   color="primary"
                   label={
                     <Typography className="font-bold" color="inherit">
-                      {classroom.section}
+                      {classroom.name}
                     </Typography>
                   }
                 />
@@ -120,7 +142,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
                 noWrap
                 gutterBottom
               >
-                {course.name}
+                {getName()}
                 <Tooltip
                   title={`แก้ไขข้อมูล${
                     classroom ? 'กลุ่มการเรียน' : 'รายวิชา'
@@ -137,10 +159,10 @@ const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
                 </Tooltip>
               </Typography>
               <Typography variant="h5" color="inherit" paragraph>
-                {`${course.semester}/${course.year}`}
+                {getSemesterYear()}
               </Typography>
               <Typography variant="subtitle1" color="inherit" paragraph>
-                {`ผู้สอน: ${course.instructor.firstName} ${course.instructor.lastName}`}
+                {getTeacher()}
               </Typography>
             </Box>
           </Grid>

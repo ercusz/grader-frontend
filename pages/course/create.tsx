@@ -1,3 +1,9 @@
+import AddSectionForm from '@/components/forms/add-section-form/AddSectionForm';
+import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
+import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { CreateCourseClassroom, CreateCourseReq } from '@/types/types';
+import { mainHttpClient, Response } from '@/utils/APIHelper';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
   Box,
@@ -16,19 +22,13 @@ import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
-import AddSectionForm from '@/components/forms/add-section-form/AddSectionForm';
-import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
-import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { CourseDetail, CreateCourseClassroom } from '@/types/types';
-import { mainHttpClient, Response } from '@/utils/APIHelper';
 import { NextPageWithLayout } from '../page';
 
 const CreateCourse: NextPageWithLayout = ({
   userId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const [activeStep, setActiveStep] = useState(0);
-  const [course, setCourse] = useState<CourseDetail>({
+  const [course, setCourse] = useState<CreateCourseReq>({
     name: '',
     code: '',
     semester: 1,
@@ -84,7 +84,7 @@ const CreateCourse: NextPageWithLayout = ({
     handleNext();
   };
 
-  const courseFormContext = useForm<CourseDetail>({
+  const courseFormContext = useForm<CreateCourseReq>({
     defaultValues: {},
   });
 

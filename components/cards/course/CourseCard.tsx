@@ -1,3 +1,4 @@
+import { Course } from '@/types/types';
 import {
   Avatar,
   Card,
@@ -12,7 +13,6 @@ import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
-import { Course } from '@/types/types';
 import ClassroomCardSkeleton from '../classroom-skeleton/ClassroomCardSkeleton';
 
 export interface ICourseCard {
@@ -74,7 +74,7 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                   layout="fill"
                   quality={60}
                   alt={`${course.name} classroom cover image`}
-                  src={course.coverImageUrl}
+                  src={course.coverImage ? course.coverImage.url : ''}
                   sizes="100vw"
                 />
               </CardMedia>
@@ -89,10 +89,10 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                 className="object-cover"
                 layout="fill"
                 quality={60}
-                alt={`${course.instructor.firstName} ${course.instructor.lastName}`}
+                alt={`${course.teachers[0].firstName} ${course.teachers[0].lastName}`}
                 src={
-                  course.instructor.profileImage
-                    ? course.instructor.profileImage.url
+                  course.teachers[0].profileImage
+                    ? course.teachers[0].profileImage.url
                     : ''
                 }
                 sizes="100vw"
@@ -101,20 +101,20 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
             <Container className="flex flex-col pl-16">
               <Link
                 className="no-underline hover:underline"
-                href={`/p/@${course.instructor.username}`}
+                href={`/p/@${course.teachers[0].username}`}
               >
                 <Typography
                   variant="body2"
                   noWrap
                   className="font-semibold"
-                >{`${course.instructor.firstName} ${course.instructor.lastName}`}</Typography>
+                >{`${course.teachers[0].firstName} ${course.teachers[0].lastName}`}</Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"
-                href={`/p/@${course.instructor.username}`}
+                href={`/p/@${course.teachers[0].username}`}
               >
                 <Typography noWrap variant="caption">
-                  @{course.instructor.username}
+                  @{course.teachers[0].username}
                 </Typography>
               </Link>
             </Container>

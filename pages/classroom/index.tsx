@@ -27,7 +27,7 @@ import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/Classro
 import ClassroomCard from '@/components/cards/classroom/ClassroomCard';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { useClassroomsFilter } from '@/states/classrooms/useClassrooms';
-import { Classroom as ClassroomType } from '@/types/types';
+import { MyClassroom, MyClassroomsResponse } from '@/types/types';
 import { getClassrooms } from '@/utils/ClassroomService';
 import { useDebounce } from '@/utils/useDebounce';
 import { NextPageWithLayout } from '../page';
@@ -93,8 +93,8 @@ const Classrooms: NextPageWithLayout = () => {
                 helperText={
                   isSuccess
                     ? debouncedFilter
-                      ? `ผลลัพธ์การค้นหา ${data?.length} รายการ`
-                      : `จำนวนคลาสเรียนทั้งหมด ${data?.length} รายการ`
+                      ? `ผลลัพธ์การค้นหา ${data.classrooms.length + data.invitations.length} รายการ`
+                      : `จำนวนคลาสเรียนทั้งหมด ${data.classrooms.length + data.invitations.length} รายการ`
                     : debouncedFilter
                     ? 'กด Enter เพื่อค้นหา'
                     : null
@@ -136,7 +136,7 @@ const Classrooms: NextPageWithLayout = () => {
               </SwiperSlide>
             ))}
           {isSuccess &&
-            data?.map((classroom: ClassroomType) => (
+            data.classrooms.map((classroom: MyClassroom) => (
               <SwiperSlide key={classroom.id} className="mb-96">
                 <ClassroomCard classroom={classroom} loading={isLoading} />
               </SwiperSlide>
@@ -157,7 +157,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context);
 
   const queryClient = new QueryClient();
-  await queryClient.fetchQuery<ClassroomType[]>(['classrooms', ''], () =>
+  await queryClient.fetchQuery<MyClassroomsResponse>(['classrooms', ''], () =>
     getClassrooms()
   );
 

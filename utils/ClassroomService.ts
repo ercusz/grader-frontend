@@ -1,10 +1,14 @@
-import { Classroom, Course, CreateCourseReq } from '@/types/types';
+import {
+  CreateCourseReq,
+  MyClassroomsResponse,
+  MyCoursesResponse,
+} from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
-export const getClassrooms = async (): Promise<Classroom[]> => {
+export const getClassrooms = async (): Promise<MyClassroomsResponse> => {
   const { res }: Response = await contentHttpClient.get('/api/classrooms/me');
 
-  return res.data as Classroom[];
+  return res.data as MyClassroomsResponse;
 };
 
 export const getClassroomBySlug = async (slug: string) => {
@@ -18,10 +22,10 @@ export const getClassroomBySlug = async (slug: string) => {
   return res.data;
 };
 
-export const getCourses = async (): Promise<Course[]> => {
+export const getCourses = async (): Promise<MyCoursesResponse> => {
   const { res }: Response = await contentHttpClient.get('/api/courses/me');
 
-  return res.data as Course[];
+  return res.data as MyCoursesResponse;
 };
 
 export const getCourseBySlug = async (slug: string) => {
@@ -35,24 +39,39 @@ export const getCourseBySlug = async (slug: string) => {
   return res.data;
 };
 
-export const filterData = (
-  classrooms: (Course | Classroom)[],
+export const filterMyClassroomsResponse = (
+  data: MyClassroomsResponse,
   filter: string
-): Course[] | Classroom[] => {
-  return classrooms.filter((classroom: any) => {
-    filter = filter.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-    const rule = new RegExp(filter, 'i');
+): MyClassroomsResponse => {
+  const { classrooms, invitations } = data;
 
-    return (
-      rule.test(classroom.name) ||
-      rule.test(
-        classroom.instructor.firstName ? classroom.instructor.firstName : ''
-      ) ||
-      rule.test(
-        classroom.instructor.lastName ? classroom.instructor.lastName : ''
-      )
-    );
-  }) as Course[] | Classroom[];
+  filter = filter.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  const rule = new RegExp(filter, 'i');
+
+  const filteredClassrooms = classrooms.filter((classroom) => {
+    return rule.test(JSON.stringify(classroom));
+  });
+
+  const filteredInvitations = invitations.filter((invitation) => {
+    return rule.test(JSON.stringify(invitation));
+  });
+
+  return {
+    classrooms: filteredClassrooms,
+    invitations: filteredInvitations,
+  } as MyClassroomsResponse;
+};
+
+export const filterMyCoursesResponse = (
+  data: MyCoursesResponse,
+  filter: string
+): MyCoursesResponse => {
+  filter = filter.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+  const rule = new RegExp(filter, 'i');
+
+  return data.filter((course) => {
+    return rule.test(JSON.stringify(course));
+  }) as MyCoursesResponse;
 };
 
 export const createCourse = async (courseData: CreateCourseReq) => {

@@ -1,3 +1,8 @@
+import CourseClassroomCard from '@/components/cards/course-classroom/CourseClassroomCard';
+import CourseHeader from '@/components/headers/course-header/CourseHeader';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { useCourseSlug } from '@/states/courses/useCourses';
+import { getCourseBySlug } from '@/utils/ClassroomService';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Backdrop,
@@ -14,11 +19,6 @@ import { getSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import CourseClassroomCard from '@/components/cards/course-classroom/CourseClassroomCard';
-import CourseHeader from '@/components/headers/course-header/CourseHeader';
-import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { useCourseSlug } from '@/states/courses/useCourses';
-import { getCourseBySlug } from '@/utils/ClassroomService';
 import { NextPageWithLayout } from '../page';
 
 const Course: NextPageWithLayout = ({
@@ -55,7 +55,7 @@ const Course: NextPageWithLayout = ({
         )}
         {isSuccess && course && (
           <>
-            <CourseHeader />
+            <CourseHeader courseSlug={slug} />
             <Grid container spacing={2} pb={8}>
               <Grid item xs={12}>
                 <Stack direction="row" spacing={2}>
@@ -75,7 +75,7 @@ const Course: NextPageWithLayout = ({
                   </Button>
                 </Stack>
               </Grid>
-              {course.section.map((sec) => {
+              {course.classrooms.map((classroom) => {
                 const postfix =
                   course.semester && course.year
                     ? ` (${course.semester}/${course.year})`
@@ -83,10 +83,10 @@ const Course: NextPageWithLayout = ({
                 const courseName = `${course.name}${postfix}`;
 
                 return (
-                  <Grid key={sec.id} item xs={12} sm={6} md={4} mt={4}>
+                  <Grid key={classroom.id} item xs={12} sm={6} md={4} mt={4}>
                     <CourseClassroomCard
                       courseName={courseName}
-                      classroom={sec}
+                      classroom={classroom}
                     />
                   </Grid>
                 );

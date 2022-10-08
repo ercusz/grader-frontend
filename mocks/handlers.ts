@@ -1,175 +1,113 @@
+import {
+  ClassroomSlugResponse,
+  CourseSlugResponse,
+  CreateCourseReq,
+  MyClassroomsResponse,
+  MyCoursesResponse,
+} from '@/types/types';
 import { rest } from 'msw';
-import { Classroom, Course, CreateCourseReq } from '@/types/types';
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_HOST;
 
 export const handlers = [
   rest.get(`${strapiUrl}/api/classrooms/me`, (_req, res, ctx) => {
     return res(
-      ctx.json<Classroom[]>([
-        {
-          id: 1,
-          name: 'Data Structures',
-          semester: 1,
-          year: 2565,
-          section: 'Section 2',
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-          instructor: {
-            id: 1234,
-            username: 'johndoe69',
-            email: 'johnny@kku.edu',
-            studentId: null,
-            firstName: 'John',
-            lastName: 'Doe',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
+      ctx.json<MyClassroomsResponse>({
+        classrooms: [
+          {
+            id: 1,
+            name: 'Section 1',
+            slug: 'GfPz2RAAbAEt',
+            success: 91.67,
+            course: {
               id: 1,
-              url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+              code: 'SC123456',
+              name: 'Data Structures',
+              semester: 1,
+              year: 2565,
+              coverImage: {
+                id: 123,
+                url: 'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
+              },
+              teachers: [
+                {
+                  id: 1234,
+                  firstName: 'John',
+                  lastName: 'Doe',
+                  username: 'johndoe69',
+                  profileImage: {
+                    id: 1,
+                    url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+                  },
+                },
+              ],
             },
           },
-          success: 91.67,
-          slug: 'GfPz2RAAbAEt',
-        },
-        {
-          id: 2,
-          name: 'Cyber Security',
-          semester: 1,
-          year: 2565,
-          section: 'กลุ่มการเรียนที่ 1',
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1504639725590-34d0984388bd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80',
-          instructor: {
-            id: 1235,
-            username: 'bobby',
-            email: 'bobby@kku.edu',
-            studentId: null,
-            firstName: 'Albert',
-            lastName: 'Bob',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
-              id: 12345,
-              url: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1780&q=80',
-            },
-          },
-          success: 75,
-          slug: 'aGVsbG93b3JsZA',
-        },
-        {
-          id: 3,
-          name: 'วิทยาการคำนวณ',
-          semester: 1,
-          year: 2565,
-          section: 'ไก่ทอด',
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1597008641621-cefdcf718025?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1939&q=80',
-          instructor: {
-            id: 1236,
-            username: 'somsak1112',
-            email: 'somsak@kku.edu',
-            studentId: null,
-            firstName: 'สมศักดิ์',
-            lastName: 'เกรดเด้อ',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
-              id: 12312,
-              url: 'https://i.pravatar.cc/',
+          {
+            id: 2,
+            name: 'เซค 3 ภาคพิเศษ',
+            slug: 'aGVsbG93b3Js',
+            success: 75,
+            course: {
+              id: 2,
+              code: 'SC123457',
+              name: 'Cyber Security',
+              semester: 1,
+              year: 2565,
+              coverImage: {
+                id: 1235,
+                url: 'https://images.unsplash.com/photo-1504639725590-34d0984388bd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80',
+              },
+              teachers: [
+                {
+                  id: 1235,
+                  firstName: 'Albert',
+                  lastName: 'Bob',
+                  username: 'bobby',
+                  profileImage: {
+                    id: 34534,
+                    url: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1780&q=80',
+                  },
+                },
+              ],
             },
           },
-          success: 100,
-          slug: 'c2dvb2RieWU',
-        },
-        {
-          id: 1333,
-          name: 'Database Design',
-          semester: 1,
-          year: 2565,
-          section: 'ไก่ย่าง',
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-          instructor: {
-            id: 1234,
-            username: 'somsakjung',
-            email: 'somsakjung@kku.edu',
-            studentId: null,
-            firstName: 'อัลเบิร์ต',
-            lastName: 'สมศักดิ์',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
-              id: 7777,
-              url: 'https://i.pravatar.cc/?u=somsak',
-            },
-          },
-          success: 66.67,
-          slug: 'somsak-class',
-        },
-        {
-          id: 1334,
-          name: 'Data Engineer',
-          semester: 1,
-          year: 2565,
-          section: 'กลุ่มพิเศษ',
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-          instructor: {
-            id: 1234,
-            username: 'johndoe69',
-            email: 'yingkaa91@kku.edu',
-            studentId: null,
-            firstName: 'สมหญิง',
-            lastName: 'กระทิงเขียว',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
-              id: 89798,
-              url: 'https://i.pravatar.cc/?u=somying',
+        ],
+        invitations: [
+          {
+            id: 123,
+            expireDate: new Date(),
+            classroom: {
+              id: 3,
+              name: 'Section 2',
+              slug: 'c2dvb2RieWU9',
+              course: {
+                id: 3,
+                code: 'SC123458',
+                name: 'วิทยาการคำนวณ',
+                semester: 1,
+                year: 2565,
+                coverImage: {
+                  id: 124,
+                  url: 'https://images.unsplash.com/photo-1597008641621-cefdcf718025?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1939&q=80',
+                },
+                teachers: [
+                  {
+                    id: 1236,
+                    firstName: 'สมศักดิ์',
+                    lastName: 'พิทักษ์โลก',
+                    username: 'somsak1112',
+                    profileImage: {
+                      id: 34534,
+                      url: 'https://i.pravatar.cc/?u=somsak',
+                    },
+                  },
+                ],
+              },
             },
           },
-          success: 18.67,
-          slug: 'YXNkZm9ya3Ys',
-        },
-        {
-          id: 1335,
-          name: 'Information & Data Security',
-          semester: 2,
-          year: 2565,
-          section: 'ห้องยอดมนุษย์',
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-          instructor: {
-            id: 1234,
-            username: 'monkey_d_somporn',
-            email: 'sompornhub@kku.edu',
-            studentId: null,
-            firstName: 'มังกี้ ดี',
-            lastName: 'สมพร',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
-              id: 1234556,
-              url: 'https://i.pravatar.cc/?u=somporn',
-            },
-          },
-          success: 18.67,
-          slug: 'YXNkZm9ya3Ys',
-        },
-      ])
+        ],
+      })
     );
   }),
   rest.get(`${strapiUrl}/api/classroom/:slug`, (_req, res, ctx) => {
@@ -184,111 +122,98 @@ export const handlers = [
     }
 
     return res(
-      ctx.json<Classroom>({
+      ctx.json<ClassroomSlugResponse>({
         id: 1,
-        name: 'Data Structures',
-        semester: 1,
-        year: 2565,
-        section: 'Section 2',
-        coverImageUrl:
-          'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-        instructor: {
-          id: 1234,
-          username: 'johndoe69',
-          email: 'johnny@kku.edu',
-          studentId: null,
-          firstName: 'John',
-          lastName: 'Doe',
-          role: {
-            id: 999999,
-            name: 'Teacher',
-          },
-          profileImage: {
-            id: 1,
-            url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
-          },
-        },
-        success: 91.67,
+        name: 'Section 1',
         slug: 'GfPz2RAAbAEt',
+        inviteCode: 'f3a5dd7',
+        enabledInviteCode: true,
+        teacherAssistants: [
+          {
+            id: 999,
+            firstName: 'Somsak',
+            lastName: 'Chicken',
+            username: 'somsak999',
+            profileImage: {
+              id: 213423,
+              url: 'https://i.pravatar.cc/?u=somsak999',
+            },
+          },
+        ],
+        students: [
+          {
+            id: 1001,
+            firstName: 'Somsri',
+            lastName: 'Srisom',
+            username: 'somsri007',
+            profileImage: {
+              id: 54353132,
+              url: 'https://i.pravatar.cc/?u=somsri007',
+            },
+          },
+          {
+            id: 1002,
+            firstName: 'Josh',
+            lastName: 'Joose',
+            username: 'joshjoose',
+            profileImage: {
+              id: 6543534,
+              url: 'https://i.pravatar.cc/?u=joshjoose',
+            },
+          },
+        ],
+        course: {
+          id: 1,
+          code: 'SC123456',
+          name: 'Data Structures',
+          semester: 1,
+          year: 2565,
+          coverImage: {
+            id: 123,
+            url: 'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
+          },
+          teachers: [
+            {
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1,
+                url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+              },
+            },
+          ],
+        },
       })
     );
   }),
   rest.get(`${strapiUrl}/api/courses/me`, (_req, res, ctx) => {
     return res(
-      ctx.json<Course[]>([
+      ctx.json<MyCoursesResponse>([
         {
           id: 1,
+          code: 'SC123456',
           name: 'Data Structures',
           semester: 1,
           year: 2565,
-          section: [
-            {
-              id: 1,
-              name: 'Section 1',
-            },
-            {
-              id: 2,
-              name: 'Section 2',
-            },
-            {
-              id: 3,
-              name: 'Section พิเศษ',
-            },
-          ],
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-          instructor: {
-            id: 1234,
-            username: 'johndoe69',
-            email: 'johnny@kku.edu',
-            studentId: null,
-            firstName: 'John',
-            lastName: 'Doe',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
-              id: 1,
-              url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
-            },
-          },
           slug: 'YXNkZm9ya3Ys',
-        },
-        {
-          id: 2,
-          name: 'System Architecture',
-          semester: 1,
-          year: 2565,
-          section: [
+          coverImage: {
+            id: 123,
+            url: 'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
+          },
+          teachers: [
             {
-              id: 1,
-              name: 'Section 1',
-            },
-            {
-              id: 2,
-              name: 'Section พิเศษ',
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1,
+                url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+              },
             },
           ],
-          coverImageUrl:
-            'https://images.unsplash.com/photo-1617839625591-e5a789593135?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=580&q=80',
-          instructor: {
-            id: 1234,
-            username: 'johndoe69',
-            email: 'johnny@kku.edu',
-            studentId: null,
-            firstName: 'John',
-            lastName: 'Doe',
-            role: {
-              id: 999999,
-              name: 'Teacher',
-            },
-            profileImage: {
-              id: 1,
-              url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
-            },
-          },
-          slug: '0TQlAocpPeBC',
         },
       ])
     );
@@ -324,44 +249,46 @@ export const handlers = [
     }
 
     return res(
-      ctx.json<Course>({
+      ctx.json<CourseSlugResponse>({
         id: 1,
+        code: 'SC123456',
         name: 'Data Structures',
         semester: 1,
         year: 2565,
-        section: [
+        slug: 'YXNkZm9ya3Ys',
+        coverImage: {
+          id: 123,
+          url: 'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
+        },
+        teachers: [
+          {
+            id: 1234,
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe69',
+            profileImage: {
+              id: 1,
+              url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+            },
+          },
+        ],
+        classrooms: [
           {
             id: 1,
             name: 'Section 1',
+            slug: 'GfPz2RAAbAEt',
           },
           {
-            id: 2,
+            id: 12312,
             name: 'Section 2',
+            slug: 'hdgxkHO3j5XP',
           },
           {
-            id: 3,
-            name: 'Section พิเศษ',
+            id: 12315,
+            name: 'Section 3',
+            slug: 'g84MVroOk6OC',
           },
         ],
-        coverImageUrl:
-          'https://images.unsplash.com/photo-1640158615573-cd28feb1bf4e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
-        instructor: {
-          id: 1234,
-          username: 'johndoe69',
-          email: 'johnny@kku.edu',
-          studentId: null,
-          firstName: 'John',
-          lastName: 'Doe',
-          role: {
-            id: 999999,
-            name: 'Teacher',
-          },
-          profileImage: {
-            id: 1,
-            url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
-          },
-        },
-        slug: 'YXNkZm9ya3Ys',
       })
     );
   }),

@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { Classroom } from '@/types/types';
+import { ClassroomSlugResponse, MyClassroomsResponse } from '@/types/types';
 import {
-  filterData,
+  filterMyClassroomsResponse,
   getClassroomBySlug,
   getClassrooms,
 } from '@/utils/ClassroomService';
+import { useQuery } from '@tanstack/react-query';
 
 export const useClassrooms = () => useQuery(['classrooms'], getClassrooms);
 
@@ -15,11 +15,11 @@ export const useClassroomSlug = ({
 }: {
   enabled?: boolean;
   slug?: string;
-  initialData?: Classroom;
+  initialData?: ClassroomSlugResponse;
 }) =>
-  useQuery<Classroom, Error>(
+  useQuery<ClassroomSlugResponse, Error>(
     ['classroom', { slug: slug }],
-    () => getClassroomBySlug(slug ? slug : ""),
+    () => getClassroomBySlug(slug ? slug : ''),
     {
       enabled: enabled === undefined ? Boolean(slug) : enabled,
       initialData: initialData,
@@ -28,25 +28,6 @@ export const useClassroomSlug = ({
     }
   );
 
-export const useAllClassroomsCount = ({ enabled }: { enabled?: boolean }) =>
-  useQuery<Classroom[], Error, number>(['classrooms'], getClassrooms, {
-    enabled: enabled,
-    select: (data: Classroom[]) => data.length,
-    notifyOnChangeProps: ['data'],
-  });
-
-export const useFilteredClassroomsCount = ({
-  enabled,
-  filter,
-}: {
-  enabled?: boolean;
-  filter: string;
-}) =>
-  useQuery<Classroom[], Error, number>(['classrooms', filter], getClassrooms, {
-    enabled: enabled === undefined ? Boolean(filter) : enabled,
-    select: (data: Classroom[]) => data.length,
-  });
-
 export const useClassroomsFilter = ({
   enabled,
   filter,
@@ -54,7 +35,8 @@ export const useClassroomsFilter = ({
   enabled?: boolean;
   filter: string;
 }) =>
-  useQuery<Classroom[], Error>(['classrooms', filter], getClassrooms, {
+  useQuery<MyClassroomsResponse, Error>(['classrooms', filter], getClassrooms, {
     enabled: enabled === undefined ? Boolean(filter) : enabled,
-    select: (data: Classroom[]) => filterData(data, filter) as Classroom[],
+    select: (data: MyClassroomsResponse) =>
+      filterMyClassroomsResponse(data, filter) as MyClassroomsResponse,
   });

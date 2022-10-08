@@ -5,6 +5,7 @@ const base: ICourseClassroomCard = {
   classroom: {
     id: 0,
     name: 'Section 1',
+    slug: ''
   }
 };
 

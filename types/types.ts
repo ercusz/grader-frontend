@@ -6,65 +6,82 @@ export type User = {
   firstName: string | null;
   lastName: string | null;
   role: { id: number; name: string };
-  profileImage: { id: number; url: string } | undefined;
+  profileImage?: { id: number; url: string } | undefined;
 };
 
-export type Classroom = {
+export type Image = {
   id: number;
-  name: string;
-  semester: number;
-  year: number;
-  section: string;
-  coverImageUrl: string;
-  instructor: User;
-  success: number;
-  slug: string;
+  url: string;
 };
 
-export type Section = {
+export type UserResponse = {
   id: number;
-  name: string;
-  // slug: string;
+  firstName: string | null;
+  lastName: string | null;
+  username: string;
+  profileImage: Image | null; // unknown type
 };
 
 export type Course = {
   id: number;
-  name: string;
-  // code: string;
-  semester: number;
-  year: number;
-  section: Section[];
-  coverImageUrl: string;
-  instructor: User;
+  code: string | null;
+  name: string | null;
+  semester: number | null;
+  year: number | null;
+  slug?: string;
+  coverImage: Image | null; // unknown type
+  teachers: UserResponse[];
+};
+
+export type MyCoursesResponse = Course[];
+
+export type Classroom = {
+  id: number;
+  name: string | null;
   slug: string;
+};
+
+export type CourseSlugResponse = {
+  classrooms: Classroom[];
+} & Course;
+
+export type MyClassroomInvitation = {
+  id: number;
+  expireDate: Date;
+  classroom: Classroom & {
+    course: Course;
+  };
+};
+
+export type MyClassroom = {
+  success: number;
+  course: Course;
+} & Classroom;
+
+export type MyClassroomsResponse = {
+  classrooms: MyClassroom[];
+  invitations: MyClassroomInvitation[];
+};
+
+export type ClassroomSlugResponse = {
+  inviteCode: string;
+  enabledInviteCode: boolean;
+  teacherAssistants: UserResponse[];
+  students: UserResponse[];
+  course: Course;
+} & Classroom;
+
+export type CreateCourseClassroom = {
+  name: string;
+  students?: string[];
 };
 
 export type CreateCourseReq = {
   name: string;
-  code: string;
-  semester: number;
-  year: number;
-  teacherId: number;
-  classrooms: string[];
-};
-
-export type CourseDetail = {
-  name: string;
-  code: string;
-  semester: number;
-  year: number;
-};
-
-export type CourseDetailForm = {
-  name: string;
-  code: string;
-  semester: string;
-  year: string;
-};
-
-export type CreateCourseClassroom = {
-  name: string;
-  students: string[];
+  code?: string;
+  semester?: number;
+  year?: number;
+  classrooms?: CreateCourseClassroom[];
 };
 
 export type Submission = {

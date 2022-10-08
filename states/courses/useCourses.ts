@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query';
-import { Course } from '@/types/types';
+import { CourseSlugResponse, MyCoursesResponse } from '@/types/types';
 import {
-  filterData,
+  filterMyCoursesResponse,
   getCourseBySlug,
   getCourses,
 } from '@/utils/ClassroomService';
+import { useQuery } from '@tanstack/react-query';
 
 export const useCourses = () => useQuery(['courses'], getCourses);
 
@@ -14,12 +14,12 @@ export const useCourseSlug = ({
   initialData,
 }: {
   enabled?: boolean;
-  slug: string;
-  initialData?: Course;
+  slug?: string;
+  initialData?: CourseSlugResponse;
 }) =>
-  useQuery<Course, Error>(
+  useQuery<CourseSlugResponse, Error>(
     ['course', { slug: slug }],
-    () => getCourseBySlug(slug),
+    () => getCourseBySlug(slug ? slug : ''),
     {
       enabled: enabled === undefined ? Boolean(slug) : enabled,
       initialData: initialData,
@@ -28,25 +28,6 @@ export const useCourseSlug = ({
     }
   );
 
-export const useAllCoursesCount = ({ enabled }: { enabled?: boolean }) =>
-  useQuery<Course[], Error, number>(['courses'], getCourses, {
-    enabled: enabled,
-    select: (data: Course[]) => data.length,
-    notifyOnChangeProps: ['data'],
-  });
-
-export const useFilteredCoursesCount = ({
-  enabled,
-  filter,
-}: {
-  enabled?: boolean;
-  filter: string;
-}) =>
-  useQuery<Course[], Error, number>(['courses', filter], getCourses, {
-    enabled: enabled === undefined ? Boolean(filter) : enabled,
-    select: (data: Course[]) => data.length,
-  });
-
 export const useCoursesFilter = ({
   enabled,
   filter,
@@ -54,7 +35,8 @@ export const useCoursesFilter = ({
   enabled?: boolean;
   filter: string;
 }) =>
-  useQuery<Course[], Error>(['courses', filter], getCourses, {
+  useQuery<MyCoursesResponse, Error>(['courses', filter], getCourses, {
     enabled: enabled === undefined ? Boolean(filter) : enabled,
-    select: (data: Course[]) => filterData(data, filter) as Course[],
+    select: (data: MyCoursesResponse) =>
+      filterMyCoursesResponse(data, filter) as MyCoursesResponse,
   });

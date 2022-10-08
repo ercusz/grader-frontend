@@ -1,4 +1,4 @@
-import { Section } from '@/types/types';
+import { Classroom } from '@/types/types';
 import {
   Button,
   Card,
@@ -6,11 +6,12 @@ import {
   CardContent,
   Typography,
 } from '@mui/material';
+import Link from 'next/link';
 import React from 'react';
 
 export interface ICourseClassroomCard {
   courseName: string;
-  classroom: Section;
+  classroom: Classroom;
 }
 
 const CourseClassroomCard: React.FC<ICourseClassroomCard> = ({
@@ -87,7 +88,9 @@ const CourseClassroomCard: React.FC<ICourseClassroomCard> = ({
         </Stack> */}
       </CardContent>
       <CardActions>
-        <Button size="small">เรียกดู</Button>
+        <Link href={`/classroom/${classroom.slug}`} passHref>
+          <Button size="small">เรียกดู</Button>
+        </Link>
       </CardActions>
     </Card>
   );

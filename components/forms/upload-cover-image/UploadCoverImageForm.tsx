@@ -56,7 +56,7 @@ const UploadCoverImageForm: React.FC<IUploadCoverImageForm> = ({
       {acceptedFiles[0] && (
         <>
           <Typography variant="caption">ไฟล์: {files}</Typography>
-          <Box className="relative h-[136px] mt-4">
+          <Box className="relative h-[287px] mt-4">
             <Image
               className="w-full object-cover rounded-2xl"
               layout="fill"

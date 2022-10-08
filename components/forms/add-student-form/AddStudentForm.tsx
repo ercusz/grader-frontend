@@ -1,3 +1,4 @@
+import { CreateCourseClassroom } from '@/types/types';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import WarningIcon from '@mui/icons-material/Warning';
 import {
@@ -15,7 +16,6 @@ import {
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { read, utils } from 'xlsx';
-import { CreateCourseClassroom } from '@/types/types';
 import UploadedStudentsDialog from '../../dialogs/uploaded-students-dialog/UploadedStudentsDialog';
 
 export interface IAddStudentForm {
@@ -141,7 +141,7 @@ const AddStudentForm: React.FC<IAddStudentForm> = ({
                   <UploadButton classroomName={cls.name} />
                 </TableCell>
                 <TableCell align="right">
-                  {cls.students.length < 1 ? (
+                  {cls.students && cls.students.length < 1 ? (
                     <Typography color="error">ไม่พบข้อมูลนักศึกษา</Typography>
                   ) : (
                     <Link

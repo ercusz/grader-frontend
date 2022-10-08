@@ -1,3 +1,4 @@
+import { CreateCourseClassroom } from '@/types/types';
 import {
   Avatar,
   DialogActions,
@@ -10,7 +11,6 @@ import {
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import * as React from 'react';
-import { CreateCourseClassroom } from '@/types/types';
 
 export interface IUploadedStudentsDialog {
   open: boolean;
@@ -52,7 +52,8 @@ const UploadedStudentsDialog: React.FC<IUploadedStudentsDialog> = ({
         </List>
       </DialogContent>
       <DialogActions>
-        จำนวนนักศึกษาทั้งหมด {classroom.students.length} คน
+        {classroom.students &&
+          `จำนวนนักศึกษาทั้งหมด ${classroom.students.length} คน`}
       </DialogActions>
     </Dialog>
   );

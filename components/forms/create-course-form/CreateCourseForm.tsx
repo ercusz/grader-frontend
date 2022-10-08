@@ -1,10 +1,9 @@
 import { Stack } from '@mui/material';
 import { UseFormReturn } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
-import { CourseDetail } from '@/types/types';
 
 export interface ICreateCourseForm {
-  formContext: UseFormReturn<CourseDetail, any>;
+  formContext: UseFormReturn<any, any>;
 }
 
 const CreateCourseForm: React.FC<ICreateCourseForm> = ({ formContext }) => {
