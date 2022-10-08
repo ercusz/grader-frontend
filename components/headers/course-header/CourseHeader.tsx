@@ -121,7 +121,11 @@ const CourseHeader: React.FC<ICourseHeader> = ({ classroomSlug }) => {
                 gutterBottom
               >
                 {course.name}
-                <Tooltip title="แก้ไขข้อมูลรายวิชา">
+                <Tooltip
+                  title={`แก้ไขข้อมูล${
+                    classroom ? 'กลุ่มการเรียน' : 'รายวิชา'
+                  }`}
+                >
                   <IconButton
                     aria-label="edit course info"
                     color="inherit"

@@ -1,23 +1,31 @@
+import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
+import UploadCoverImageForm from '@/components/forms/upload-cover-image/UploadCoverImageForm';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
+import { CourseDetail } from '@/types/types';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import {
   Box,
+  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   IconButton,
   Tab,
+  Typography,
 } from '@mui/material';
 import { atom, useAtom } from 'jotai';
 import { SyntheticEvent } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { useForm } from 'react-hook-form';
 
 export interface IEditCourseInfoDialog {
   classroomSlug?: string;
 }
-const tabsValueAtom = atom('classroom-info');
+
+const tabsValueAtom = atom('info');
 
 const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
   classroomSlug,
@@ -28,6 +36,25 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
 
   const handleTabChange = (event: SyntheticEvent, newValue: string) => {
     setTabsValue(newValue);
+  };
+
+  const courseFormContext = useForm<CourseDetail>({
+    defaultValues: {},
+  });
+
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: { 'image/*': [] },
+    maxFiles: 1,
+  });
+
+  const { watch: courseData } = courseFormContext;
+
+  const handleSubmit = () => {
+    let formData = courseData();
+    Object.assign(formData, {
+      coverImage: acceptedFiles[0],
+    });
+    alert(JSON.stringify(formData));
   };
 
   return (
@@ -44,7 +71,7 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
       }}
     >
       <DialogTitle id="invite-code-dialog">
-        แก้ไขข้อมูลรายวิชา
+        {`แก้ไขข้อมูล${classroom ? 'กลุ่มการเรียน' : 'รายวิชา'}`}
         <IconButton
           aria-label="close"
           onClick={() => setOpenDialog(false)}
@@ -66,31 +93,51 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
                 onChange={handleTabChange}
                 aria-label="edit-classroom-info-tabs"
               >
-                <Tab label="ข้อมูลกลุ่มการเรียน" value="classroom-info" />
+                <Tab label="ข้อมูลกลุ่มการเรียน" value="info" />
                 <Tab label="จัดการผู้ช่วยสอน" value="manage-tas" />
                 <Tab label="จัดการนักศึกษา" value="manage-students" />
               </TabList>
             ) : (
               <TabList
                 onChange={handleTabChange}
-                aria-label="edit-classroom-info-tabs"
+                aria-label="edit-course-info-tabs"
               >
-                <Tab label="ข้อมูลรายวิชา" value="course-info" />
+                <Tab label="ข้อมูลรายวิชา" value="info" />
+                <Tab label="รูปหน้าปก" value="cover-img" />
               </TabList>
             )}
           </Box>
           {classroom ? (
             <>
-              <TabPanel value="classroom-info">ข้อมูลกลุ่มการเรียน</TabPanel>
+              <TabPanel value="info">ข้อมูลกลุ่มการเรียน</TabPanel>
               <TabPanel value="manage-tas">จัดการผู้ช่วยสอน</TabPanel>
               <TabPanel value="manage-students">จัดการนักศึกษา</TabPanel>
             </>
           ) : (
-            <TabPanel value="course-info">ข้อมูลรายวิชา</TabPanel>
+            <>
+              <TabPanel value="info">
+                ข้อมูลรายวิชา
+                <CreateCourseForm formContext={courseFormContext} />
+              </TabPanel>
+              <TabPanel value="cover-img">
+                <Typography gutterBottom sx={{ mb: 2 }}>
+                  อัปโหลดรูปหน้าปก
+                </Typography>
+                <UploadCoverImageForm
+                  acceptedFiles={acceptedFiles}
+                  getRootProps={getRootProps}
+                  getInputProps={getInputProps}
+                />
+              </TabPanel>
+            </>
           )}
         </TabContext>
       </DialogContent>
-      <DialogActions></DialogActions>
+      <DialogActions sx={{ p: 0, mx: 5, mb: 3 }}>
+        <Button variant="contained" onClick={handleSubmit}>
+          แก้ไข
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
