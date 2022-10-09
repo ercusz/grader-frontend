@@ -1,8 +1,7 @@
-import { DropzoneRootProps, DropzoneInputProps } from 'react-dropzone';
 import { IUploadCoverImageForm } from './UploadCoverImageForm';
 
 const base: IUploadCoverImageForm = {
-  courseSlug: ''
+  courseSlug: '',
 };
 
 export const mockUploadCoverImageFormProps = {

@@ -28,16 +28,22 @@ const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
   });
 
   const { watch } = courseInfoFormContext;
-  const courseData = watch();
+  const formData = watch();
 
   useEffect(() => {
-    if (JSON.stringify(courseData) !== JSON.stringify(defaultValues)) {
+    const courseData = {
+      name: course?.name,
+      code: course?.code,
+      semester: course?.semester,
+      year: course?.year,
+    };
+    if (JSON.stringify(formData) !== JSON.stringify(courseData)) {
       setUnsavedChanges(true);
     }
-  }, [courseData, defaultValues, setUnsavedChanges]);
+  }, [formData, course, setUnsavedChanges]);
 
   const handleSubmit = () => {
-    alert(JSON.stringify(courseData));
+    alert(JSON.stringify(formData));
     setUnsavedChanges(false);
   };
 
