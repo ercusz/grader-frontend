@@ -43,6 +43,11 @@ const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
     setUnsavedChanges(false);
   };
 
+  const handleDelete = () => {
+    alert('Classroom deleted!');
+    setUnsavedChanges(false);
+  };
+
   return (
     <FormContainer
       formContext={classroomInfoFormContext}
@@ -66,8 +71,16 @@ const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
           }}
         />
       </Stack>
-      <Button type="submit" variant="contained" sx={{ my: 3 }}>
+      <Button type="submit" variant="contained" sx={{ my: 3, mr: 2 }}>
         อัปเดตข้อมูลกลุ่มการเรียน
+      </Button>
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={handleDelete}
+        sx={{ my: 3 }}
+      >
+        ลบกลุ่มการเรียน
       </Button>
     </FormContainer>
   );

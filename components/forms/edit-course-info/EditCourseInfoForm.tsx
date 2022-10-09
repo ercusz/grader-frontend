@@ -47,11 +47,24 @@ const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
     setUnsavedChanges(false);
   };
 
+  const handleDelete = () => {
+    alert('Course deleted!');
+    setUnsavedChanges(false);
+  };
+
   return (
     <>
       <CreateCourseForm formContext={courseInfoFormContext} />
-      <Button variant="contained" onClick={handleSubmit} sx={{ my: 3 }}>
+      <Button variant="contained" onClick={handleSubmit} sx={{ my: 3, mr: 2 }}>
         อัปเดตข้อมูลรายวิชา
+      </Button>
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={handleDelete}
+        sx={{ my: 3 }}
+      >
+        ลบรายวิชา
       </Button>
     </>
   );
