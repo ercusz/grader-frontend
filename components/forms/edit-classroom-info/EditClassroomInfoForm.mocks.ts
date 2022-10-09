@@ -4,6 +4,6 @@ const base: IEditClassroomInfoForm = {
   classroomSlug: '',
 };
 
-export const mockEditCourseInfoFormProps = {
+export const mockEditClassroomInfoFormProps = {
   base,
 };
