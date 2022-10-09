@@ -1,6 +1,7 @@
 import EditClassroomInfoForm from '@/components/forms/edit-classroom-info/EditClassroomInfoForm';
 import EditCourseInfoForm from '@/components/forms/edit-course-info/EditCourseInfoForm';
 import UploadCoverImageForm from '@/components/forms/upload-cover-image/UploadCoverImageForm';
+import TeacherAssistantsTable from '@/components/tables/teacher-assistants-table/TeacherAssistantsTable';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
@@ -53,7 +54,10 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
   };
 
   const handleCloseDialog = () => {
-    openUnsavedChangesDialog(() => setOpenDialog(false));
+    openUnsavedChangesDialog(() => {
+      setOpenDialog(false);
+      setTabsValue('info');
+    });
   };
 
   return (
@@ -110,7 +114,9 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
                 ข้อมูลกลุ่มการเรียน
                 <EditClassroomInfoForm classroomSlug={classroomSlug!} />
               </TabPanel>
-              <TabPanel value="manage-tas">จัดการผู้ช่วยสอน</TabPanel>
+              <TabPanel value="manage-tas" sx={{ p: 0, m: 0 }}>
+                <TeacherAssistantsTable classroomSlug={classroomSlug!} />
+              </TabPanel>
               <TabPanel value="manage-students">จัดการนักศึกษา</TabPanel>
             </>
           ) : (
