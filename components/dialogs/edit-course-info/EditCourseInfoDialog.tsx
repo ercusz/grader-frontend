@@ -1,6 +1,7 @@
 import EditClassroomInfoForm from '@/components/forms/edit-classroom-info/EditClassroomInfoForm';
 import EditCourseInfoForm from '@/components/forms/edit-course-info/EditCourseInfoForm';
 import UploadCoverImageForm from '@/components/forms/upload-cover-image/UploadCoverImageForm';
+import StudentsTable from '@/components/tables/students/StudentsTable';
 import TeacherAssistantsTable from '@/components/tables/teacher-assistants/TeacherAssistantsTable';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import CloseIcon from '@mui/icons-material/Close';
@@ -117,7 +118,9 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
               <TabPanel value="manage-tas" sx={{ p: 0, m: 0 }}>
                 <TeacherAssistantsTable classroomSlug={classroomSlug!} />
               </TabPanel>
-              <TabPanel value="manage-students">จัดการนักศึกษา</TabPanel>
+              <TabPanel value="manage-students" sx={{ p: 0, m: 0 }}>
+                <StudentsTable classroomSlug={classroomSlug!} />
+              </TabPanel>
             </>
           ) : (
             <>
