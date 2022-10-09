@@ -1,7 +1,7 @@
 import EditClassroomInfoForm from '@/components/forms/edit-classroom-info/EditClassroomInfoForm';
 import EditCourseInfoForm from '@/components/forms/edit-course-info/EditCourseInfoForm';
 import UploadCoverImageForm from '@/components/forms/upload-cover-image/UploadCoverImageForm';
-import TeacherAssistantsTable from '@/components/tables/teacher-assistants-table/TeacherAssistantsTable';
+import TeacherAssistantsTable from '@/components/tables/teacher-assistants/TeacherAssistantsTable';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
