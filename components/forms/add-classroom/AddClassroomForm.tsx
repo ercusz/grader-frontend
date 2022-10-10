@@ -8,15 +8,26 @@ export interface IAddClassroomForm {
     },
     any
   >;
+  currentClassrooms?: string[];
 }
 
-const AddClassroomForm: React.FC<IAddClassroomForm> = ({ formContext }) => {
+const AddClassroomForm: React.FC<IAddClassroomForm> = ({
+  formContext,
+  currentClassrooms,
+}) => {
   const {
     control,
     formState: { errors },
   } = formContext;
 
   const isNotContainDuplicateSections = (arr: string[]) => {
+    const found = currentClassrooms
+      ? arr.some((r) => currentClassrooms.indexOf(r) >= 0)
+      : false;
+    if (found) {
+      return false;
+    }
+
     return new Set(arr).size === arr.length;
   };
 

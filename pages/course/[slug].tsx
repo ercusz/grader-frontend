@@ -1,7 +1,9 @@
 import CourseClassroomCard from '@/components/cards/course-classroom/CourseClassroomCard';
+import AddClassroomDialog from '@/components/dialogs/add-classroom/AddClassroomDialog';
 import CourseHeader from '@/components/headers/course-header/CourseHeader';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { useCourseSlug } from '@/states/courses/useCourses';
+import { openAddClassroomsDialogAtom } from '@/stores/add-classrooms';
 import { getCourseBySlug } from '@/utils/ClassroomService';
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -14,6 +16,7 @@ import {
   Typography,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getSession } from 'next-auth/react';
 import Head from 'next/head';
@@ -39,11 +42,14 @@ const Course: NextPageWithLayout = ({
     }
   }, [isError, router]);
 
+  const [_, setOpenDialog] = useAtom(openAddClassroomsDialogAtom);
+
   return (
     <section>
       <Head>
         <title>{course ? course.name : 'ไม่พบรายวิชา'}</title>
       </Head>
+      <AddClassroomDialog courseSlug={slug} />
       <Container maxWidth="lg">
         {isLoading && (
           <Backdrop
@@ -70,6 +76,7 @@ const Course: NextPageWithLayout = ({
                     variant="outlined"
                     startIcon={<AddIcon />}
                     size="small"
+                    onClick={() => setOpenDialog(true)}
                   >
                     เพิ่มกลุ่มการเรียน
                   </Button>

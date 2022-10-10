@@ -67,12 +67,12 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
       maxWidth="md"
       open={openDialog}
       onClose={handleCloseDialog}
-      aria-labelledby="invite-code-dialog"
+      aria-labelledby="edit-course-classroom-dialog"
       sx={{
         borderRadius: '20px',
       }}
     >
-      <DialogTitle id="invite-code-dialog">
+      <DialogTitle id="edit-course-classroom-dialog">
         {`แก้ไขข้อมูล${classroomSlug ? 'กลุ่มการเรียน' : 'รายวิชา'}`}
         <IconButton
           aria-label="close"

@@ -111,7 +111,7 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
         return (
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <Button color="success" onClick={handleAdd} variant="outlined">
-              เพิ่มนักศึกษา
+              เชิญนักศึกษา
             </Button>
             {table.getSelectedRowModel().flatRows.length > 0 && (
               <Button
