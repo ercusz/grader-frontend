@@ -1,7 +1,7 @@
 import { MuiChipsInput } from 'mui-chips-input';
 import { Controller, UseFormReturn } from 'react-hook-form';
 
-export interface IAddSectionForm {
+export interface IAddClassroomForm {
   formContext: UseFormReturn<
     {
       classrooms: string[];
@@ -10,7 +10,7 @@ export interface IAddSectionForm {
   >;
 }
 
-const AddSectionForm: React.FC<IAddSectionForm> = ({ formContext }) => {
+const AddClassroomForm: React.FC<IAddClassroomForm> = ({ formContext }) => {
   const {
     control,
     formState: { errors },
@@ -49,4 +49,4 @@ const AddSectionForm: React.FC<IAddSectionForm> = ({ formContext }) => {
   );
 };
 
-export default AddSectionForm;
+export default AddClassroomForm;

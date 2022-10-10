@@ -1,4 +1,4 @@
-import AddSectionForm from '@/components/forms/add-section-form/AddSectionForm';
+import AddSectionForm from '@/components/forms/add-classroom/AddClassroomForm';
 import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
 import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
