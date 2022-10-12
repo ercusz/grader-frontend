@@ -1,3 +1,4 @@
+import { User } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
 const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_HOST;
@@ -62,17 +63,17 @@ export async function signUp({ email, username, password }: ISignUp) {
   return;
 }
 
-export async function getUserInfo() {
+export async function getUserInfo(): Promise<User | null> {
   let { res, err }: Response = await contentHttpClient.get('/api/users/me');
 
   if (err) {
-    console.log(`Get user data failed with error:\n${err}`);
-    return;
+    // console.log(`Get user data failed with error:\n${err}`);
+    return null;
   }
 
   if (res.data.profileImage !== null) {
     res.data.profileImage.url = strapiUrl + res.data.profileImage.url;
   }
 
-  return res.data;
+  return res.data as User;
 }

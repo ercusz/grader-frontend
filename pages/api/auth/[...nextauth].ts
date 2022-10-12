@@ -1,7 +1,6 @@
+import { signIn } from '@/utils/AuthService';
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { contentHttpClient } from '@/utils/APIHelper';
-import { getUserInfo, signIn } from '@/utils/AuthService';
 
 export default NextAuth({
   // Configure one or more authentication providers
@@ -39,12 +38,9 @@ export default NextAuth({
   callbacks: {
     session: async ({ session, token }) => {
       if (token.jwt) {
-        const user = await getUserInfo();
-        if (user === undefined) {
-          return Promise.reject();
-        }
-        session.user = user;
+        session.jwt = token.jwt;
       }
+
       return Promise.resolve(session);
     },
     jwt: async ({ token, user }) => {
@@ -52,12 +48,6 @@ export default NextAuth({
         token.id = user.id;
         token.jwt = user.jwt;
       }
-
-      //  after logged in set contentHttpClient's authorization header
-      //  for fetch authenticated data
-      contentHttpClient.defaults.headers.common[
-        'Authorization'
-      ] = `Bearer ${token.jwt}`;
 
       return Promise.resolve(token);
     },

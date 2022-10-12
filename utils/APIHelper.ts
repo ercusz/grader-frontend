@@ -20,6 +20,10 @@ const instances = [
   }),
 ];
 
+export const setToken = (token: string) => {
+  instances[1].defaults.headers.common['Authorization'] = `Bearer ${token}`;
+};
+
 instances.forEach((i) =>
   i.interceptors.response.use(
     (res) => {

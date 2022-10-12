@@ -1,3 +1,5 @@
+import '@/styles/globals.css';
+import createEmotionCache from '@/utils/createEmotionCache';
 import { CacheProvider, EmotionCache } from '@emotion/react';
 import {
   Hydrate,
@@ -11,9 +13,8 @@ import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
-import '@/styles/globals.css';
-import createEmotionCache from '@/utils/createEmotionCache';
 import { NextPageWithLayout } from './page';
+import SessionLoader from './SessionLoader';
 import ThemeProvider from './ThemeProvider';
 
 if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
@@ -47,15 +48,17 @@ function MyApp(props: AppPropsWithLayout) {
             }
           >
             <CacheProvider value={emotionCache}>
-              <Head>
-                <meta
-                  name="viewport"
-                  content="initial-scale=1, width=device-width"
-                />
-              </Head>
-              <ThemeProvider>
-                {getLayout(<Component {...pageProps} />)}
-              </ThemeProvider>
+              <SessionLoader>
+                <Head>
+                  <meta
+                    name="viewport"
+                    content="initial-scale=1, width=device-width"
+                  />
+                </Head>
+                <ThemeProvider>
+                  {getLayout(<Component {...pageProps} />)}
+                </ThemeProvider>
+              </SessionLoader>
             </CacheProvider>
           </Provider>
         </Hydrate>
