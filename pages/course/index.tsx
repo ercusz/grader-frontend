@@ -2,7 +2,9 @@ import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/Classro
 import CourseCard from '@/components/cards/course/CourseCard';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { useCoursesFilter } from '@/states/courses/useCourses';
+import { useUser } from '@/states/user/useUser';
 import { Course, MyCoursesResponse } from '@/types/types';
+import { setToken } from '@/utils/APIHelper';
 import { getCourses } from '@/utils/ClassroomService';
 import { useDebounce } from '@/utils/useDebounce';
 import AddIcon from '@mui/icons-material/Add';
@@ -21,8 +23,10 @@ import {
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
+import { getToken } from 'next-auth/jwt';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 import { A11y, Keyboard, Mousewheel, Navigation, Pagination } from 'swiper';
@@ -56,6 +60,15 @@ const Courses: NextPageWithLayout = () => {
   const handleSearchButton = () => {
     refetch();
   };
+
+  const { data: user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user?.role.name === 'Student') {
+      router.push('/classroom');
+    }
+  }, [user, router]);
 
   return (
     <section className="px-10 pt-16 overflow-y-hidden h-screen">
@@ -168,21 +181,18 @@ Courses.getLayout = (page) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
+  const { req } = context;
+  const token = await getToken({ req });
+
+  if (token && token.jwt) {
+    setToken(token.jwt);
+  }
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery<MyCoursesResponse>(['courses', ''], () =>
     getCourses()
   );
 
-  if (session?.user.role.name !== 'Teacher') {
-    return {
-      redirect: {
-        destination: '/classroom',
-        permanent: true,
-      },
-    };
-  }
   return {
     props: {
       dehydratedState: dehydrate(queryClient),

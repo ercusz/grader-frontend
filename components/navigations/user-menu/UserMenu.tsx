@@ -1,3 +1,5 @@
+import { useAtomTheme } from '@/states/atom-theme/useAtomTheme';
+import { useUser } from '@/states/user/useUser';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BedtimeIcon from '@mui/icons-material/Bedtime';
 import Check from '@mui/icons-material/Check';
@@ -21,14 +23,11 @@ import {
   Typography,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import { Session } from 'next-auth/core/types';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import * as React from 'react';
-import { useAtomTheme } from '@/states/atom-theme/useAtomTheme';
 
 export interface IUserMenu {
-  session: Session;
   anchorElUser: null | HTMLElement;
   setAnchorElUser: React.Dispatch<React.SetStateAction<null | HTMLElement>>;
 }
@@ -95,13 +94,10 @@ const Settings: React.FC<ISettings> = ({ settings }) => {
   );
 };
 
-const UserMenu: React.FC<IUserMenu> = ({
-  session,
-  anchorElUser,
-  setAnchorElUser,
-}) => {
+const UserMenu: React.FC<IUserMenu> = ({ anchorElUser, setAnchorElUser }) => {
   const [showAppearance, setShowAppearance] = React.useState(false);
   const [theme, toggleTheme] = useAtomTheme();
+  const { data: user } = useUser();
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -174,16 +170,8 @@ const UserMenu: React.FC<IUserMenu> = ({
                       outline outline-offset-4 text-2xl
                       bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
                       "
-                alt={
-                  session.user
-                    ? `${session.user?.username}'s profile image`
-                    : undefined
-                }
-                src={
-                  session.user?.profileImage
-                    ? session.user.profileImage.url
-                    : undefined
-                }
+                alt={user ? `${user?.username}'s profile image` : undefined}
+                src={user?.profileImage ? user.profileImage.url : undefined}
                 sx={{
                   width: 48,
                   height: 48,
@@ -191,13 +179,12 @@ const UserMenu: React.FC<IUserMenu> = ({
                   color: 'white',
                 }}
               >
-                {session.user.firstName && session.user.lastName
-                  ? session.user.firstName?.charAt(0) +
-                    session.user.lastName?.charAt(0)
-                  : session.user.username?.charAt(0)}
+                {user && user.firstName && user.lastName
+                  ? user.firstName?.charAt(0) + user.lastName?.charAt(0)
+                  : user?.username?.charAt(0)}
               </Avatar>
             </IconButton>
-            {session.user.firstName && session.user.lastName ? (
+            {user && user.firstName && user.lastName ? (
               <Stack
                 direction="column"
                 justifyContent="center"
@@ -205,25 +192,21 @@ const UserMenu: React.FC<IUserMenu> = ({
                 spacing={1}
               >
                 <Typography variant="inherit" noWrap>
-                  {`${session.user.firstName} ${session.user.lastName}`}
+                  {`${user.firstName} ${user.lastName}`}
                 </Typography>
                 <Chip
                   className="font-semibold scale-95"
                   size="small"
                   variant="outlined"
-                  color={
-                    session.user.role.name === 'Student'
-                      ? 'success'
-                      : 'secondary'
-                  }
+                  color={user.role.name === 'Student' ? 'success' : 'secondary'}
                   icon={
-                    session.user.role.name === 'Student' ? (
+                    user.role.name === 'Student' ? (
                       <InsertEmoticonIcon />
                     ) : (
                       <EmojiObjectsIcon />
                     )
                   }
-                  label={session.user.role.name.toUpperCase()}
+                  label={user.role.name.toUpperCase()}
                   sx={{ borderRadius: 2, pl: 0.4 }}
                 />
               </Stack>
@@ -241,9 +224,9 @@ const UserMenu: React.FC<IUserMenu> = ({
                 />
               </Link>
             )}
-            <Link href={`/p/@${session.user?.username}`}>
+            <Link href={`/p/@${user?.username}`}>
               <Typography className="text-sm cursor-pointer font-semibold hover:underline">
-                @{session.user?.username}
+                @{user?.username}
               </Typography>
             </Link>
           </Stack>

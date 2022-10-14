@@ -1,3 +1,4 @@
+import { useUser } from '@/states/user/useUser';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
@@ -35,6 +36,7 @@ const pages = [
 
 const Header: React.FC<IHeader> = () => {
   const { data: session } = useSession();
+  const { data: user } = useUser();
 
   React.useEffect(() => {
     if (session == null) return;
@@ -194,14 +196,10 @@ const Header: React.FC<IHeader> = () => {
                       bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
                       hover:outline-offset-2"
                       alt={
-                        session.user
-                          ? `${session.user?.username}'s profile image`
-                          : undefined
+                        user ? `${user?.username}'s profile image` : undefined
                       }
                       src={
-                        session.user?.profileImage
-                          ? session.user.profileImage.url
-                          : undefined
+                        user?.profileImage ? user.profileImage.url : undefined
                       }
                       sx={{
                         width: 28,
@@ -211,18 +209,18 @@ const Header: React.FC<IHeader> = () => {
                         color: 'white',
                       }}
                     >
-                      {session.user.firstName && session.user.lastName
-                        ? session.user.firstName?.charAt(0) +
-                          session.user.lastName?.charAt(0)
-                        : session.user.username?.charAt(0)}
+                      {user && user.firstName && user.lastName
+                        ? user.firstName?.charAt(0) + user.lastName?.charAt(0)
+                        : user?.username?.charAt(0)}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
-                <UserMenu
-                  session={session}
-                  anchorElUser={anchorElUser}
-                  setAnchorElUser={setAnchorElUser}
-                />
+                {user && (
+                  <UserMenu
+                    anchorElUser={anchorElUser}
+                    setAnchorElUser={setAnchorElUser}
+                  />
+                )}
               </>
             ) : (
               <>

@@ -30,20 +30,20 @@ const CourseHeader: React.FC<ICourseHeader> = ({
 
   const getCoverImage = () => {
     if (
-      classroom &&
+      classroom && classroom.course &&
       classroom.course.coverImage &&
       classroom.course.coverImage.url
     ) {
-      return `url(${classroom.course.coverImage.url})`;
+      return `url(${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.coverImage.url})`;
     } else if (course && course.coverImage && course.coverImage.url) {
-      return `url(${course.coverImage.url})`;
+      return `url(${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.coverImage.url})`;
     }
 
     return '';
   };
 
   const getName = () => {
-    if (classroom) {
+    if (classroom && classroom.course) {
       return classroom.course.name;
     } else if (course) {
       return course.name;
@@ -53,7 +53,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({
   };
 
   const getSemesterYear = () => {
-    if (classroom && classroom.course.semester && classroom.course.year) {
+    if (classroom && classroom.course && classroom.course.semester && classroom.course.year) {
       return `${classroom.course.semester}/${classroom.course.year}`;
     } else if (course && course.semester && course.year) {
       return `${course.semester}/${course.year}`;
@@ -65,6 +65,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({
   const getTeacher = () => {
     if (
       classroom &&
+      classroom.course &&
       classroom.course.teachers[0].firstName &&
       classroom.course.teachers[0].lastName
     ) {
@@ -72,6 +73,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({
       return `ผู้สอน: ${course.teachers[0].firstName} ${course.teachers[0].lastName}`;
     } else if (
       course &&
+      course.teachers &&
       course.teachers[0].firstName &&
       course.teachers[0].lastName
     ) {

@@ -3,7 +3,9 @@ import AddClassroomDialog from '@/components/dialogs/add-classroom/AddClassroomD
 import CourseHeader from '@/components/headers/course-header/CourseHeader';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { useCourseSlug } from '@/states/courses/useCourses';
+import { useUser } from '@/states/user/useUser';
 import { openAddClassroomsDialogAtom } from '@/stores/add-classrooms';
+import { setToken } from '@/utils/APIHelper';
 import { getCourseBySlug } from '@/utils/ClassroomService';
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -18,7 +20,7 @@ import {
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getSession } from 'next-auth/react';
+import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -41,6 +43,14 @@ const Course: NextPageWithLayout = ({
       router.push('/404');
     }
   }, [isError, router]);
+
+  const { data: user } = useUser();
+
+  useEffect(() => {
+    if (user?.role.name === 'Student') {
+      router.push('/classroom');
+    }
+  }, [user, router]);
 
   const [_, setOpenDialog] = useAtom(openAddClassroomsDialogAtom);
 
@@ -82,7 +92,7 @@ const Course: NextPageWithLayout = ({
                   </Button>
                 </Stack>
               </Grid>
-              {course.classrooms.map((classroom) => {
+              {course?.classrooms?.map((classroom) => {
                 const postfix =
                   course.semester && course.year
                     ? ` (${course.semester}/${course.year})`
@@ -113,30 +123,18 @@ Course.getLayout = (page) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-
-  if (session?.user.role.name !== 'Teacher') {
-    return {
-      redirect: {
-        destination: '/classroom',
-        permanent: true,
-      },
-    };
-  }
-
   const { slug }: any = context.params;
+  const { req } = context;
+  const token = await getToken({ req });
+
+  if (token && token.jwt) {
+    setToken(token.jwt);
+  }
 
   const queryClient = new QueryClient();
-
-  try {
-    await queryClient.fetchQuery(['course', { slug: slug }], () =>
-      getCourseBySlug(slug)
-    );
-  } catch (error) {
-    return {
-      notFound: true,
-    };
-  }
+  await queryClient.prefetchQuery(['course', { slug: slug }], () =>
+    getCourseBySlug(slug)
+  );
 
   return {
     props: {

@@ -1,11 +1,8 @@
+import { Submission, TestCase } from '@/types/types';
+import { compressSourceCode, createSubmission } from '@/utils/GraderService';
 import { QueryClient, useQueries } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
 import { useCallback } from 'react';
-import { Submission, TestCase } from '@/types/types';
-import {
-  compressSourceCode,
-  createSubmission,
-} from '@/utils/GraderService';
 import { useIdeTabs } from './useIdeTabs';
 
 export const testcases = atom<TestCase[]>([]);

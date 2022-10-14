@@ -56,7 +56,11 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                     </Typography>
                   </>
                 }
-                subheader={`${course.semester}/${course.year}`}
+                subheader={
+                  course.semester && course.year
+                    ? `${course.semester}/${course.year}`
+                    : '\xa0'
+                }
                 subheaderTypographyProps={{ noWrap: true }}
                 sx={{
                   display: 'flex',
@@ -74,7 +78,11 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                   layout="fill"
                   quality={60}
                   alt={`${course.name} classroom cover image`}
-                  src={course.coverImage ? course.coverImage.url : ''}
+                  src={
+                    course.coverImage
+                      ? `${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.coverImage.url}`
+                      : ''
+                  }
                   sizes="100vw"
                 />
               </CardMedia>
@@ -92,7 +100,7 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                 alt={`${course.teachers[0].firstName} ${course.teachers[0].lastName}`}
                 src={
                   course.teachers[0].profileImage
-                    ? course.teachers[0].profileImage.url
+                    ? `${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.teachers[0].profileImage.url}`
                     : ''
                 }
                 sizes="100vw"

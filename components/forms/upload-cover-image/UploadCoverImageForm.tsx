@@ -105,7 +105,9 @@ const UploadCoverImageForm: React.FC<IUploadCoverImageForm> = ({
             <Typography className="font-bold" variant="body1" noWrap>
               รูปภาพหน้าปกปัจจุบัน
             </Typography>
-            <PreviewImage src={course.coverImage.url} />
+            <PreviewImage
+              src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.coverImage.url}`}
+            />
           </>
         )
       )}

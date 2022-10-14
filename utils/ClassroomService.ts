@@ -6,7 +6,12 @@ import {
 import { contentHttpClient, Response } from './APIHelper';
 
 export const getClassrooms = async (): Promise<MyClassroomsResponse> => {
-  const { res }: Response = await contentHttpClient.get('/api/classrooms/me');
+  const { res, err }: Response = await contentHttpClient.get(
+    '/api/classrooms/me'
+  );
+  if (err) {
+    throw new Error('get classrooms data failed');
+  }
 
   return res.data as MyClassroomsResponse;
 };
@@ -23,7 +28,10 @@ export const getClassroomBySlug = async (slug: string) => {
 };
 
 export const getCourses = async (): Promise<MyCoursesResponse> => {
-  const { res }: Response = await contentHttpClient.get('/api/courses/me');
+  const { res, err }: Response = await contentHttpClient.get('/api/courses/me');
+  if (err) {
+    throw new Error('get courses data failed');
+  }
 
   return res.data as MyCoursesResponse;
 };

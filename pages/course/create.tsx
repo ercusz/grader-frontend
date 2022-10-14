@@ -2,9 +2,11 @@ import AddClassroomForm from '@/components/forms/add-classroom/AddClassroomForm'
 import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
 import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { useUser } from '@/states/user/useUser';
 import { CreateCourseClassroom, CreateCourseReq } from '@/types/types';
-import { mainHttpClient, Response } from '@/utils/APIHelper';
+import { createCourse } from '@/utils/ClassroomService';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ClearIcon from '@mui/icons-material/Clear';
 import {
   Box,
   Button,
@@ -17,17 +19,24 @@ import {
   Stepper,
   Typography,
 } from '@mui/material';
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { getSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { NextPageWithLayout } from '../page';
 
-const CreateCourse: NextPageWithLayout = ({
-  userId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const CreateCourse: NextPageWithLayout = () => {
+  const { data: user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user?.role.name === 'Student') {
+      router.push('/classroom');
+    }
+  }, [user, router]);
+
   const [activeStep, setActiveStep] = useState(0);
+  const [isError, setIsError] = useState(false);
   const [course, setCourse] = useState<CreateCourseReq>({
     name: '',
     code: '',
@@ -69,18 +78,12 @@ const CreateCourse: NextPageWithLayout = ({
   };
 
   const handleCreateCourse = async () => {
-    const { res, err }: Response = await mainHttpClient.post(
-      '/api/course/create',
-      { ...course, teacherId: userId, classrooms: classrooms }
-    );
+    const res = await createCourse({ ...course, classrooms: classrooms });
 
-    if (err) {
-      alert(err);
-      console.log(err);
-      return;
+    if (!res) {
+      setIsError(true);
     }
 
-    console.log('Response=', res);
     handleNext();
   };
 
@@ -224,25 +227,30 @@ const CreateCourse: NextPageWithLayout = ({
               sx={{ p: 3, maxHeight: 200, overflow: 'auto' }}
             >
               <Stack direction="row" sx={{ py: 2 }} alignItems="center">
-                <CheckCircleIcon
-                  color="success"
-                  sx={{ pr: 0.5 }}
-                  fontSize="large"
-                />
-                <Typography className="font-bold" variant="h6">
-                  เพิ่มรายวิชาสำเร็จ
-                </Typography>
-              </Stack>
-              {/* <pre>
-                {JSON.stringify(
-                  { ...course, teacherId: userId, classrooms: classrooms },
-                  null,
-                  4
+                {isError ? (
+                  <>
+                    <ClearIcon
+                      color="error"
+                      sx={{ pr: 0.5 }}
+                      fontSize="large"
+                    />
+                    <Typography className="font-bold" variant="h6">
+                      เกิดข้อผิดพลาดในการเพิ่มรายวิชา
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircleIcon
+                      color="success"
+                      sx={{ pr: 0.5 }}
+                      fontSize="large"
+                    />
+                    <Typography className="font-bold" variant="h6">
+                      เพิ่มรายวิชาสำเร็จ
+                    </Typography>
+                  </>
                 )}
-              </pre>
-              <Button onClick={handleReset} sx={{ mt: 1, mr: 1 }}>
-                รีเซ็ต
-              </Button> */}
+              </Stack>
               <Link href="/classroom">
                 <Button variant="contained" sx={{ mt: 1, mr: 1 }}>
                   คลาสเรียนของฉัน
@@ -260,22 +268,4 @@ export default CreateCourse;
 
 CreateCourse.getLayout = (page) => {
   return <PrimaryLayout title="เพิ่มรายวิชาใหม่">{page}</PrimaryLayout>;
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
-
-  if (session?.user.role.name !== 'Teacher') {
-    return {
-      redirect: {
-        destination: '/classroom',
-        permanent: true,
-      },
-    };
-  }
-  return {
-    props: {
-      userId: session.user.id,
-    },
-  };
 };

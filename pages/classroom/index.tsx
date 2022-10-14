@@ -1,6 +1,16 @@
+import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
+import ClassroomCard from '@/components/cards/classroom/ClassroomCard';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { useClassroomsFilter } from '@/states/classrooms/useClassrooms';
+import { useUser } from '@/states/user/useUser';
+import { MyClassroom, MyClassroomsResponse } from '@/types/types';
+import { setToken } from '@/utils/APIHelper';
+import { getClassrooms } from '@/utils/ClassroomService';
+import { useDebounce } from '@/utils/useDebounce';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SearchIcon from '@mui/icons-material/Search';
+
 import {
   Box,
   ButtonGroup,
@@ -12,7 +22,9 @@ import {
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
+import { getToken } from 'next-auth/jwt';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 import { A11y, Keyboard, Mousewheel, Navigation, Pagination } from 'swiper';
@@ -23,13 +35,6 @@ import 'swiper/css/mousewheel';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
-import ClassroomCard from '@/components/cards/classroom/ClassroomCard';
-import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { useClassroomsFilter } from '@/states/classrooms/useClassrooms';
-import { MyClassroom, MyClassroomsResponse } from '@/types/types';
-import { getClassrooms } from '@/utils/ClassroomService';
-import { useDebounce } from '@/utils/useDebounce';
 import { NextPageWithLayout } from '../page';
 
 const Classrooms: NextPageWithLayout = () => {
@@ -53,6 +58,15 @@ const Classrooms: NextPageWithLayout = () => {
   const handleSearchButton = () => {
     refetch();
   };
+
+  const { data: user } = useUser();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user?.role.name === 'Teacher') {
+      router.push('/course');
+    }
+  }, [user, router]);
 
   return (
     <section className="px-10 pt-16 overflow-y-hidden h-screen">
@@ -93,8 +107,12 @@ const Classrooms: NextPageWithLayout = () => {
                 helperText={
                   isSuccess
                     ? debouncedFilter
-                      ? `ผลลัพธ์การค้นหา ${data.classrooms.length + data.invitations.length} รายการ`
-                      : `จำนวนคลาสเรียนทั้งหมด ${data.classrooms.length + data.invitations.length} รายการ`
+                      ? `ผลลัพธ์การค้นหา ${
+                          data.classrooms.length + data.invitations.length
+                        } รายการ`
+                      : `จำนวนคลาสเรียนทั้งหมด ${
+                          data.classrooms.length + data.invitations.length
+                        } รายการ`
                     : debouncedFilter
                     ? 'กด Enter เพื่อค้นหา'
                     : null
@@ -154,21 +172,18 @@ Classrooms.getLayout = (page) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getSession(context);
+  const { req } = context;
+  const token = await getToken({ req });
+
+  if (token && token.jwt) {
+    setToken(token.jwt);
+  }
 
   const queryClient = new QueryClient();
-  await queryClient.fetchQuery<MyClassroomsResponse>(['classrooms', ''], () =>
+  await queryClient.prefetchQuery<MyClassroomsResponse>(['classrooms', ''], () =>
     getClassrooms()
   );
 
-  if (session?.user.role.name === 'Teacher') {
-    return {
-      redirect: {
-        destination: '/course',
-        permanent: true,
-      },
-    };
-  }
   return {
     props: {
       dehydratedState: dehydrate(queryClient),

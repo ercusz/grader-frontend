@@ -2,6 +2,7 @@ import PostCard from '@/components/cards/post-card/PostCard';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import {
   Backdrop,
@@ -12,6 +13,7 @@ import {
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import { NextPageWithLayout } from '../../page';
 
@@ -29,7 +31,7 @@ const Classroom: NextPageWithLayout = ({
       <Head>
         <title>
           {classroom
-            ? `${classroom.course.name} - ${classroom.name}`
+            ? `${classroom.course?.name} - ${classroom.name}`
             : 'ไม่พบรายวิชา'}
         </title>
       </Head>
@@ -77,18 +79,17 @@ Classroom.getLayout = (page) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug }: any = context.params;
+  const { req } = context;
+  const token = await getToken({ req });
+
+  if (token && token.jwt) {
+    setToken(token.jwt);
+  }
 
   const queryClient = new QueryClient();
-
-  try {
-    await queryClient.fetchQuery(['classroom', { slug: slug }], () =>
-      getClassroomBySlug(slug)
-    );
-  } catch (error) {
-    return {
-      notFound: true,
-    };
-  }
+  await queryClient.prefetchQuery(['classroom', { slug: slug }], () =>
+    getClassroomBySlug(slug)
+  );
 
   return {
     props: {

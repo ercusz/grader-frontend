@@ -2,6 +2,7 @@ import MaterialCard from '@/components/cards/material-card/MaterialCard';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import LessonFiltersList from '@/components/lists/lessonfilters-list/LessonFiltersList';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import {
   Backdrop,
@@ -12,6 +13,7 @@ import {
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import { NextPageWithLayout } from '../../../page';
 
@@ -77,6 +79,12 @@ ClassroomMaterials.getLayout = (page) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug }: any = context.params;
+  const { req } = context;
+  const token = await getToken({ req });
+
+  if (token && token.jwt) {
+    setToken(token.jwt);
+  }
 
   const queryClient = new QueryClient();
 

@@ -38,7 +38,7 @@ const AddClassroomDialog: React.FC<IAddClassroomDialog> = ({ courseSlug }) => {
 
   const currentClassrooms = useMemo(() => {
     const classroomArr = course
-      ? course.classrooms.flatMap(({ name }) => (name ? name : []))
+      ? course.classrooms?.flatMap(({ name }) => (name ? name : []))
       : [];
     return classroomArr;
   }, [course]);
@@ -101,7 +101,7 @@ const AddClassroomDialog: React.FC<IAddClassroomDialog> = ({ courseSlug }) => {
     handleNext();
   };
 
-  const renderCurrentClassrooms = course?.classrooms.map(({ name }) => (
+  const renderCurrentClassrooms = course?.classrooms?.map(({ name }) => (
     <Chip key={name} label={name} size="small" color="success" sx={{ ml: 1 }} />
   ));
 
