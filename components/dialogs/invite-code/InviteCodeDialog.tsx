@@ -13,10 +13,11 @@ import {
 } from '@mui/material';
 import { useAtom } from 'jotai';
 
-export interface IInviteCodeDialog {}
+export interface IInviteCodeDialog {
+  inviteCode: string;
+}
 
-const InviteCodeDialog: React.FC<IInviteCodeDialog> = () => {
-  const inviteCode = 'laj5bw8';
+const InviteCodeDialog: React.FC<IInviteCodeDialog> = ({ inviteCode }) => {
   const [openDialog, setOpenDialog] = useAtom(openDialogAtom);
   const [fullScreen, setFullScreen] = useAtom(fullScreenAtom);
 

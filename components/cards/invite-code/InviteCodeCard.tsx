@@ -1,4 +1,5 @@
 import InviteCodeDialog from '@/components/dialogs/invite-code/InviteCodeDialog';
+import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { openDialogAtom } from '@/stores/invite-code';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -20,10 +21,12 @@ import {
 import { useAtom } from 'jotai';
 import { MouseEvent, useState } from 'react';
 
-export interface IInviteCodeCard {}
+export interface IInviteCodeCard {
+  classroomSlug: string;
+}
 
-const InviteCodeCard: React.FC<IInviteCodeCard> = () => {
-  const inviteCode = 'laj5bw8';
+const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
+  const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const [_, setOpenDialog] = useAtom(openDialogAtom);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -38,7 +41,11 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = () => {
 
   return (
     <>
-      <InviteCodeDialog />
+      <InviteCodeDialog
+        inviteCode={
+          classroom?.inviteCode ? classroom?.inviteCode : 'ไม่พบข้อมูล'
+        }
+      />
       <Card variant="outlined">
         <CardHeader
           sx={{ pt: 1, pb: 0 }}
@@ -58,7 +65,7 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = () => {
         <CardContent>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography className="font-bold" variant="h6" sx={{ py: 0 }}>
-              {inviteCode}
+              {classroom?.inviteCode ? classroom?.inviteCode : 'ไม่พบข้อมูล'}
             </Typography>
             <Tooltip title="แสดง">
               <IconButton onClick={() => setOpenDialog(true)}>

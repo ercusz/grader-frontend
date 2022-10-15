@@ -1,4 +1,5 @@
 import InviteCodeCard from '@/components/cards/invite-code/InviteCodeCard';
+import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import PeopleIcon from '@mui/icons-material/People';
 import PublicIcon from '@mui/icons-material/Public';
 import {
@@ -13,9 +14,12 @@ import {
 import { useState } from 'react';
 import ClassroomTabs from '../../tabs/classroom-tabs/ClassroomTabs';
 
-export interface IClassroomMenu {}
+export interface IClassroomMenu {
+  classroomSlug: string;
+}
 
-const ClassroomMenu: React.FC<IClassroomMenu> = () => {
+const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
+  const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const [random] = useState(Math.random());
 
   return (
@@ -76,7 +80,7 @@ const ClassroomMenu: React.FC<IClassroomMenu> = () => {
           </AvatarGroup>
         </Box>
         <Box>
-          <InviteCodeCard />
+          <InviteCodeCard classroomSlug={classroomSlug} />
         </Box>
       </Stack>
       <Divider />

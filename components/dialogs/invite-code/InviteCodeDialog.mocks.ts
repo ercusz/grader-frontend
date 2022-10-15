@@ -1,7 +1,7 @@
 import { IInviteCodeDialog } from './InviteCodeDialog';
 
 const base: IInviteCodeDialog = {
-  sampleTextProp: 'Hello world!',
+  inviteCode: 'abc123',
 };
 
 export const mockInviteCodeDialogProps = {

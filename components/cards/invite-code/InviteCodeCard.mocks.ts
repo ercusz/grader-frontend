@@ -1,7 +1,7 @@
 import { IInviteCodeCard } from './InviteCodeCard';
 
 const base: IInviteCodeCard = {
-  sampleTextProp: 'Hello world!',
+  classroomSlug: '',
 };
 
 export const mockInviteCodeCardProps = {

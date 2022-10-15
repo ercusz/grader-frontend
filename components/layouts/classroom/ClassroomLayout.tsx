@@ -35,7 +35,7 @@ const ClassroomLayout: React.FC<IClassroomLayout> = ({
         >
           <Suspense fallback={'Loading...'}>
             <CourseHeader classroomSlug={slug} />
-            <ClassroomMenu />
+            <ClassroomMenu classroomSlug={slug!} />
             {children}
           </Suspense>
         </Container>
