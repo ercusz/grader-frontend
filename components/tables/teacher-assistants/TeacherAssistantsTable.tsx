@@ -23,6 +23,14 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
     slug: classroomSlug,
   });
 
+  const getTaName = (ta: UserResponse) => {
+    if (ta.firstName && ta.lastName) {
+      return `${ta.firstName} ${ta.lastName}`;
+    }
+
+    return ta.username;
+  };
+
   const columns = useMemo<MRT_ColumnDef<UserResponse>[]>(
     () => [
       {
@@ -37,7 +45,10 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
               gap: '1rem',
             }}
           >
-            <Avatar alt="user-avatar" src={row.original.profileImage?.url} />
+            <Avatar
+              alt={getTaName(row.original)}
+              src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${row.original.profileImage?.url}`}
+            />
             <Typography>{cell.getValue<string>()}</Typography>
           </Box>
         ),

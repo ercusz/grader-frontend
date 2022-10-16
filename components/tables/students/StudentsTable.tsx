@@ -21,6 +21,14 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
     slug: classroomSlug,
   });
 
+  const getStudentName = (student: UserResponse) => {
+    if (student.firstName && student.lastName) {
+      return `${student.firstName} ${student.lastName}`;
+    }
+
+    return student.username;
+  };
+
   const columns = useMemo<MRT_ColumnDef<UserResponse>[]>(
     () => [
       {
@@ -35,7 +43,10 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
               gap: '1rem',
             }}
           >
-            <Avatar alt="user-avatar" src={row.original.profileImage?.url} />
+            <Avatar
+              alt={getStudentName(row.original)}
+              src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${row.original.profileImage?.url}`}
+            />
             <Typography>{cell.getValue<string>()}</Typography>
           </Box>
         ),

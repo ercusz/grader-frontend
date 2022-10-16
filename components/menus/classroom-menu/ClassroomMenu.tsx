@@ -1,5 +1,7 @@
 import InviteCodeCard from '@/components/cards/invite-code/InviteCodeCard';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useUser } from '@/states/user/useUser';
+import { UserResponse } from '@/types/types';
 import PeopleIcon from '@mui/icons-material/People';
 import PublicIcon from '@mui/icons-material/Public';
 import {
@@ -9,9 +11,9 @@ import {
   Chip,
   Divider,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
-import { useState } from 'react';
 import ClassroomTabs from '../../tabs/classroom-tabs/ClassroomTabs';
 
 export interface IClassroomMenu {
@@ -20,7 +22,15 @@ export interface IClassroomMenu {
 
 const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
-  const [random] = useState(Math.random());
+  const { data: user } = useUser();
+
+  const getStudentName = (student: UserResponse) => {
+    if (student.firstName && student.lastName) {
+      return `${student.firstName} ${student.lastName}`;
+    }
+
+    return student.username;
+  };
 
   return (
     <Box sx={{ pb: 2 }}>
@@ -53,7 +63,7 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
                 variant="body2"
                 color="text.secondary"
               >
-                {`ผู้เรียน ${15} คน`}
+                {`ผู้เรียน ${classroom?.students.length} คน`}
               </Typography>
             </Stack>
           </Stack>
@@ -70,18 +80,22 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
               },
             }}
           >
-            {[...Array(15)].map((_, idx) => (
-              <Avatar
-                key={idx}
-                alt={String.fromCharCode(0 | (random * 26 + 97)).toUpperCase()}
-                src={`/static/images/avatar/${idx}.jpg`}
-              />
+            {classroom?.students.map((student) => (
+              <Tooltip key={student.username} title={getStudentName(student)}>
+                <Avatar
+                  className="shadow-md"
+                  alt={getStudentName(student)}
+                  src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${student.profileImage?.url}`}
+                />
+              </Tooltip>
             ))}
           </AvatarGroup>
         </Box>
-        <Box>
-          <InviteCodeCard classroomSlug={classroomSlug} />
-        </Box>
+        {user?.role.name === 'Teacher' && (
+          <Box>
+            <InviteCodeCard classroomSlug={classroomSlug} />
+          </Box>
+        )}
       </Stack>
       <Divider />
       <ClassroomTabs />

@@ -1,6 +1,7 @@
 import EditCourseInfoDialog from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { useCourseSlug } from '@/states/courses/useCourses';
+import { useUser } from '@/states/user/useUser';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import EditIcon from '@mui/icons-material/Edit';
 import {
@@ -25,12 +26,14 @@ const CourseHeader: React.FC<ICourseHeader> = ({
 }) => {
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const { data: course } = useCourseSlug({ slug: courseSlug });
+  const { data: user } = useUser();
 
   const [_, setOpenEditCourseDialog] = useAtom(openEditCourseDialogAtom);
 
   const getCoverImage = () => {
     if (
-      classroom && classroom.course &&
+      classroom &&
+      classroom.course &&
       classroom.course.coverImage &&
       classroom.course.coverImage.url
     ) {
@@ -53,7 +56,12 @@ const CourseHeader: React.FC<ICourseHeader> = ({
   };
 
   const getSemesterYear = () => {
-    if (classroom && classroom.course && classroom.course.semester && classroom.course.year) {
+    if (
+      classroom &&
+      classroom.course &&
+      classroom.course.semester &&
+      classroom.course.year
+    ) {
       return `${classroom.course.semester}/${classroom.course.year}`;
     } else if (course && course.semester && course.year) {
       return `${course.semester}/${course.year}`;
@@ -145,20 +153,22 @@ const CourseHeader: React.FC<ICourseHeader> = ({
                 gutterBottom
               >
                 {getName()}
-                <Tooltip
-                  title={`แก้ไขข้อมูล${
-                    classroom ? 'กลุ่มการเรียน' : 'รายวิชา'
-                  }`}
-                >
-                  <IconButton
-                    aria-label="edit course info"
-                    color="inherit"
-                    size="large"
-                    onClick={() => setOpenEditCourseDialog(true)}
+                {user?.role.name === 'Teacher' && (
+                  <Tooltip
+                    title={`แก้ไขข้อมูล${
+                      classroom ? 'กลุ่มการเรียน' : 'รายวิชา'
+                    }`}
                   >
-                    <EditIcon fontSize="inherit" />
-                  </IconButton>
-                </Tooltip>
+                    <IconButton
+                      aria-label="edit course info"
+                      color="inherit"
+                      size="large"
+                      onClick={() => setOpenEditCourseDialog(true)}
+                    >
+                      <EditIcon fontSize="inherit" />
+                    </IconButton>
+                  </Tooltip>
+                )}
               </Typography>
               <Typography variant="h5" color="inherit" paragraph>
                 {getSemesterYear()}
