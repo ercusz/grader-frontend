@@ -2,6 +2,7 @@ import InviteCodeCard from '@/components/cards/invite-code/InviteCodeCard';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { useUser } from '@/states/user/useUser';
 import { UserResponse } from '@/types/types';
+import LockIcon from '@mui/icons-material/Lock';
 import PeopleIcon from '@mui/icons-material/People';
 import PublicIcon from '@mui/icons-material/Public';
 import {
@@ -50,12 +51,21 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
             spacing={1}
             divider={<Divider orientation="vertical" flexItem />}
           >
-            <Chip
-              icon={<PublicIcon />}
-              label="อนุญาตการเข้าร่วม"
-              color="success"
-              size="small"
-            />
+            {classroom?.enabledInviteCode === true ? (
+              <Chip
+                icon={<PublicIcon />}
+                label="อนุญาตการเข้าร่วม"
+                color="success"
+                size="small"
+              />
+            ) : (
+              <Chip
+                icon={<LockIcon />}
+                label="ปฏิเสธการเข้าร่วม"
+                color="error"
+                size="small"
+              />
+            )}
             <Stack direction="row" alignItems="center" spacing={1}>
               <PeopleIcon />
               <Typography

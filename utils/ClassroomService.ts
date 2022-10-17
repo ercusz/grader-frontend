@@ -94,3 +94,33 @@ export const createCourse = async (courseData: CreateCourseReq) => {
 
   return res.data;
 };
+
+export const resetClassroomInviteCode = async (
+  id: number
+): Promise<Boolean> => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classroom/reset-invite-code/${id}`
+  );
+  if (err) {
+    return false;
+  }
+
+  return true;
+};
+
+export const toggleClassroomInviteCode = async (
+  id: number,
+  state: boolean
+): Promise<Boolean> => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classroom/toggle-invite-code/${id}`,
+    {
+      currentState: state,
+    }
+  );
+  if (err) {
+    return false;
+  }
+
+  return true;
+};
