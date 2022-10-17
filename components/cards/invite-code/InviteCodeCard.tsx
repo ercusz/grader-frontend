@@ -7,6 +7,7 @@ import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
+  Alert,
   Card,
   CardContent,
   CardHeader,
@@ -14,6 +15,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Snackbar,
   Stack,
   Tooltip,
   Typography,
@@ -29,6 +31,9 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const [_, setOpenDialog] = useAtom(openDialogAtom);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [anchorCopiedAlert, setAnchorCopiedAlert] =
+    useState<null | HTMLElement>(null);
+  const openCopiedAlert = Boolean(anchorCopiedAlert);
   const open = Boolean(anchorEl);
 
   const handleCloseMenu = () => {
@@ -39,8 +44,35 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
     setAnchorEl(e.currentTarget);
   };
 
+  const handleCopyButton = (event: React.MouseEvent<HTMLLIElement>) => {
+    navigator.clipboard.writeText(
+      classroom?.inviteCode ? classroom?.inviteCode : 'ไม่พบข้อมูล'
+    );
+    setAnchorCopiedAlert(event.currentTarget);
+    handleCloseMenu();
+  };
+
+  const handleCloseCopiedAlert = () => {
+    setAnchorCopiedAlert(null);
+  };
+
   return (
     <>
+      <Snackbar
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        open={openCopiedAlert}
+        autoHideDuration={6000}
+        onClose={handleCloseCopiedAlert}
+      >
+        <Alert
+          className="shadow-xl"
+          onClose={handleCloseCopiedAlert}
+          severity="success"
+          sx={{ width: '100%' }}
+        >
+          คัดลอกรหัสเชิญแล้ว
+        </Alert>
+      </Snackbar>
       <InviteCodeDialog
         inviteCode={
           classroom?.inviteCode ? classroom?.inviteCode : 'ไม่พบข้อมูล'
@@ -92,7 +124,7 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={handleCloseMenu} disableRipple>
+        <MenuItem onClick={handleCopyButton} disableRipple>
           <ContentCopyIcon sx={{ mr: 1 }} />
           คัดลอกรหัสเชิญ
         </MenuItem>
