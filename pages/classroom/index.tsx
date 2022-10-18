@@ -1,9 +1,14 @@
+import ClassroomInvitationCard from '@/components/cards/classroom-invitation/ClassroomInvitationCard';
 import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
 import ClassroomCard from '@/components/cards/classroom/ClassroomCard';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { useClassroomsFilter } from '@/states/classrooms/useClassrooms';
 import { useUser } from '@/states/user/useUser';
-import { MyClassroom, MyClassroomsResponse } from '@/types/types';
+import {
+  MyClassroom,
+  MyClassroomInvitation,
+  MyClassroomsResponse,
+} from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassrooms } from '@/utils/ClassroomService';
 import { useDebounce } from '@/utils/useDebounce';
@@ -154,6 +159,17 @@ const Classrooms: NextPageWithLayout = () => {
               </SwiperSlide>
             ))}
           {isSuccess &&
+            data.invitations &&
+            data.invitations.map((invitation: MyClassroomInvitation) => (
+              <SwiperSlide key={invitation.id} className="mb-96">
+                <ClassroomInvitationCard
+                  invitation={invitation}
+                  loading={isLoading}
+                />
+              </SwiperSlide>
+            ))}
+          {isSuccess &&
+            data.classrooms &&
             data.classrooms.map((classroom: MyClassroom) => (
               <SwiperSlide key={classroom.id} className="mb-96">
                 <ClassroomCard classroom={classroom} loading={isLoading} />
@@ -180,8 +196,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery<MyClassroomsResponse>(['classrooms', ''], () =>
-    getClassrooms()
+  await queryClient.prefetchQuery<MyClassroomsResponse>(
+    ['classrooms', ''],
+    () => getClassrooms()
   );
 
   return {
