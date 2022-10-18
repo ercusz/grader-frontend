@@ -142,9 +142,9 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
         <CardContent>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography className="font-bold" variant="h6" sx={{ py: 0 }}>
-              {resetMutation.isLoading ||
-                (toggleMutation.isLoading && 'กำลังโหลด...')}
-              {classroom?.enabledInviteCode === true ? (
+              {resetMutation.isLoading || toggleMutation.isLoading ? (
+                'กำลังโหลด...'
+              ) : classroom?.enabledInviteCode === true ? (
                 classroom?.inviteCode ? (
                   classroom?.inviteCode
                 ) : (
