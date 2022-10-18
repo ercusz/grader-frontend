@@ -89,7 +89,7 @@ export const createCourse = async (courseData: CreateCourseReq) => {
   );
 
   if (err) {
-    return;
+    throw new Error('create course failed');
   }
 
   return res.data;

@@ -8,8 +8,10 @@ import { createCourse } from '@/utils/ClassroomService';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ClearIcon from '@mui/icons-material/Clear';
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   Grid,
   Paper,
   Stack,
@@ -19,6 +21,7 @@ import {
   Stepper,
   Typography,
 } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -27,6 +30,20 @@ import { NextPageWithLayout } from '../page';
 
 const CreateCourse: NextPageWithLayout = () => {
   const { data: user } = useUser();
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    (courseData: CreateCourseReq) => createCourse(courseData),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['courses']);
+        handleNext();
+      },
+      onError: () => {
+        setIsError(true);
+        handleNext();
+      },
+    }
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -57,10 +74,6 @@ const CreateCourse: NextPageWithLayout = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
   const onSubmitCourseDetail = (data: any) => {
     setCourse((prevState) => ({
       ...prevState,
@@ -78,13 +91,7 @@ const CreateCourse: NextPageWithLayout = () => {
   };
 
   const handleCreateCourse = async () => {
-    const res = await createCourse({ ...course, classrooms: classrooms });
-
-    if (!res) {
-      setIsError(true);
-    }
-
-    handleNext();
+    mutation.mutate({ ...course, classrooms: classrooms });
   };
 
   const courseFormContext = useForm<CreateCourseReq>({
@@ -126,6 +133,12 @@ const CreateCourse: NextPageWithLayout = () => {
 
   return (
     <section>
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={mutation.isLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Grid className="min-h-screen" container>
         <Grid
           item
