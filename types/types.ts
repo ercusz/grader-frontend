@@ -78,9 +78,9 @@ export type CreateCourseClassroom = {
 
 export type CreateCourseReq = {
   name: string;
-  code?: string;
-  semester?: number;
-  year?: number;
+  code?: string | null;
+  semester?: number | null;
+  year?: number | null;
   classrooms?: CreateCourseClassroom[];
 };
 

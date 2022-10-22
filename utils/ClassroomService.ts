@@ -4,6 +4,7 @@ import {
   MyCoursesResponse,
 } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
+import { uploadImage } from './UploadService';
 
 export const getClassrooms = async (): Promise<MyClassroomsResponse> => {
   const { res, err }: Response = await contentHttpClient.get(
@@ -123,4 +124,33 @@ export const toggleClassroomInviteCode = async (
   }
 
   return true;
+};
+
+export const updateCourseInfo = async (data: CreateCourseReq, id: number) => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/course/${id}`,
+    data
+  );
+
+  if (err) {
+    throw new Error('Update course details failed.');
+  }
+};
+
+export const updateCourseCoverImage = async (file: File, id: number) => {
+  try {
+    const coverImage = await uploadImage(file);
+    const { err }: Response = await contentHttpClient.patch(
+      `/api/course/${id}`,
+      {
+        coverImage: coverImage,
+      }
+    );
+
+    if (err) {
+      throw new Error('Update cover image failed.');
+    }
+  } catch (err) {
+    throw new Error('Update cover image failed.');
+  }
 };

@@ -1,6 +1,9 @@
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useCourseSlug } from '@/states/courses/useCourses';
+import { CreateCourseReq } from '@/types/types';
+import { updateCourseInfo } from '@/utils/ClassroomService';
 import { Button } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,6 +15,25 @@ export interface IEditCourseInfoForm {
 
 const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
   const { data: course } = useCourseSlug({ slug: courseSlug });
+  const queryClient = useQueryClient();
+  interface IUpdateCourseInfo {
+    data: CreateCourseReq;
+    courseId: number;
+  }
+  const mutation = useMutation(
+    (params: IUpdateCourseInfo) =>
+      updateCourseInfo(params.data, params.courseId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['course', { slug: courseSlug }]);
+        alert('อัปเดตข้อมูลรายวิชาสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูลรายวิชา');
+      },
+    }
+  );
+
   const [_, setUnsavedChanges] = useAtom(unsavedChangesAtom);
 
   const defaultValues = useMemo(() => {
@@ -30,20 +52,16 @@ const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
   const { watch } = courseInfoFormContext;
   const formData = watch();
 
-  useEffect(() => {
-    const courseData = {
-      name: course?.name,
-      code: course?.code,
-      semester: course?.semester,
-      year: course?.year,
-    };
-    if (JSON.stringify(formData) !== JSON.stringify(courseData)) {
-      setUnsavedChanges(true);
-    }
-  }, [formData, course, setUnsavedChanges]);
-
   const handleSubmit = () => {
-    alert(JSON.stringify(formData));
+    if (course && formData && formData.name) {
+      let data = {
+        name: formData!.name,
+        code: formData!.code,
+        semester: formData!.semester,
+        year: formData!.year,
+      };
+      mutation.mutate({ data: data, courseId: course?.id });
+    }
     setUnsavedChanges(false);
   };
 

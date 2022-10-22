@@ -1,7 +1,9 @@
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useCourseSlug } from '@/states/courses/useCourses';
+import { updateCourseCoverImage } from '@/utils/ClassroomService';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Box, Button, Container, Divider, Typography } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAtom } from 'jotai';
 import Image from 'next/image';
 import { CSSProperties, useEffect, useMemo } from 'react';
@@ -50,6 +52,24 @@ const UploadCoverImageForm: React.FC<IUploadCoverImageForm> = ({
   courseSlug,
 }) => {
   const { data: course } = useCourseSlug({ slug: courseSlug });
+  const queryClient = useQueryClient();
+  interface IUpdateCourseCoverImage {
+    file: File;
+    courseId: number;
+  }
+  const mutation = useMutation(
+    (params: IUpdateCourseCoverImage) =>
+      updateCourseCoverImage(params.file, params.courseId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['course', { slug: courseSlug }]);
+        alert('อัปเดตรูปภาพหน้าปกสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการอัปเดตรูปภาพหน้าปก');
+      },
+    }
+  );
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     accept: { 'image/*': [] },
     maxFiles: 1,
@@ -67,8 +87,10 @@ const UploadCoverImageForm: React.FC<IUploadCoverImageForm> = ({
     setUnsavedChanges(acceptedFiles[0] !== undefined);
   }, [acceptedFiles, setUnsavedChanges]);
 
-  const handleUpdateCoverImage = () => {
-    alert(acceptedFiles[0].name);
+  const handleUpdateCoverImage = async () => {
+    if (course) {
+      mutation.mutate({ file: acceptedFiles[0], courseId: course.id });
+    }
     setUnsavedChanges(false);
   };
 
