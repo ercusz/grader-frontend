@@ -7,9 +7,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
   Chip,
-  Grid,
+  Container,
   IconButton,
   Paper,
+  Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -124,61 +125,57 @@ const CourseHeader: React.FC<ICourseHeader> = ({
             borderBottomRightRadius: 20,
           }}
         />
-        <Grid container>
-          <Grid item md={6}>
-            <Box
-              sx={{
-                position: 'relative',
-                pt: 14,
-                px: { xs: 3, md: 6 },
-                pb: 1,
-              }}
+        <Container
+          sx={{
+            position: 'relative',
+            pt: 14,
+            px: { xs: 3, md: 6 },
+            pb: 1,
+          }}
+        >
+          {classroom && (
+            <Chip
+              color="primary"
+              label={
+                <Typography className="font-bold" color="inherit">
+                  {classroom.name}
+                </Typography>
+              }
+            />
+          )}
+          <Stack direction="row" alignItems="center">
+            <Typography
+              className="font-bold"
+              component="h1"
+              variant="h3"
+              color="inherit"
+              noWrap
+              gutterBottom
             >
-              {classroom && (
-                <Chip
-                  color="primary"
-                  label={
-                    <Typography className="font-bold" color="inherit">
-                      {classroom.name}
-                    </Typography>
-                  }
-                />
-              )}
-              <Typography
-                className="font-bold"
-                component="h1"
-                variant="h3"
-                color="inherit"
-                noWrap
-                gutterBottom
+              {getName()}
+            </Typography>
+            {user?.role.name === 'Teacher' && (
+              <Tooltip
+                title={`แก้ไขข้อมูล${classroom ? 'กลุ่มการเรียน' : 'รายวิชา'}`}
               >
-                {getName()}
-                {user?.role.name === 'Teacher' && (
-                  <Tooltip
-                    title={`แก้ไขข้อมูล${
-                      classroom ? 'กลุ่มการเรียน' : 'รายวิชา'
-                    }`}
-                  >
-                    <IconButton
-                      aria-label="edit course info"
-                      color="inherit"
-                      size="large"
-                      onClick={() => setOpenEditCourseDialog(true)}
-                    >
-                      <EditIcon fontSize="inherit" />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              </Typography>
-              <Typography variant="h5" color="inherit" paragraph>
-                {getSemesterYear()}
-              </Typography>
-              <Typography variant="subtitle1" color="inherit" paragraph>
-                {getTeacher()}
-              </Typography>
-            </Box>
-          </Grid>
-        </Grid>
+                <IconButton
+                  aria-label="edit course info"
+                  color="inherit"
+                  size="large"
+                  onClick={() => setOpenEditCourseDialog(true)}
+                >
+                  <EditIcon fontSize="inherit" />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Stack>
+          <Typography variant="h5" color="inherit" paragraph>
+            {getSemesterYear()}
+          </Typography>
+          <Typography variant="subtitle1" color="inherit" paragraph>
+            {getTeacher()}
+          </Typography>
+        </Container>
       </Paper>
     </>
   );
