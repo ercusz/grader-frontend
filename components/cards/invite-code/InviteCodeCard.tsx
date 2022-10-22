@@ -123,9 +123,9 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
           classroom?.inviteCode ? classroom?.inviteCode : 'ไม่พบข้อมูล'
         }
       />
-      <Card variant="outlined">
+      <Card variant="outlined" sx={{ py: 0.5 }}>
         <CardHeader
-          sx={{ pt: 1, pb: 0 }}
+          sx={{ py: 0 }}
           title={<Typography variant="body2">รหัสเชิญ</Typography>}
           action={
             <IconButton
@@ -139,8 +139,8 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
             </IconButton>
           }
         />
-        <CardContent>
-          <Stack direction="row" alignItems="center" spacing={2}>
+        <CardContent sx={{ pt: 0, '&:last-child': { pb: 0 } }}>
+          <Stack direction="row" alignItems="center">
             <Typography className="font-bold" variant="h6" sx={{ py: 0 }}>
               {resetMutation.isLoading || toggleMutation.isLoading ? (
                 'กำลังโหลด...'

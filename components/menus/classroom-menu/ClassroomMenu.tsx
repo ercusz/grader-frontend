@@ -38,7 +38,7 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
       <Stack
         direction="row"
         justifyContent="space-between"
-        alignItems="center"
+        alignItems="flex-start"
         spacing={2}
         sx={{
           mb: 3,
