@@ -154,3 +154,20 @@ export const updateCourseCoverImage = async (file: File, id: number) => {
     throw new Error('Update cover image failed.');
   }
 };
+
+export const deleteCourse = async (id: number) => {
+  const { err }: Response = await contentHttpClient.delete(`/api/course/${id}`);
+
+  if (err) {
+    throw new Error('Delete course failed.');
+  }
+};
+export const deleteClassroom = async (id: number) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classroom/${id}`
+  );
+
+  if (err) {
+    throw new Error('Delete classroom failed.');
+  }
+};

@@ -1,19 +1,23 @@
+import DeleteConfirmationDialog from '@/components/dialogs/delete-confirmation/DeleteConfirmationDialog';
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useCourseSlug } from '@/states/courses/useCourses';
 import { CreateCourseReq } from '@/types/types';
-import { updateCourseInfo } from '@/utils/ClassroomService';
+import { deleteCourse, updateCourseInfo } from '@/utils/ClassroomService';
 import { Button } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAtom } from 'jotai';
-import { useEffect, useMemo } from 'react';
+import { atom, useAtom } from 'jotai';
+import { useRouter } from 'next/router';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import CreateCourseForm from '../create-course-form/CreateCourseForm';
 
 export interface IEditCourseInfoForm {
   courseSlug: string;
 }
+const deleteDialogAtom = atom(false);
 
 const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
+  const router = useRouter();
   const { data: course } = useCourseSlug({ slug: courseSlug });
   const queryClient = useQueryClient();
   interface IUpdateCourseInfo {
@@ -34,7 +38,21 @@ const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
     }
   );
 
-  const [_, setUnsavedChanges] = useAtom(unsavedChangesAtom);
+  const deleteMutation = useMutation(
+    (courseId: number) => deleteCourse(courseId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['courses']);
+        alert('ลบรายวิชาสำเร็จ');
+        router.push('/course');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการลบข้อมูลรายวิชา');
+      },
+    }
+  );
+  const [openDeleteDialog, setOpenDeleteDialog] = useAtom(deleteDialogAtom);
+  const [, setUnsavedChanges] = useAtom(unsavedChangesAtom);
 
   const defaultValues = useMemo(() => {
     return {
@@ -66,12 +84,25 @@ const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
   };
 
   const handleDelete = () => {
-    alert('Course deleted!');
+    if (course) {
+      deleteMutation.mutate(course.id);
+    }
     setUnsavedChanges(false);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
   };
 
   return (
     <>
+      <DeleteConfirmationDialog
+        actionName={`รายวิชา ${course?.name}`}
+        confirmText={course?.name as string}
+        open={openDeleteDialog}
+        handleClose={handleCloseDeleteDialog}
+        onSubmit={handleDelete}
+      />
       <CreateCourseForm formContext={courseInfoFormContext} />
       <Button variant="contained" onClick={handleSubmit} sx={{ my: 3, mr: 2 }}>
         อัปเดตข้อมูลรายวิชา
@@ -79,7 +110,7 @@ const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
       <Button
         variant="outlined"
         color="error"
-        onClick={handleDelete}
+        onClick={() => setOpenDeleteDialog(true)}
         sx={{ my: 3 }}
       >
         ลบรายวิชา
