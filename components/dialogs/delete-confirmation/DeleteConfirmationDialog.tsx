@@ -46,6 +46,7 @@ const DeleteConfirmationDialog: React.FC<IDeleteConfirmationDialog> = ({
         ></DialogContentText>
         <FormContainer formContext={formContext}>
           <TextFieldElement
+            autoComplete="off"
             fullWidth
             label={`กรอกคำว่า ${confirmText} เพื่อยืนยันการลบ`}
             name="name"
