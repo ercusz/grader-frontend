@@ -1,4 +1,5 @@
 import {
+  CreateCourseClassroom,
   CreateCourseReq,
   MyClassroomsResponse,
   MyCoursesResponse,
@@ -162,6 +163,7 @@ export const deleteCourse = async (id: number) => {
     throw new Error('Delete course failed.');
   }
 };
+
 export const deleteClassroom = async (id: number) => {
   const { err }: Response = await contentHttpClient.delete(
     `/api/classroom/${id}`
@@ -169,5 +171,22 @@ export const deleteClassroom = async (id: number) => {
 
   if (err) {
     throw new Error('Delete classroom failed.');
+  }
+};
+
+export const addClassrooms = async (
+  classrooms: CreateCourseClassroom[],
+  courseId: number
+) => {
+  const { err }: Response = await contentHttpClient.post(
+    '/api/classrooms/create',
+    {
+      courseId: courseId,
+      classrooms: classrooms,
+    }
+  );
+
+  if (err) {
+    throw new Error('Add classrooms failed.');
   }
 };

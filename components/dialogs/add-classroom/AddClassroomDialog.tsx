@@ -3,6 +3,7 @@ import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
 import { useCourseSlug } from '@/states/courses/useCourses';
 import { openAddClassroomsDialogAtom } from '@/stores/add-classrooms';
 import { CreateCourseClassroom } from '@/types/types';
+import { addClassrooms } from '@/utils/ClassroomService';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -18,6 +19,7 @@ import {
   Stepper,
   Typography,
 } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -31,6 +33,20 @@ export const unsavedChangesAtom = atom(false);
 
 const AddClassroomDialog: React.FC<IAddClassroomDialog> = ({ courseSlug }) => {
   const { data: course } = useCourseSlug({ slug: courseSlug });
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    (classrooms: CreateCourseClassroom[]) =>
+      addClassrooms(classrooms, course?.id as number),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['course', { slug: courseSlug }]);
+        alert('เพิ่มกลุ่มการเรียนสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการเพิ่มกลุ่มการเรียน');
+      },
+    }
+  );
   const [openDialog, setOpenDialog] = useAtom(openAddClassroomsDialogAtom);
   const [activeStep, setActiveStep] = useAtom(activeStepAtom);
   const [unsavedChanges, setUnsavedChanges] = useAtom(unsavedChangesAtom);
@@ -83,7 +99,12 @@ const AddClassroomDialog: React.FC<IAddClassroomDialog> = ({ courseSlug }) => {
   };
 
   const handleSaveChanges = () => {
-    alert(JSON.stringify(classrooms, null, 4));
+    if (classrooms) {
+      mutation.mutate(classrooms);
+    }
+    setUnsavedChanges(false);
+    setOpenDialog(false);
+    setActiveStep(0);
   };
 
   const classroomsFormContext = useForm<{ classrooms: string[] }>({

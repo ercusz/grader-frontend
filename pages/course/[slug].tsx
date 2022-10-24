@@ -73,7 +73,7 @@ const Course: NextPageWithLayout = ({
           <>
             <CourseHeader courseSlug={slug} />
             <Grid container spacing={2} pb={8}>
-              <Grid item xs={12}>
+              <Grid item xs={12} pb={2}>
                 <Stack direction="row" spacing={2}>
                   <Typography
                     className="font-bold"
@@ -100,7 +100,7 @@ const Course: NextPageWithLayout = ({
                 const courseName = `${course.name}${postfix}`;
 
                 return (
-                  <Grid key={classroom.id} item xs={12} sm={6} md={4} mt={4}>
+                  <Grid key={classroom.id} item xs={12} sm={6} md={4}>
                     <CourseClassroomCard
                       courseName={courseName}
                       classroom={classroom}
