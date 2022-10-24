@@ -2,12 +2,12 @@ import DeleteConfirmationDialog from '@/components/dialogs/delete-confirmation/D
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
-import { deleteClassroom } from '@/utils/ClassroomService';
+import { deleteClassroom, updateClassroomInfo } from '@/utils/ClassroomService';
 import { Button, Stack } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 
@@ -23,6 +23,19 @@ const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
   const router = useRouter();
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const queryClient = useQueryClient();
+  const mutation = useMutation(
+    (data: { name: string }) =>
+      updateClassroomInfo(data, classroom?.id as number),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['classroom', { slug: classroomSlug }]);
+        alert('อัปเดตข้อมูลกลุ่มการเรียนสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูลกลุ่มการเรียน');
+      },
+    }
+  );
   const deleteMutation = useMutation(
     (classroomId: number) => deleteClassroom(classroomId),
     {
@@ -59,17 +72,10 @@ const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
   const { watch } = classroomInfoFormContext;
   const formData = watch();
 
-  useEffect(() => {
-    const courseData = {
-      name: classroom?.name,
-    };
-    if (JSON.stringify(formData) !== JSON.stringify(courseData)) {
-      setUnsavedChanges(true);
-    }
-  }, [formData, classroom, setUnsavedChanges]);
-
   const handleSubmit = () => {
-    alert(JSON.stringify(formData));
+    if (formData.name) {
+      mutation.mutate(formData as { name: string });
+    }
     setUnsavedChanges(false);
   };
 

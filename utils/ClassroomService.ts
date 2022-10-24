@@ -156,6 +156,20 @@ export const updateCourseCoverImage = async (file: File, id: number) => {
   }
 };
 
+export const updateClassroomInfo = async (
+  data: { name: string },
+  id: number
+) => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classroom/${id}`,
+    data
+  );
+
+  if (err) {
+    throw new Error('Update classroom details failed.');
+  }
+};
+
 export const deleteCourse = async (id: number) => {
   const { err }: Response = await contentHttpClient.delete(`/api/course/${id}`);
 
