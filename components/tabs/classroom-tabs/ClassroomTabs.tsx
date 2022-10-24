@@ -31,7 +31,7 @@ const ClassroomTabs: React.FC<IClassroomTabs> = () => {
   const { slug } = router.query;
   const { pathname } = router;
 
-  const [_, setValue] = useAtom(tabsAtom);
+  const [, setValue] = useAtom(tabsAtom);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

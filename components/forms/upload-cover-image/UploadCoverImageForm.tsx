@@ -74,7 +74,7 @@ const UploadCoverImageForm: React.FC<IUploadCoverImageForm> = ({
     accept: { 'image/*': [] },
     maxFiles: 1,
   });
-  const [_, setUnsavedChanges] = useAtom(unsavedChangesAtom);
+  const [, setUnsavedChanges] = useAtom(unsavedChangesAtom);
 
   const style: CSSProperties = useMemo(
     () => ({

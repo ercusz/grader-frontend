@@ -58,7 +58,7 @@ export function useLessonFilters() {
   const [lessons, setLessons] = useAtom(rwLessonsAtom);
   const [isFilterAll] = useAtom(readLessonsCheckedAtom);
   const [isUnFilterAll] = useAtom(readLessonsUnCheckedAtom);
-  const [_, setFilterAll] = useAtom(writeLessonsCheckAllAtom);
+  const [, setFilterAll] = useAtom(writeLessonsCheckAllAtom);
 
   return {
     lessons,

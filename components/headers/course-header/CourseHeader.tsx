@@ -29,7 +29,7 @@ const CourseHeader: React.FC<ICourseHeader> = ({
   const { data: course } = useCourseSlug({ slug: courseSlug });
   const { data: user } = useUser();
 
-  const [_, setOpenEditCourseDialog] = useAtom(openEditCourseDialogAtom);
+  const [, setOpenEditCourseDialog] = useAtom(openEditCourseDialogAtom);
 
   const getCoverImage = () => {
     if (

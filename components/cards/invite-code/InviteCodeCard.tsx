@@ -57,7 +57,7 @@ const InviteCodeCard: React.FC<IInviteCodeCard> = ({ classroomSlug }) => {
       },
     }
   );
-  const [_, setOpenDialog] = useAtom(openDialogAtom);
+  const [, setOpenDialog] = useAtom(openDialogAtom);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [anchorCopiedAlert, setAnchorCopiedAlert] =
     useState<null | HTMLElement>(null);

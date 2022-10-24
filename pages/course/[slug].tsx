@@ -52,7 +52,7 @@ const Course: NextPageWithLayout = ({
     }
   }, [user, router]);
 
-  const [_, setOpenDialog] = useAtom(openAddClassroomsDialogAtom);
+  const [, setOpenDialog] = useAtom(openAddClassroomsDialogAtom);
 
   return (
     <section>
