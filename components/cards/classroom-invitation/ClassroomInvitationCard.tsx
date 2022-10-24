@@ -162,14 +162,7 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
               </Box>
               <Stack direction="row">
                 <Tooltip title="ปฏิเสธคำเชิญ">
-                  <IconButton
-                    aria-label="reject-invite"
-                    sx={{
-                      mr: 0.5,
-                      fontWeight: 100,
-                      color: (theme) => theme.palette.grey[800],
-                    }}
-                  >
+                  <IconButton aria-label="reject-invite" color="error">
                     <ClearIcon />
                   </IconButton>
                 </Tooltip>
