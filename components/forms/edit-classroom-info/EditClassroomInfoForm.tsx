@@ -32,7 +32,8 @@ const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
           { slug: classroom?.course.slug },
         ]);
         alert('ลบกลุ่มการเรียนสำเร็จ');
-        setOpenDialog(false);
+        setOpenDeleteDialog(false);
+        setOpenEditDialog(false);
         router.push(`/course/${classroom?.course.slug}`);
       },
       onError: () => {
@@ -41,7 +42,7 @@ const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
       },
     }
   );
-  const [, setOpenDialog] = useAtom(openEditCourseDialogAtom);
+  const [, setOpenEditDialog] = useAtom(openEditCourseDialogAtom);
   const [openDeleteDialog, setOpenDeleteDialog] = useAtom(deleteDialogAtom);
   const [, setUnsavedChanges] = useAtom(unsavedChangesAtom);
 

@@ -1,6 +1,7 @@
 import DeleteConfirmationDialog from '@/components/dialogs/delete-confirmation/DeleteConfirmationDialog';
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useCourseSlug } from '@/states/courses/useCourses';
+import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import { CreateCourseReq } from '@/types/types';
 import { deleteCourse, updateCourseInfo } from '@/utils/ClassroomService';
 import { Button } from '@mui/material';
@@ -44,13 +45,17 @@ const EditCourseInfoForm: React.FC<IEditCourseInfoForm> = ({ courseSlug }) => {
       onSuccess: () => {
         queryClient.invalidateQueries(['courses']);
         alert('ลบรายวิชาสำเร็จ');
+        setOpenDeleteDialog(false);
+        setOpenEditDialog(false);
         router.push('/course');
       },
       onError: () => {
         alert('เกิดข้อผิดพลาดในการลบข้อมูลรายวิชา');
+        setOpenDeleteDialog(false);
       },
     }
   );
+  const [, setOpenEditDialog] = useAtom(openEditCourseDialogAtom);
   const [openDeleteDialog, setOpenDeleteDialog] = useAtom(deleteDialogAtom);
   const [, setUnsavedChanges] = useAtom(unsavedChangesAtom);
 
