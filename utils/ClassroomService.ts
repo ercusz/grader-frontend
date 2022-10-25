@@ -204,3 +204,18 @@ export const addClassrooms = async (
     throw new Error('Add classrooms failed.');
   }
 };
+
+export const responseClassroomInvitation = async (
+  id: number,
+  isAccepted: boolean
+) => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classroom-invitation/response/${id}`,
+    {
+      isAccepted: isAccepted,
+    }
+  );
+  if (err) {
+    throw new Error('Response classroom invitation failed.');
+  }
+};
