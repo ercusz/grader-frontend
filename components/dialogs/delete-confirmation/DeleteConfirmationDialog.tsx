@@ -50,6 +50,9 @@ const DeleteConfirmationDialog: React.FC<IDeleteConfirmationDialog> = ({
             fullWidth
             label={`กรอกคำว่า ${confirmText} เพื่อยืนยันการลบ`}
             name="name"
+            onKeyPress={(e) => {
+              e.key === 'Enter' && e.preventDefault();
+            }}
             validation={{
               pattern: {
                 value: new RegExp(confirmText),
