@@ -219,3 +219,15 @@ export const responseClassroomInvitation = async (
     throw new Error('Response classroom invitation failed.');
   }
 };
+
+export const joinClassroomByInviteCode = async (inviteCode: string) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classroom/join`,
+    {
+      inviteCode: inviteCode,
+    }
+  );
+  if (err) {
+    throw new Error('Join classroom failed.');
+  }
+};

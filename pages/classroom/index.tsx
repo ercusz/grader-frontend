@@ -16,8 +16,11 @@ import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SearchIcon from '@mui/icons-material/Search';
 
+import JoinClassroomDialog from '@/components/dialogs/join-classroom/JoinClassroomDialog';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Box,
+  Button,
   ButtonGroup,
   Container,
   IconButton,
@@ -26,6 +29,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { atom, useAtom } from 'jotai';
 import { GetServerSideProps } from 'next';
 import { getToken } from 'next-auth/jwt';
 import { useRouter } from 'next/router';
@@ -42,7 +46,12 @@ import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { NextPageWithLayout } from '../page';
 
+const openJoinClassroomDialogAtom = atom<boolean>(false);
+
 const Classrooms: NextPageWithLayout = () => {
+  const [openJoinClassroomDialog, setOpenJoinClassroomDialog] = useAtom(
+    openJoinClassroomDialogAtom
+  );
   const theme = useTheme();
   const medium = useMediaQuery(theme.breakpoints.up('md'));
   const small = useMediaQuery(theme.breakpoints.up('sm'));
@@ -73,8 +82,16 @@ const Classrooms: NextPageWithLayout = () => {
     }
   }, [user, router]);
 
+  const handleCloseJoinClassroomDialog = () => {
+    setOpenJoinClassroomDialog(false);
+  };
+
   return (
     <section className="px-10 pt-16 overflow-y-hidden h-screen">
+      <JoinClassroomDialog
+        open={openJoinClassroomDialog}
+        handleClose={handleCloseJoinClassroomDialog}
+      />
       <Box
         className="classroom-pagination fixed shadow-xl"
         sx={{ zIndex: 9999 }}
@@ -85,7 +102,17 @@ const Classrooms: NextPageWithLayout = () => {
           justifyContent="flex-start"
           alignItems="center"
         >
-          <Container className="flex justify-end">
+          <Container className="flex justify-between">
+            <Box sx={{ height: '40px', marginTop: 2 }}>
+              <Button
+                size="small"
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={() => setOpenJoinClassroomDialog(true)}
+              >
+                เข้าร่วมคลาสเรียน
+              </Button>
+            </Box>
             <Box sx={{ height: '40px', marginTop: 2 }}>
               <ButtonGroup size="large" disableElevation>
                 <IconButton className="prevBtn">
