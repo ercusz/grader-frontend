@@ -1,5 +1,9 @@
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { UserResponse } from '@/types/types';
+import {
+  removeTaFromClassroom,
+  removeTasFromClassroom,
+} from '@/utils/ClassroomService';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Avatar,
@@ -9,7 +13,11 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import MaterialReactTable, {
+  MRT_ColumnDef,
+  MRT_Row,
+} from 'material-react-table';
 import { useMemo } from 'react';
 
 export interface ITeacherAssistantsTable {
@@ -23,18 +31,67 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
     slug: classroomSlug,
   });
 
+  const queryClient = useQueryClient();
+  const deleteTaMutation = useMutation(
+    (taId: number) => removeTaFromClassroom(taId, classroom?.id as number),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['classroom', { slug: classroom?.slug }]);
+        alert('ลบผู้ช่วยสอนออกจากคลาสเรียนสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการลบผู้ช่วยสอนออกจากคลาสเรียน');
+      },
+    }
+  );
+
+  const deleteTasMutation = useMutation(
+    (tas: UserResponse[]) =>
+      removeTasFromClassroom(tas, classroom?.id as number),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['classroom', { slug: classroom?.slug }]);
+        alert('ลบผู้ช่วยสอนที่เลือกออกจากคลาสเรียนสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการลบผู้ช่วยสอนออกจากคลาสเรียน');
+      },
+    }
+  );
+  const handleDeleteTa = (row: MRT_Row<UserResponse>) => {
+    if (
+      confirm(
+        `ต้องการลบผู้ช่วยสอน\n\nชื่อ: ${row.getValue(
+          'name'
+        )}\nชื่อผู้ใช้: ${row.getValue('username')}\n\nออกจากคลาสเรียนหรือไม่?`
+      )
+    ) {
+      deleteTaMutation.mutate(row.original.id);
+    }
+  };
+
+  const handleDeleteTas = (students: UserResponse[]) => {
+    if (
+      confirm(
+        `ต้องการลบผู้ช่วยสอน\nจำนวน ${students.length} คน\nออกจากคลาสเรียนหรือไม่?`
+      )
+    ) {
+      deleteTasMutation.mutate(students);
+    }
+  };
+
   const getTaName = (ta: UserResponse) => {
     if (ta.firstName && ta.lastName) {
       return `${ta.firstName} ${ta.lastName}`;
     }
 
-    return ta.username;
+    return 'ยังไม่ตั้งชื่อ';
   };
 
   const columns = useMemo<MRT_ColumnDef<UserResponse>[]>(
     () => [
       {
-        accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+        accessorFn: (row) => getTaName(row),
         id: 'name',
         header: 'ชื่อ - สกุล',
         Cell: ({ cell, row }) => (
@@ -96,11 +153,12 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
           marginBottom: 4,
         },
       }}
-      renderRowActionMenuItems={({ closeMenu }) => [
+      renderRowActionMenuItems={({ row, closeMenu }) => [
         <MenuItem
           key={0}
           onClick={() => {
             closeMenu();
+            handleDeleteTa(row);
           }}
           sx={{ m: 0 }}
         >
@@ -112,9 +170,10 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
       ]}
       renderTopToolbarCustomActions={({ table }) => {
         const handleRemoveSelected = () => {
-          table.getSelectedRowModel().flatRows.map((row) => {
-            alert('remove ' + row.getValue('name'));
-          });
+          const tas = table
+            .getSelectedRowModel()
+            .flatRows.map(({ original }) => original);
+          handleDeleteTas(tas);
         };
 
         const handleAdd = () => {

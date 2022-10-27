@@ -257,3 +257,28 @@ export const removeStudentsFromClassroom = async (
     await removeStudentFromClassroom(students[i].id, classroomId);
   }
 };
+
+export const removeTaFromClassroom = async (
+  taId: number,
+  classroomId: number
+) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classroom-ta/remove`,
+    {
+      teacherAssistantId: taId,
+      classroomId: classroomId,
+    }
+  );
+  if (err) {
+    throw new Error('Remove teacher assistant from classroom failed.');
+  }
+};
+
+export const removeTasFromClassroom = async (
+  tas: UserResponse[],
+  classroomId: number
+) => {
+  for (let i = 0; i < tas.length; i++) {
+    await removeTaFromClassroom(tas[i].id, classroomId);
+  }
+};
