@@ -3,6 +3,7 @@ import {
   CreateCourseReq,
   MyClassroomsResponse,
   MyCoursesResponse,
+  UserResponse,
 } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 import { uploadImage } from './UploadService';
@@ -229,5 +230,30 @@ export const joinClassroomByInviteCode = async (inviteCode: string) => {
   );
   if (err) {
     throw new Error('Join classroom failed.');
+  }
+};
+
+export const removeStudentFromClassroom = async (
+  studentId: number,
+  classroomId: number
+) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classroom-student/remove`,
+    {
+      studentId: studentId,
+      classroomId: classroomId,
+    }
+  );
+  if (err) {
+    throw new Error('Remove student from classroom failed.');
+  }
+};
+
+export const removeStudentsFromClassroom = async (
+  students: UserResponse[],
+  classroomId: number
+) => {
+  for (let i = 0; i < students.length; i++) {
+    await removeStudentFromClassroom(students[i].id, classroomId);
   }
 };

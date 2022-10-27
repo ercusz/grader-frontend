@@ -1,5 +1,9 @@
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { UserResponse } from '@/types/types';
+import {
+  removeStudentFromClassroom,
+  removeStudentsFromClassroom,
+} from '@/utils/ClassroomService';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Avatar,
@@ -9,7 +13,11 @@ import {
   MenuItem,
   Typography,
 } from '@mui/material';
-import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import MaterialReactTable, {
+  MRT_ColumnDef,
+  MRT_Row,
+} from 'material-react-table';
 import { useMemo } from 'react';
 
 export interface IStudentsTable {
@@ -21,18 +29,68 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
     slug: classroomSlug,
   });
 
+  const queryClient = useQueryClient();
+  const deleteStudentMutation = useMutation(
+    (studentId: number) =>
+      removeStudentFromClassroom(studentId, classroom?.id as number),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['classroom', { slug: classroom?.slug }]);
+        alert('ลบนักศึกษาออกจากคลาสเรียนสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการลบนักศึกษาออกจากคลาสเรียน');
+      },
+    }
+  );
+
+  const deleteStudentsMutation = useMutation(
+    (students: UserResponse[]) =>
+      removeStudentsFromClassroom(students, classroom?.id as number),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['classroom', { slug: classroom?.slug }]);
+        alert('ลบนักศึกษาที่เลือกออกจากคลาสเรียนสำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการลบนักศึกษาออกจากคลาสเรียน');
+      },
+    }
+  );
+  const handleDeleteStudent = (row: MRT_Row<UserResponse>) => {
+    if (
+      confirm(
+        `ต้องการลบนักศึกษา\n\nชื่อ: ${row.getValue(
+          'name'
+        )}\nชื่อผู้ใช้: ${row.getValue('username')}\n\nออกจากคลาสเรียนหรือไม่?`
+      )
+    ) {
+      deleteStudentMutation.mutate(row.original.id);
+    }
+  };
+
+  const handleDeleteStudents = (students: UserResponse[]) => {
+    if (
+      confirm(
+        `ต้องการลบนักศึกษา\nจำนวน ${students.length} คน\nออกจากคลาสเรียนหรือไม่?`
+      )
+    ) {
+      deleteStudentsMutation.mutate(students);
+    }
+  };
+
   const getStudentName = (student: UserResponse) => {
     if (student.firstName && student.lastName) {
       return `${student.firstName} ${student.lastName}`;
     }
 
-    return student.username;
+    return 'ยังไม่ตั้งชื่อ';
   };
 
   const columns = useMemo<MRT_ColumnDef<UserResponse>[]>(
     () => [
       {
-        accessorFn: (row) => `${row.firstName} ${row.lastName}`,
+        accessorFn: (student) => getStudentName(student),
         id: 'name',
         header: 'ชื่อ - สกุล',
         Cell: ({ cell, row }) => (
@@ -94,11 +152,12 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
           marginBottom: 4,
         },
       }}
-      renderRowActionMenuItems={({ closeMenu }) => [
+      renderRowActionMenuItems={({ row, closeMenu }) => [
         <MenuItem
           key={0}
           onClick={() => {
             closeMenu();
+            handleDeleteStudent(row);
           }}
           sx={{ m: 0 }}
         >
@@ -110,9 +169,10 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
       ]}
       renderTopToolbarCustomActions={({ table }) => {
         const handleRemoveSelected = () => {
-          table.getSelectedRowModel().flatRows.map((row) => {
-            alert('remove ' + row.getValue('name'));
-          });
+          const students = table
+            .getSelectedRowModel()
+            .flatRows.map(({ original }) => original);
+          handleDeleteStudents(students);
         };
 
         const handleAdd = () => {
