@@ -1,3 +1,4 @@
+import AddTeacherAssistantDialog from '@/components/dialogs/add-teacher-assistant/AddTeacherAssistantDialog';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { UserResponse } from '@/types/types';
 import {
@@ -14,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { atom, useAtom } from 'jotai';
 import MaterialReactTable, {
   MRT_ColumnDef,
   MRT_Row,
@@ -24,12 +26,15 @@ export interface ITeacherAssistantsTable {
   classroomSlug: string;
 }
 
+const openAddTaDialogAtom = atom(false);
+
 const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
   classroomSlug,
 }) => {
   const { isError, data: classroom } = useClassroomSlug({
     slug: classroomSlug,
   });
+  const [openAddTaDialog, setOpenAddTaDialog] = useAtom(openAddTaDialogAtom);
 
   const queryClient = useQueryClient();
   const deleteTaMutation = useMutation(
@@ -176,13 +181,18 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
           handleDeleteTas(tas);
         };
 
-        const handleAdd = () => {
-          alert('add teacher assistant action');
-        };
-
         return (
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <Button color="success" onClick={handleAdd} variant="outlined">
+            <AddTeacherAssistantDialog
+              classroomSlug={classroomSlug}
+              open={openAddTaDialog}
+              handleClose={() => setOpenAddTaDialog(false)}
+            />
+            <Button
+              color="success"
+              onClick={() => setOpenAddTaDialog(true)}
+              variant="outlined"
+            >
               เพิ่มผู้ช่วยสอน
             </Button>
             {table.getSelectedRowModel().flatRows.length > 0 && (

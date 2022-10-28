@@ -282,3 +282,40 @@ export const removeTasFromClassroom = async (
     await removeTaFromClassroom(tas[i].id, classroomId);
   }
 };
+
+export interface IFindUser {
+  email?: string;
+  username?: string;
+  studentId?: string;
+}
+export const findUser = async (keyword: IFindUser) => {
+  const { email, username, studentId } = keyword;
+
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/users?filters[${
+      (email && 'email') ||
+      (username && 'username') ||
+      (studentId && 'studentId')
+    }][$containsi]=${
+      (email && email) || (username && username) || (studentId && studentId)
+    }`
+  );
+  if (err) {
+    throw new Error('Find user data failed.');
+  }
+
+  return res.data;
+};
+
+export const addTaToClassroom = async (taId: number, classroomId: number) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classroom-ta/add`,
+    {
+      teacherAssistantId: taId,
+      classroomId: classroomId,
+    }
+  );
+  if (err) {
+    throw new Error('Add teacher assistant to classroom failed.');
+  }
+};
