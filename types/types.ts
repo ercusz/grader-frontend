@@ -20,6 +20,7 @@ export type UserResponse = {
   lastName: string | null;
   username: string;
   profileImage: Image | null; // unknown type
+  studentId: string | null;
 };
 
 export type Course = {

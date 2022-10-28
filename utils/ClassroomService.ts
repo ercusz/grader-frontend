@@ -335,3 +335,19 @@ export const addStudentToClassroom = async (
     throw new Error('Add student to classroom failed.');
   }
 };
+
+export const inviteStudentsToClassroom = async (
+  students: string[],
+  classroomId: number
+) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classroom-invitation/create`,
+    {
+      students: students,
+      classroomId: classroomId,
+    }
+  );
+  if (err) {
+    throw new Error('Invite students to classroom failed.');
+  }
+};

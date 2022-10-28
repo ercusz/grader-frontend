@@ -1,4 +1,5 @@
 import AddStudentDialog from '@/components/dialogs/add-student/AddStudentDialog';
+import InviteStudentDialog from '@/components/dialogs/invite-student/InviteStudentDialog';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { UserResponse } from '@/types/types';
 import {
@@ -27,6 +28,7 @@ export interface IStudentsTable {
 }
 
 const openAddStudentDialogAtom = atom(false);
+const openInviteStudentDialogAtom = atom(false);
 
 const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
   const { isError, data: classroom } = useClassroomSlug({
@@ -34,6 +36,9 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
   });
   const [openAddStudentDialog, setOpenAddStudentDialog] = useAtom(
     openAddStudentDialogAtom
+  );
+  const [openInviteStudentDialog, setOpenInviteStudentDialog] = useAtom(
+    openInviteStudentDialogAtom
   );
 
   const queryClient = useQueryClient();
@@ -189,9 +194,14 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
               open={openAddStudentDialog}
               handleClose={() => setOpenAddStudentDialog(false)}
             />
+            <InviteStudentDialog
+              classroomSlug={classroomSlug}
+              open={openInviteStudentDialog}
+              handleClose={() => setOpenInviteStudentDialog(false)}
+            />
             <Button
               color="info"
-              onClick={() => alert('invite student')}
+              onClick={() => setOpenInviteStudentDialog(true)}
               variant="outlined"
             >
               เชิญนักศึกษา
