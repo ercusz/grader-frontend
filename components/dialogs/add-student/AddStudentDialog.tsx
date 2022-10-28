@@ -56,21 +56,15 @@ const AddStudentDialog: React.FC<IAddStudentDialog> = ({
   const formContext = useForm({
     defaultValues: {
       search: '',
-    },
-  });
-  const { watch: watchSearch } = formContext;
-  const searchValue = watchSearch('search');
-
-  const debouncedFilter: string = useDebounce<string>(searchValue, 500);
-
-  const formRadioContext = useForm({
-    defaultValues: {
       searchType: 'username',
     },
   });
+  const { watch } = formContext;
+  const searchValue = watch('search');
+  const searchType = watch('searchType');
 
-  const { watch: watchType } = formRadioContext;
-  const searchType = watchType('searchType');
+  const debouncedFilter: string = useDebounce<string>(searchValue, 500);
+
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const {
     data: users,
@@ -159,27 +153,29 @@ const AddStudentDialog: React.FC<IAddStudentDialog> = ({
             autoComplete="off"
             name="search"
             helperText={
-              <FormContainer formContext={formRadioContext}>
-                <RadioButtonGroup
-                  name="searchType"
-                  row
-                  options={[
-                    {
-                      id: 'username',
-                      label: 'ชื่อผู้ใช้',
-                    },
-                    {
-                      id: 'email',
-                      label: 'อีเมล',
-                    },
-                    {
-                      id: 'studentId',
-                      label: 'รหัสนักศึกษา',
-                    },
-                  ]}
-                />
-              </FormContainer>
+              <RadioButtonGroup
+                name="searchType"
+                row
+                options={[
+                  {
+                    id: 'username',
+                    label: 'ชื่อผู้ใช้',
+                  },
+                  {
+                    id: 'email',
+                    label: 'อีเมล',
+                  },
+                  {
+                    id: 'studentId',
+                    label: 'รหัสนักศึกษา',
+                  },
+                ]}
+              />
             }
+            FormHelperTextProps={{
+              // @ts-expect-error
+              component: 'div',
+            }}
             InputProps={{
               endAdornment: (
                 <IconButton onClick={handleSearchButton}>
