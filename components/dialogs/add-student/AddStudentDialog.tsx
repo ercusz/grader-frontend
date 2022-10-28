@@ -4,7 +4,7 @@ import { addStudentToClassroom, findUser } from '@/utils/ClassroomService';
 import { useDebounce } from '@/utils/useDebounce';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import GppGoodIcon from '@mui/icons-material/GppGood';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 import SearchIcon from '@mui/icons-material/Search';
 import {
   Avatar,
@@ -27,7 +27,6 @@ import {
   RadioButtonGroup,
   TextFieldElement,
 } from 'react-hook-form-mui';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 export interface IAddStudentDialog {
   classroomSlug: string;
@@ -105,7 +104,7 @@ const AddStudentDialog: React.FC<IAddStudentDialog> = ({
     refetch();
   };
 
-  const handleAddTaButton = (student: UserResponse) => {
+  const handleAddStudentButton = (student: UserResponse) => {
     addStudentMutation.mutate(student.id);
   };
 
@@ -213,7 +212,7 @@ const AddStudentDialog: React.FC<IAddStudentDialog> = ({
                       <IconButton
                         edge="end"
                         aria-label="add-to-classroom"
-                        onClick={() => handleAddTaButton(user)}
+                        onClick={() => handleAddStudentButton(user)}
                       >
                         <AddIcon fontSize="medium" />
                       </IconButton>
