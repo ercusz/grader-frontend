@@ -1,3 +1,4 @@
+import AddStudentDialog from '@/components/dialogs/add-student/AddStudentDialog';
 import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { UserResponse } from '@/types/types';
 import {
@@ -14,6 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { atom, useAtom } from 'jotai';
 import MaterialReactTable, {
   MRT_ColumnDef,
   MRT_Row,
@@ -24,10 +26,15 @@ export interface IStudentsTable {
   classroomSlug: string;
 }
 
+const openAddStudentDialogAtom = atom(false);
+
 const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
   const { isError, data: classroom } = useClassroomSlug({
     slug: classroomSlug,
   });
+  const [openAddStudentDialog, setOpenAddStudentDialog] = useAtom(
+    openAddStudentDialogAtom
+  );
 
   const queryClient = useQueryClient();
   const deleteStudentMutation = useMutation(
@@ -175,14 +182,26 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
           handleDeleteStudents(students);
         };
 
-        const handleAdd = () => {
-          alert('add teacher assistant action');
-        };
-
         return (
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <Button color="success" onClick={handleAdd} variant="outlined">
+            <AddStudentDialog
+              classroomSlug={classroomSlug}
+              open={openAddStudentDialog}
+              handleClose={() => setOpenAddStudentDialog(false)}
+            />
+            <Button
+              color="info"
+              onClick={() => alert('invite student')}
+              variant="outlined"
+            >
               เชิญนักศึกษา
+            </Button>
+            <Button
+              color="success"
+              onClick={() => setOpenAddStudentDialog(true)}
+              variant="outlined"
+            >
+              เพิ่มนักศึกษา
             </Button>
             {table.getSelectedRowModel().flatRows.length > 0 && (
               <Button

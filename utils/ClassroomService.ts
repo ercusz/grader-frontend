@@ -319,3 +319,19 @@ export const addTaToClassroom = async (taId: number, classroomId: number) => {
     throw new Error('Add teacher assistant to classroom failed.');
   }
 };
+
+export const addStudentToClassroom = async (
+  studentId: number,
+  classroomId: number
+) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classroom-student/add`,
+    {
+      studentId: studentId,
+      classroomId: classroomId,
+    }
+  );
+  if (err) {
+    throw new Error('Add student to classroom failed.');
+  }
+};
