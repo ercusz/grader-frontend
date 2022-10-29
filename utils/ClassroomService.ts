@@ -210,15 +210,22 @@ export const responseClassroomInvitation = async (
   id: number,
   isAccepted: boolean
 ) => {
-  const { err }: Response = await contentHttpClient.patch(
+  const { res, err }: Response = await contentHttpClient.patch(
     `/api/classroom-invitation/response/${id}`,
     {
       isAccepted: isAccepted,
     }
   );
+
   if (err) {
     throw new Error('Response classroom invitation failed.');
   }
+
+  if (res.status === 200) {
+    return isAccepted;
+  }
+
+  return false;
 };
 
 export const joinClassroomByInviteCode = async (inviteCode: string) => {

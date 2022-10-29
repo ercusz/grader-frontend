@@ -52,10 +52,14 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
     (isAccepted: boolean) =>
       responseClassroomInvitation(invitation?.id as number, isAccepted),
     {
-      onSuccess: () => {
+      onSuccess: (isAccepted) => {
         queryClient.invalidateQueries(['classrooms', '']);
         alert('ตอบกลับคำเชิญเข้าร่วมคลาสเรียนสำเร็จ');
-        router.push(`/classroom/${classroom.slug}`);
+        if (isAccepted) {
+          router.push(`/classroom/${classroom.slug}`);
+        } else {
+          router.reload();
+        }
       },
       onError: () => {
         alert('เกิดข้อผิดพลาดในการตอบกลับคำเชิญเข้าร่วมคลาสเรียน');
