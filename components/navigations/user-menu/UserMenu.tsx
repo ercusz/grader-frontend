@@ -1,3 +1,4 @@
+import OutlinedAvatar from '@/components/avatars/outlined-avatar/OutlinedAvatar';
 import { useAtomTheme } from '@/states/atom-theme/useAtomTheme';
 import { useUser } from '@/states/user/useUser';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -9,11 +10,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import WarningIcon from '@mui/icons-material/Warning';
 import {
-  Avatar,
   Box,
   Chip,
   Divider,
-  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,
@@ -164,26 +163,15 @@ const UserMenu: React.FC<IUserMenu> = ({ anchorElUser, setAnchorElUser }) => {
             alignItems="center"
             spacing={1}
           >
-            <IconButton className="cursor-default bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500">
-              <Avatar
-                className="transition-all
-                      outline outline-offset-4 text-2xl
-                      bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
-                      "
-                alt={user ? `${user?.username}'s profile image` : undefined}
-                src={user?.profileImage ? user.profileImage.url : undefined}
-                sx={{
-                  width: 48,
-                  height: 48,
-                  outlineColor: (theme) => theme.palette.background.default,
-                  color: 'white',
-                }}
-              >
-                {user && user.firstName && user.lastName
-                  ? user.firstName?.charAt(0) + user.lastName?.charAt(0)
-                  : user?.username?.charAt(0)}
-              </Avatar>
-            </IconButton>
+            <OutlinedAvatar
+              alt={user ? `${user?.username}'s profile image` : undefined}
+              src={user?.profileImage ? user.profileImage.url : undefined}
+              size="large"
+            >
+              {user && user.firstName && user.lastName
+                ? user.firstName?.charAt(0) + user.lastName?.charAt(0)
+                : user?.username?.charAt(0)}
+            </OutlinedAvatar>
             {user && user.firstName && user.lastName ? (
               <Stack
                 direction="column"

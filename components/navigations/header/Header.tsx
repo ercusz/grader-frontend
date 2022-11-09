@@ -1,8 +1,8 @@
+import OutlinedAvatar from '@/components/avatars/outlined-avatar/OutlinedAvatar';
 import { useUser } from '@/states/user/useUser';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
-import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -185,35 +185,22 @@ const Header: React.FC<IHeader> = () => {
             {session ? (
               <>
                 <Tooltip title="โปรไฟล์ของคุณ">
-                  <IconButton
-                    className="drop-shadow-2xl
-                    bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"
-                    onClick={handleOpenUserMenu}
-                  >
-                    <Avatar
-                      className="transition-all
-                      outline outline-offset-4 text-sm
-                      bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500
-                      hover:outline-offset-2"
+                  <>
+                    <OutlinedAvatar
                       alt={
                         user ? `${user?.username}'s profile image` : undefined
                       }
                       src={
                         user?.profileImage ? user.profileImage.url : undefined
                       }
-                      sx={{
-                        width: 28,
-                        height: 28,
-                        outlineColor: (theme) =>
-                          theme.palette.background.default,
-                        color: 'white',
-                      }}
+                      clickable
+                      onClick={handleOpenUserMenu}
                     >
                       {user && user.firstName && user.lastName
                         ? user.firstName?.charAt(0) + user.lastName?.charAt(0)
                         : user?.username?.charAt(0)}
-                    </Avatar>
-                  </IconButton>
+                    </OutlinedAvatar>
+                  </>
                 </Tooltip>
                 {user && (
                   <UserMenu
