@@ -189,18 +189,16 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
               className="overflow-hidden relative mx-auto flex items-center gap-6"
             >
               <Avatar className="absolute w-20 h-20 -left-5 rounded-full shadow-lg">
-                <Image
-                  className="object-cover"
-                  layout="fill"
-                  quality={60}
-                  alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
-                  src={
-                    classroom.course.teachers[0].profileImage
-                      ? `${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.teachers[0].profileImage.url}`
-                      : ''
-                  }
-                  sizes="100vw"
-                />
+                {classroom.course.teachers[0].profileImage && (
+                  <Image
+                    className="object-cover"
+                    layout="fill"
+                    quality={60}
+                    alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
+                    src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.teachers[0].profileImage.url}`}
+                    sizes="100vw"
+                  />
+                )}
               </Avatar>
               <Container className="flex flex-col pl-16">
                 <Link

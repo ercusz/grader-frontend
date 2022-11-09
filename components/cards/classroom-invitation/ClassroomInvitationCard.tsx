@@ -209,18 +209,16 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
                 }}
               >
                 <Avatar className="absolute w-[4.7rem] h-[4.7rem] -left-7 rounded-full shadow-lg">
-                  <Image
-                    className="object-cover"
-                    layout="fill"
-                    quality={60}
-                    alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
-                    src={
-                      classroom.course.teachers[0].profileImage
-                        ? `${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.teachers[0].profileImage.url}`
-                        : ''
-                    }
-                    sizes="100vw"
-                  />
+                  {classroom.course.teachers[0].profileImage && (
+                    <Image
+                      className="object-cover"
+                      layout="fill"
+                      quality={60}
+                      alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
+                      src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.teachers[0].profileImage.url}`}
+                      sizes="100vw"
+                    />
+                  )}
                 </Avatar>
                 <Box
                   sx={{ display: 'flex', overflow: 'hidden', paddingLeft: 5 }}
