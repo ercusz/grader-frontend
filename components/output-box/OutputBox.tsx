@@ -49,7 +49,9 @@ const OutputBox: React.FC<IOutputBox> = ({
         contextmenu: false,
         renderLineHighlight: 'none',
         cursorStyle: 'underline-thin',
-        enableDropIntoEditor: false,
+        dropIntoEditor: {
+          enabled: false,
+        },
         minimap: {
           enabled: false,
         },
@@ -62,9 +64,13 @@ const OutputBox: React.FC<IOutputBox> = ({
         },
         wordWrap: 'on',
         wordWrapColumn: 80,
-        wordWrapMinified: true,
         wrappingIndent: 'none',
-        renderIndentGuides: false,
+        guides: {
+          bracketPairsHorizontal: false,
+          highlightActiveBracketPair: false,
+          indentation: false,
+          highlightActiveIndentation: false,
+        },
       }}
     />
   );

@@ -218,6 +218,10 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
           wordWrap: 'off',
           wordWrapBreakAfterCharacters: '\t})]?|&,;',
           wordWrapBreakBeforeCharacters: '{([+',
+          bracketPairColorization: {
+            enabled: true,
+            independentColorPoolPerBracketType: true,
+          },
         }}
       />
     </>
