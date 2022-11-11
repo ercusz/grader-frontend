@@ -168,7 +168,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
           acceptSuggestionOnCommitCharacter: true,
           acceptSuggestionOnEnter: 'on',
           accessibilitySupport: 'auto',
-          autoIndent: true,
+          autoIndent: 'full',
           automaticLayout: true,
           codeLens: true,
           colorDecorators: true,
@@ -186,7 +186,9 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
           formatOnPaste: false,
           formatOnType: false,
           hideCursorInOverviewRuler: false,
-          highlightActiveIndentGuide: true,
+          guides: {
+            bracketPairs: true,
+          },
           links: true,
           mouseWheelZoom: true,
           multiCursorMergeOverlapping: true,
@@ -198,7 +200,6 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
           readOnly: false,
           renderControlCharacters: false,
           renderFinalNewline: true,
-          renderIndentGuides: true,
           renderLineHighlight: 'all',
           renderWhitespace: 'none',
           revealHorizontalRightPadding: 30,
@@ -217,10 +218,6 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
           wordWrap: 'off',
           wordWrapBreakAfterCharacters: '\t})]?|&,;',
           wordWrapBreakBeforeCharacters: '{([+',
-          wordWrapBreakObtrusiveCharacters: '.',
-          wordWrapColumn: 80,
-          wordWrapMinified: true,
-          wrappingIndent: 'none',
         }}
       />
     </>
