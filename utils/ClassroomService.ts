@@ -345,13 +345,15 @@ export const addStudentToClassroom = async (
 
 export const inviteStudentsToClassroom = async (
   students: string[],
-  classroomId: number
+  classroomId: number,
+  expireDate?: Date
 ) => {
   const { err }: Response = await contentHttpClient.post(
     `/api/classroom-invitation/create`,
     {
       students: students,
       classroomId: classroomId,
+      expireDate: expireDate ? expireDate.toISOString() : null,
     }
   );
   if (err) {
