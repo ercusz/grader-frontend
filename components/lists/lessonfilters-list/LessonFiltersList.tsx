@@ -1,3 +1,4 @@
+import { useLessonFilters } from '@/hooks/classrooms/useLessonFilters';
 import {
   Checkbox,
   FormControlLabel,
@@ -8,7 +9,6 @@ import {
   ListItemText,
   ListSubheader,
 } from '@mui/material';
-import { useLessonFilters } from '@/states/classrooms/useLessonFilters';
 
 export interface ILessonFiltersList {}
 

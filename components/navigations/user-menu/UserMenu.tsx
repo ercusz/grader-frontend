@@ -1,6 +1,6 @@
 import OutlinedAvatar from '@/components/avatars/outlined-avatar/OutlinedAvatar';
-import { useAtomTheme } from '@/states/atom-theme/useAtomTheme';
-import { useUser } from '@/states/user/useUser';
+import { useAtomTheme } from '@/hooks/atom-theme/useAtomTheme';
+import { useUser } from '@/hooks/user/useUser';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BedtimeIcon from '@mui/icons-material/Bedtime';
 import Check from '@mui/icons-material/Check';

@@ -2,7 +2,7 @@ import AddClassroomForm from '@/components/forms/add-classroom/AddClassroomForm'
 import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
 import CreateCourseForm from '@/components/forms/create-course-form/CreateCourseForm';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { useUser } from '@/states/user/useUser';
+import { useUser } from '@/hooks/user/useUser';
 import { CreateCourseClassroom, CreateCourseReq } from '@/types/types';
 import { createCourse } from '@/utils/ClassroomService';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';

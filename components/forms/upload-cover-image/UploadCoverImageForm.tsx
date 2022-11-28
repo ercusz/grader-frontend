@@ -1,5 +1,5 @@
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
-import { useCourseSlug } from '@/states/courses/useCourses';
+import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { updateCourseCoverImage } from '@/utils/ClassroomService';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Box, Button, Container, Divider, Typography } from '@mui/material';

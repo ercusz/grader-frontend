@@ -1,3 +1,15 @@
+import CodeEditor from '@/components/code-editor/CodeEditor';
+import InputDialog from '@/components/dialogs/input-dialog/InputDialog';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
+import Branding from '@/components/navigations/branding/Branding';
+import OutputBox from '@/components/output-box/OutputBox';
+import { useIdeTabs } from '@/hooks/grader/useIdeTabs';
+import { useTestcases } from '@/hooks/grader/useTestcases';
+import { Submission } from '@/types/types';
+import { compileStatus } from '@/utils/compileStatuses';
+import { compressSourceCode, createSubmission } from '@/utils/GraderService';
+import { Java, PlainText } from '@/utils/languageTemplate';
 import { Monaco } from '@monaco-editor/react';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,18 +41,6 @@ import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
 import { VscOutput, VscPlay, VscRunAll } from 'react-icons/vsc';
-import CodeEditor from '@/components/code-editor/CodeEditor';
-import InputDialog from '@/components/dialogs/input-dialog/InputDialog';
-import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
-import Branding from '@/components/navigations/branding/Branding';
-import OutputBox from '@/components/output-box/OutputBox';
-import { useIdeTabs } from '@/states/grader/useIdeTabs';
-import { useTestcases } from '@/states/grader/useTestcases';
-import { Submission } from '@/types/types';
-import { compileStatus } from '@/utils/compileStatuses';
-import { compressSourceCode, createSubmission } from '@/utils/GraderService';
-import { Java, PlainText } from '@/utils/languageTemplate';
 import { NextPageWithLayout } from './page';
 
 const Playground: NextPageWithLayout = () => {

@@ -1,6 +1,6 @@
 import InviteCodeCard from '@/components/cards/invite-code/InviteCodeCard';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
-import { useUser } from '@/states/user/useUser';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useUser } from '@/hooks/user/useUser';
 import { UserResponse } from '@/types/types';
 import LockIcon from '@mui/icons-material/Lock';
 import PeopleIcon from '@mui/icons-material/People';

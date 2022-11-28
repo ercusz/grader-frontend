@@ -2,8 +2,8 @@ import ClassroomInvitationCard from '@/components/cards/classroom-invitation/Cla
 import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
 import ClassroomCard from '@/components/cards/classroom/ClassroomCard';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { useClassroomsFilter } from '@/states/classrooms/useClassrooms';
-import { useUser } from '@/states/user/useUser';
+import { useClassroomsFilter } from '@/hooks/classrooms/useClassrooms';
+import { useUser } from '@/hooks/user/useUser';
 import {
   MyClassroom,
   MyClassroomInvitation,

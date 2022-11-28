@@ -1,6 +1,6 @@
 import AddStudentDialog from '@/components/dialogs/add-student/AddStudentDialog';
 import InviteStudentDialog from '@/components/dialogs/invite-student/InviteStudentDialog';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { UserResponse } from '@/types/types';
 import {
   removeStudentFromClassroom,

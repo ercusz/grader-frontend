@@ -1,7 +1,7 @@
 import EditCourseInfoDialog from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
-import { useCourseSlug } from '@/states/courses/useCourses';
-import { useUser } from '@/states/user/useUser';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useCourseSlug } from '@/hooks/courses/useCourses';
+import { useUser } from '@/hooks/user/useUser';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import EditIcon from '@mui/icons-material/Edit';
 import {

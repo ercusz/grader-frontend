@@ -1,5 +1,5 @@
 import AddTeacherAssistantDialog from '@/components/dialogs/add-teacher-assistant/AddTeacherAssistantDialog';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { UserResponse } from '@/types/types';
 import {
   removeTaFromClassroom,

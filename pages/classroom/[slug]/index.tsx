@@ -1,7 +1,7 @@
 import PostCard from '@/components/cards/post-card/PostCard';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import {

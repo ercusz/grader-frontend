@@ -1,9 +1,8 @@
 import InviteCodeDialog from '@/components/dialogs/invite-code/InviteCodeDialog';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
 import { openDialogAtom } from '@/stores/invite-code';
 import {
-  resetClassroomInviteCode,
-  toggleClassroomInviteCode,
+    resetClassroomInviteCode,
+    toggleClassroomInviteCode
 } from '@/utils/ClassroomService';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
@@ -12,20 +11,21 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PublicIcon from '@mui/icons-material/Public';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
-  Alert,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  IconButton,
-  Menu,
-  MenuItem,
-  Snackbar,
-  Stack,
-  Tooltip,
-  Typography,
+    Alert,
+    Card,
+    CardContent,
+    CardHeader,
+    Divider,
+    IconButton,
+    Menu,
+    MenuItem,
+    Snackbar,
+    Stack,
+    Tooltip,
+    Typography
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useAtom } from 'jotai';
 import { MouseEvent, useState } from 'react';
 

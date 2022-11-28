@@ -1,4 +1,4 @@
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { inviteStudentsToClassroom } from '@/utils/ClassroomService';
 import CloseIcon from '@mui/icons-material/Close';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
@@ -20,7 +20,7 @@ import {
   Stack,
   Switch,
   Tooltip,
-  Typography,
+  Typography
 } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -33,7 +33,7 @@ import { useForm } from 'react-hook-form';
 import {
   DatePickerElement,
   FormContainer,
-  TextFieldElement,
+  TextFieldElement
 } from 'react-hook-form-mui';
 import { read, utils } from 'xlsx';
 

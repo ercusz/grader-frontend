@@ -1,8 +1,8 @@
 import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/ClassroomCardSkeleton';
 import CourseCard from '@/components/cards/course/CourseCard';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { useCoursesFilter } from '@/states/courses/useCourses';
-import { useUser } from '@/states/user/useUser';
+import { useCoursesFilter } from '@/hooks/courses/useCourses';
+import { useUser } from '@/hooks/user/useUser';
 import { Course, MyCoursesResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getCourses } from '@/utils/ClassroomService';

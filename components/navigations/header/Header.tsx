@@ -1,5 +1,5 @@
 import OutlinedAvatar from '@/components/avatars/outlined-avatar/OutlinedAvatar';
-import { useUser } from '@/states/user/useUser';
+import { useUser } from '@/hooks/user/useUser';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';

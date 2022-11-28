@@ -1,6 +1,6 @@
 import DeleteConfirmationDialog from '@/components/dialogs/delete-confirmation/DeleteConfirmationDialog';
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import { deleteClassroom, updateClassroomInfo } from '@/utils/ClassroomService';
 import { Button, Stack } from '@mui/material';

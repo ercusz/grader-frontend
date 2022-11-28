@@ -2,8 +2,8 @@ import CourseClassroomCard from '@/components/cards/course-classroom/CourseClass
 import AddClassroomDialog from '@/components/dialogs/add-classroom/AddClassroomDialog';
 import CourseHeader from '@/components/headers/course-header/CourseHeader';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { useCourseSlug } from '@/states/courses/useCourses';
-import { useUser } from '@/states/user/useUser';
+import { useCourseSlug } from '@/hooks/courses/useCourses';
+import { useUser } from '@/hooks/user/useUser';
 import { openAddClassroomsDialogAtom } from '@/stores/add-classrooms';
 import { setToken } from '@/utils/APIHelper';
 import { getCourseBySlug } from '@/utils/ClassroomService';

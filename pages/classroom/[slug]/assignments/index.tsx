@@ -1,7 +1,7 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import LessonFiltersList from '@/components/lists/lessonfilters-list/LessonFiltersList';
-import { useClassroomSlug } from '@/states/classrooms/useClassrooms';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import {

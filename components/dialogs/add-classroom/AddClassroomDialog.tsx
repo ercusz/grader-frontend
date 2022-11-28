@@ -1,6 +1,6 @@
 import AddClassroomForm from '@/components/forms/add-classroom/AddClassroomForm';
 import AddStudentForm from '@/components/forms/add-student-form/AddStudentForm';
-import { useCourseSlug } from '@/states/courses/useCourses';
+import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { openAddClassroomsDialogAtom } from '@/stores/add-classrooms';
 import { CreateCourseClassroom } from '@/types/types';
 import { addClassrooms } from '@/utils/ClassroomService';
