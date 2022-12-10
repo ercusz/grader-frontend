@@ -17,8 +17,8 @@ describe('Home', () => {
     render(<Home />);
     expect(screen.getByRole('heading', { name: /grade้r/ }));
     expect(screen.getByText('“เกรดเด้อ”'));
-    expect.not.stringContaining('คลาสเรียนของฉัน');
-    expect.not.stringContaining('เพลย์กราวด์');
+    expect(screen.queryByText('คลาสเรียนของฉัน')).not.toBeInTheDocument();
+    expect(screen.queryByText('เพลย์กราวด์')).not.toBeInTheDocument();
   });
 
   it('should render home (authenticated)', () => {
