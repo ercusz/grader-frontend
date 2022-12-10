@@ -1,9 +1,11 @@
+import CreatePostCard from '@/components/cards/create-post/CreatePostCard';
 import PostCard from '@/components/cards/post-card/PostCard';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
+
 import {
   Backdrop,
   CircularProgress,
@@ -52,6 +54,11 @@ const Classroom: NextPageWithLayout = ({
           alignItems="flex-start"
         >
           <Grid item xs={12} md={4}>
+            <List>
+              <ListItem disableGutters>
+                <CreatePostCard />
+              </ListItem>
+            </List>
             <PinList />
           </Grid>
           <Grid item xs={12} md={8}>
