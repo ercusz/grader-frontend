@@ -1,8 +1,8 @@
+import BrandingButton from '@/components/buttons/branding/BrandingButton';
 import CodeEditor from '@/components/code-editor/CodeEditor';
 import InputDialog from '@/components/dialogs/input-dialog/InputDialog';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
-import Branding from '@/components/navigations/branding/Branding';
 import OutputBox from '@/components/output-box/OutputBox';
 import { useIdeTabs } from '@/hooks/grader/useIdeTabs';
 import { useTestcases } from '@/hooks/grader/useTestcases';
@@ -349,7 +349,7 @@ const Playground: NextPageWithLayout = () => {
                     </Stack>
                   </Stack>
                 ) : (
-                  <Branding withText />
+                  <BrandingButton withText />
                 )}
               </CardActions>
             </Card>
