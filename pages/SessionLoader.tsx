@@ -1,3 +1,4 @@
+import { setIsAuthenticated } from '@/hooks/user/useUser';
 import { setToken } from '@/utils/APIHelper';
 import { Backdrop, CircularProgress } from '@mui/material';
 import { useSession } from 'next-auth/react';
@@ -23,6 +24,7 @@ function SessionLoader({ children }: Props) {
 
   if (status === 'authenticated') {
     setToken(data.jwt); // add authorization header for every requests from client
+    setIsAuthenticated(true);
   }
 
   return <>{children}</>;
