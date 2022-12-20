@@ -23,20 +23,19 @@ import UserMenu from '../user-menu/UserMenu';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 
-const pages = [
-  {
-    name: 'คลาสเรียนของฉัน',
-    route: '/classroom',
-  },
-  {
-    name: 'เพลย์กราวด์',
-    route: '/playground',
-  },
-];
-
 const Header: React.FC<IHeader> = () => {
   const { data: session } = useSession();
   const { data: user } = useUser();
+  const pages = [
+    {
+      name: `${user?.role.name === 'Teacher' ? 'รายวิชา' : 'คลาสเรียน'}ของฉัน`,
+      route: user?.role.name === 'Teacher' ? '/course' : '/classroom',
+    },
+    {
+      name: 'เพลย์กราวด์',
+      route: '/playground',
+    },
+  ];
 
   React.useEffect(() => {
     if (session == null) return;
