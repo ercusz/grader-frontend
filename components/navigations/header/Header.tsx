@@ -1,4 +1,5 @@
 import OutlinedAvatar from '@/components/avatars/outlined-avatar/OutlinedAvatar';
+import BrandingButton from '@/components/buttons/branding/BrandingButton';
 import { useUser } from '@/hooks/user/useUser';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -18,7 +19,6 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import Branding from '../branding/Branding';
 import UserMenu from '../user-menu/UserMenu';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
@@ -93,7 +93,7 @@ const Header: React.FC<IHeader> = () => {
 
   return (
     <AppBar
-      position="fixed"
+      position={isInSignInPage ? 'absolute' : 'fixed'}
       sx={
         isInSignInPage
           ? {}
@@ -116,23 +116,34 @@ const Header: React.FC<IHeader> = () => {
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <Branding withText />
+          <Box
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+            }}
+          >
+            {isInSignInPage ? (
+              <BrandingButton large iconBgColor="black" iconTextColor="white" />
+            ) : (
+              <BrandingButton withText />
+            )}
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
-              aria-label="account of current user"
+              aria-label="show all menus"
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
               sx={{
-                visibility: session ? 'visible' : 'hidden',
-                display: isInSignInPage ? 'none' : 'block',
+                visibility: isInSignInPage
+                  ? 'hidden'
+                  : session
+                  ? 'visible'
+                  : 'hidden',
               }}
             >
-              <MenuIcon />
+              <MenuIcon fontSize="inherit" />
             </IconButton>
             <Menu
               id="menu-appbar"
@@ -163,7 +174,7 @@ const Header: React.FC<IHeader> = () => {
             </Menu>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-            <Branding large />
+            <BrandingButton large />
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {session &&
@@ -210,37 +221,35 @@ const Header: React.FC<IHeader> = () => {
               </>
             ) : (
               <>
-                {!isInSignInPage && (
-                  <>
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      sx={{
-                        flexGrow: 1,
-                        display: { xs: 'none', md: 'flex' },
-                      }}
-                    >
-                      <Link href="/auth/sign-in">
-                        <Button className="font-bold" variant="text">
-                          ลงชื่อเข้าใช้
-                        </Button>
-                      </Link>
-                      <Link href="/auth/sign-up">
-                        <Button variant="contained">เริ่มต้นใช้งาน</Button>
-                      </Link>
-                    </Stack>
-                    <Link href="/auth/sign-in">
-                      <IconButton
-                        sx={{
-                          flexGrow: 1,
-                          display: { xs: 'flex', md: 'none' },
-                        }}
-                      >
-                        <AccountCircleIcon />
-                      </IconButton>
-                    </Link>
-                  </>
-                )}
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{
+                    visibility: isInSignInPage ? 'hidden' : 'visible',
+                    flexGrow: 1,
+                    display: { xs: 'none', md: 'flex' },
+                  }}
+                >
+                  <Link href="/auth/sign-in">
+                    <Button className="font-bold" variant="text">
+                      ลงชื่อเข้าใช้
+                    </Button>
+                  </Link>
+                  <Link href="/auth/sign-up">
+                    <Button variant="contained">เริ่มต้นใช้งาน</Button>
+                  </Link>
+                </Stack>
+                <Link href="/auth/sign-in">
+                  <IconButton
+                    sx={{
+                      visibility: isInSignInPage ? 'hidden' : 'visible',
+                      flexGrow: 1,
+                      display: { xs: 'flex', md: 'none' },
+                    }}
+                  >
+                    <AccountCircleIcon />
+                  </IconButton>
+                </Link>
               </>
             )}
           </Box>
