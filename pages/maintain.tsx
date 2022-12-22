@@ -1,34 +1,19 @@
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { Button, Grid, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import type { LottiePlayer } from 'lottie-web';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { NextPageWithLayout } from './page';
 
+const LazyLottiePlayer = dynamic(
+  () => import('@/components/media-players/lottie/LottiePlayer'),
+  {
+    ssr: false,
+  }
+);
+
 const Maintain: NextPageWithLayout = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [lottie, setLottie] = useState<LottiePlayer | null>(null);
-
-  useEffect(() => {
-    import('lottie-web').then((Lottie) => setLottie(Lottie.default));
-  }, []);
-
-  useEffect(() => {
-    if (lottie && ref.current) {
-      const animation = lottie.loadAnimation({
-        container: ref.current,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: '/maintain.json',
-      });
-
-      return () => animation.destroy();
-    }
-  }, [lottie]);
-
   return (
     <section>
       <Grid
@@ -87,7 +72,7 @@ const Maintain: NextPageWithLayout = () => {
             boxShadow: 'none',
           }}
         >
-          <div ref={ref} />
+          <LazyLottiePlayer src="/maintain.json" renderer="svg" loop autoplay />
         </Grid>
       </Grid>
     </section>

@@ -1,35 +1,26 @@
-import { Button, Typography } from '@mui/material';
-import type { LottiePlayer } from 'lottie-web';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
+import { Button, Typography } from '@mui/material';
+import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { NextPageWithLayout } from './page';
 
+const LazyLottiePlayer = dynamic(
+  () => import('@/components/media-players/lottie/LottiePlayer'),
+  {
+    ssr: false,
+  }
+);
+
 const NotFound: NextPageWithLayout = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [lottie, setLottie] = useState<LottiePlayer | null>(null);
-
-  useEffect(() => {
-    import('lottie-web').then((Lottie) => setLottie(Lottie.default));
-  }, []);
-
-  useEffect(() => {
-    if (lottie && ref.current) {
-      const animation = lottie.loadAnimation({
-        container: ref.current,
-        renderer: 'svg',
-        loop: true,
-        autoplay: true,
-        path: '/404.json',
-      });
-
-      return () => animation.destroy();
-    }
-  }, [lottie]);
-
   return (
     <section className="h-screen pt-20 pb-32 text-center">
-      <div className="h-full" ref={ref} />
+      <LazyLottiePlayer
+        className="h-full"
+        src="/404.json"
+        renderer="svg"
+        loop
+        autoplay
+      />
       <Typography className="font-bold" variant="h5" gutterBottom>
         ไม่พบหน้าที่คุณกำลังตามหา
       </Typography>
