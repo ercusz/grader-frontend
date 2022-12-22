@@ -1,3 +1,5 @@
+import SignInForm from '@/components/forms/sign-in-form/SignInForm';
+import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import {
   Alert,
   AlertTitle,
@@ -12,8 +14,6 @@ import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import SignInForm from '@/components/forms/sign-in-form/SignInForm';
-import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { NextPageWithLayout } from '../page';
 
 const SignIn: NextPageWithLayout = () => {
@@ -28,13 +28,17 @@ const SignIn: NextPageWithLayout = () => {
       identifier: data.identifier,
       password: data.password,
     });
-    if (result!.ok) {
-      router.replace('/');
-      return;
-    }
 
     if (result?.error) {
       setErrorMsg(result.error);
+      if (result.error === 'Invalid identifier or password') {
+        setErrorMsg('ชื่อผู้ใช้/อีเมล หรือรหัสผ่านไม่ถูกต้อง');
+      }
+    }
+
+    if (result!.ok && !result?.error) {
+      router.replace('/');
+      return;
     }
 
     setOpenAlert(true);
@@ -95,11 +99,17 @@ const SignIn: NextPageWithLayout = () => {
                 เกิดข้อผิดพลาดในการเข้าสู่ระบบ
               </AlertTitle>
               <Typography variant="subtitle1">{errorMsg}</Typography>
-              คุณยังไม่มีบัญชีใช่ไหม? —
-              <Link href="sign-up" passHref>
-                <MuiLink className="px-1 font-bold">เริ่มต้นสร้างบัญชี</MuiLink>
-              </Link>
-              🚀
+              {errorMsg === 'ชื่อผู้ใช้/อีเมล หรือรหัสผ่านไม่ถูกต้อง' && (
+                <Typography variant="subtitle1">
+                  คุณยังไม่มีบัญชีใช่ไหม? —
+                  <Link href="sign-up" passHref>
+                    <MuiLink className="px-1 font-bold">
+                      เริ่มต้นสร้างบัญชี
+                    </MuiLink>
+                  </Link>
+                  🚀
+                </Typography>
+              )}
             </Alert>
           </Collapse>
           <SignInForm onSubmit={onSubmit} />
