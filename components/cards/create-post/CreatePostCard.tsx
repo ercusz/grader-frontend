@@ -1,4 +1,5 @@
 import { useUser } from '@/hooks/user/useUser';
+import { openCreatePostDialogAtom } from '@/stores/create-post';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BookIcon from '@mui/icons-material/Book';
 import {
@@ -9,10 +10,12 @@ import {
   Divider,
   Stack,
 } from '@mui/material';
+import { useAtom } from 'jotai';
 
 export interface ICreatePostCard {}
 
 const CreatePostCard: React.FC<ICreatePostCard> = () => {
+  const [, setOpenCreatePostDialog] = useAtom(openCreatePostDialogAtom);
   const { data: user } = useUser();
 
   return (
@@ -36,6 +39,7 @@ const CreatePostCard: React.FC<ICreatePostCard> = () => {
               borderRadius: 20,
               justifyContent: 'flex-start',
             }}
+            onClick={() => setOpenCreatePostDialog(true)}
           >
             เขียนอะไรสักหน่อย...
           </Button>
