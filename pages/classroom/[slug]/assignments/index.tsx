@@ -1,17 +1,23 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
+import CreateAssignmentDialog from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import LessonFiltersList from '@/components/lists/lessonfilters-list/LessonFiltersList';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { openCreateAssignmentDialogAtom } from '@/stores/create-assignment';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Backdrop,
+  Button,
   CircularProgress,
+  Fab,
   Grid,
   List,
   ListItem,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
@@ -26,6 +32,10 @@ const ClassroomAssignments: NextPageWithLayout = ({
     data: classroom,
   } = useClassroomSlug({ slug: slug });
 
+  const [, setOpenCreateAssignmentDialog] = useAtom(
+    openCreateAssignmentDialogAtom
+  );
+
   return (
     <section>
       <Head>
@@ -35,6 +45,24 @@ const ClassroomAssignments: NextPageWithLayout = ({
             : 'ไม่พบรายวิชา'}
         </title>
       </Head>
+      <Fab
+        color="primary"
+        variant="extended"
+        sx={{
+          display: { xs: 'flex', md: 'none' },
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+        }}
+        onClick={() => setOpenCreateAssignmentDialog(true)}
+      >
+        <AddIcon sx={{ mr: 1 }} />
+        งาน
+      </Fab>
+      <CreateAssignmentDialog
+        classroomSlug={slug}
+        courseSlug={classroom?.course.slug}
+      />
       {isLoading && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -52,6 +80,30 @@ const ClassroomAssignments: NextPageWithLayout = ({
           alignItems="flex-start"
         >
           <Grid item xs={12} md={4}>
+            <List>
+              <ListItem
+                disableGutters
+                alignItems="center"
+                sx={{
+                  display: { xs: 'none', md: 'flex' },
+                  p: 4,
+                  justifyContent: 'center',
+                }}
+              >
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="large"
+                  startIcon={<AddIcon />}
+                  sx={{
+                    borderRadius: 20,
+                  }}
+                  onClick={() => setOpenCreateAssignmentDialog(true)}
+                >
+                  มอบหมายงาน
+                </Button>
+              </ListItem>
+            </List>
             <LessonFiltersList />
           </Grid>
           <Grid item xs={12} md={8}>
