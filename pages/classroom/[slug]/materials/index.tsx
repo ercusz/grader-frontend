@@ -4,9 +4,12 @@ import LessonFiltersList from '@/components/lists/lessonfilters-list/LessonFilte
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
+import AddIcon from '@mui/icons-material/Add';
 import {
   Backdrop,
+  Button,
   CircularProgress,
+  Fab,
   Grid,
   List,
   ListItem,
@@ -35,6 +38,19 @@ const ClassroomMaterials: NextPageWithLayout = ({
             : 'ไม่พบรายวิชา'}
         </title>
       </Head>
+      <Fab
+        color="primary"
+        variant="extended"
+        sx={{
+          display: { xs: 'flex', md: 'none' },
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+        }}
+      >
+        <AddIcon sx={{ mr: 1 }} />
+        เอกสาร
+      </Fab>
       {isLoading && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -52,6 +68,29 @@ const ClassroomMaterials: NextPageWithLayout = ({
           alignItems="flex-start"
         >
           <Grid item xs={12} md={4}>
+            <List>
+              <ListItem
+                disableGutters
+                alignItems="center"
+                sx={{
+                  display: { xs: 'none', md: 'flex' },
+                  p: 4,
+                  justifyContent: 'center',
+                }}
+              >
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="large"
+                  startIcon={<AddIcon />}
+                  sx={{
+                    borderRadius: 20,
+                  }}
+                >
+                  เพิ่มเอกสารประกอบการสอน
+                </Button>
+              </ListItem>
+            </List>
             <LessonFiltersList />
           </Grid>
           <Grid item xs={12} md={8}>
