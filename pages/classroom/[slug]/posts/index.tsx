@@ -1,4 +1,6 @@
+import CreatePostCard from '@/components/cards/create-post/CreatePostCard';
 import PostCard from '@/components/cards/post-card/PostCard';
+import CreatePostDialog from '@/components/dialogs/create-post/CreatePostDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
@@ -35,6 +37,10 @@ const ClassroomPosts: NextPageWithLayout = ({
             : 'ไม่พบรายวิชา'}
         </title>
       </Head>
+      <CreatePostDialog
+        classroomSlug={slug}
+        courseSlug={classroom?.course?.slug}
+      />
       {isLoading && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -52,6 +58,11 @@ const ClassroomPosts: NextPageWithLayout = ({
           alignItems="flex-start"
         >
           <Grid item xs={12} md={4}>
+            <List>
+              <ListItem disableGutters>
+                <CreatePostCard />
+              </ListItem>
+            </List>
             <PinList />
           </Grid>
           <Grid item xs={12} md={8}>
