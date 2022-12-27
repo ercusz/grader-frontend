@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const removeImports = require('next-remove-imports')();
+
 const nextConfig = {
   swcMinify: true,
   reactStrictMode: true,
@@ -23,4 +25,8 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = () => {
+  return removeImports({
+    ...nextConfig,
+  });
+};
