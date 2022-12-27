@@ -7,7 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import { SyntheticEvent, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { SiJava } from 'react-icons/si';
-import NewFileDialog from '../dialogs/newfile-dialog/NewFileDialog';
+import NewFileDialog from '../../dialogs/newfile-dialog/NewFileDialog';
 
 export interface ICodeEditor {
   language: string;
