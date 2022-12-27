@@ -1,23 +1,17 @@
+import PostToForm from '@/components/forms/post-to/PostToForm';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
-import { openCreatePostDialogAtom } from '@/stores/create-post';
-import { Classroom } from '@/types/types';
+import { openCreatePostDialogAtom, postToAtom } from '@/stores/create-post';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabPanel } from '@mui/lab';
 import {
   Button,
-  Checkbox,
   Chip,
   Dialog,
   DialogContent,
   DialogTitle,
   Divider,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
-  FormLabel,
   IconButton,
   InputBase,
   Stack,
@@ -33,8 +27,6 @@ export interface ICreatePostDialog {
 }
 
 const tabsValueAtom = atom('post');
-export const unsavedChangesAtom = atom(false);
-export const postToAtom = atom<Classroom[]>([]);
 
 const CreatePostDialog: React.FC<ICreatePostDialog> = ({
   classroomSlug,
@@ -54,7 +46,7 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
         setPostTo([classroom]);
       }
     }
-  }, [openDialog, classroomSlug, course, setPostTo]);
+  }, [classroomSlug, course, openDialog, setPostTo]);
 
   const postFormContext = useForm({ defaultValues: { message: '' } });
 
@@ -63,7 +55,6 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
 
   const onSubmit = () => {
     const obj = {
-      courseId: course?.id,
       classroomIds: postTo.map((classroom) => classroom.id),
       message: postFormContext.getValues().message,
     };
@@ -94,6 +85,23 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
     });
   };
 
+  const CustomTabPanel = ({
+    tabValue,
+    dialogTitle,
+    children,
+  }: {
+    tabValue: string;
+    dialogTitle: React.ReactNode;
+    children: React.ReactNode;
+  }) => {
+    return (
+      <TabPanel value={tabValue}>
+        <DialogTitle id="create-post-dialog">{dialogTitle}</DialogTitle>
+        <DialogContent>{children}</DialogContent>
+      </TabPanel>
+    );
+  };
+
   return (
     <Dialog
       fullWidth
@@ -106,72 +114,70 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
       }}
     >
       <TabContext value={tabsValue}>
-        <TabPanel value="post">
-          <DialogTitle id="create-post-dialog">
-            สร้างโพสต์
-            <IconButton
-              aria-label="close"
-              onClick={handleCloseDialog}
-              sx={{
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: (theme) => theme.palette.grey[500],
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent>
-            <Stack
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              sx={{ mb: 2 }}
-            >
-              <Typography variant="body2">โพสต์ไปยัง</Typography>
-              <Chip
-                clickable
-                variant="outlined"
-                size="small"
-                deleteIcon={<ArrowDropDownIcon />}
-                onClick={() => {
-                  setTabsValue('set post to');
-                }}
-                onDelete={() => {
-                  setTabsValue('set post to');
-                }}
-                label={postTo.map((classroom) => classroom.name).join(', ')}
-              />
-            </Stack>
-            <form>
-              <InputBase
-                autoFocus
-                fullWidth
-                multiline
-                rows={6}
-                placeholder="คุณกำลังคิดอะไรอยู่?"
-                inputProps={{ 'aria-label': 'write your post' }}
+        <CustomTabPanel
+          tabValue="post"
+          dialogTitle={
+            <>
+              สร้างโพสต์
+              <IconButton
+                aria-label="close"
+                onClick={handleCloseDialog}
                 sx={{
-                  fontSize: '1.2rem',
+                  position: 'absolute',
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
                 }}
-                {...register('message')}
-              />
-              <Divider light sx={{ my: 2 }} />
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                onClick={() => handleSubmit(onSubmit)()}
               >
-                โพสต์
-              </Button>
-            </form>
-          </DialogContent>
-        </TabPanel>
+                <CloseIcon />
+              </IconButton>
+            </>
+          }
+        >
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+            <Typography variant="body2">โพสต์ไปยัง</Typography>
+            <Chip
+              clickable
+              variant="outlined"
+              size="small"
+              deleteIcon={<ArrowDropDownIcon />}
+              onClick={() => {
+                setTabsValue('set-post-to');
+              }}
+              onDelete={() => {
+                setTabsValue('set-post-to');
+              }}
+              label={postTo.map((classroom) => classroom.name).join(', ')}
+            />
+          </Stack>
+          <form>
+            <InputBase
+              autoFocus
+              fullWidth
+              multiline
+              rows={6}
+              placeholder="คุณกำลังคิดอะไรอยู่?"
+              inputProps={{ 'aria-label': 'write your post' }}
+              sx={{
+                fontSize: '1.2rem',
+              }}
+              {...register('message')}
+            />
+            <Divider light sx={{ my: 2 }} />
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={() => handleSubmit(onSubmit)()}
+            >
+              โพสต์
+            </Button>
+          </form>
+        </CustomTabPanel>
 
-        <TabPanel value="set post to">
-          <DialogTitle id="create-post-dialog">
+        <CustomTabPanel
+          tabValue="set-post-to"
+          dialogTitle={
             <Stack
               direction="row"
               alignItems="center"
@@ -196,56 +202,14 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
               </IconButton>
               เลือกคลาสเรียนที่ต้องการโพสต์
             </Stack>
-          </DialogTitle>
-          <DialogContent>
-            <FormControl
-              required
-              error={postTo.length === 0}
-              component="fieldset"
-              variant="standard"
-            >
-              <FormLabel component="legend">คลาสเรียน</FormLabel>
-              <FormGroup>
-                {course?.classrooms.map((classroom) => (
-                  <FormControlLabel
-                    key={classroom.id}
-                    control={
-                      <Checkbox
-                        checked={postTo.some(
-                          (classroomToPost) =>
-                            classroomToPost.id === classroom.id
-                        )}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setPostTo([...postTo, classroom]);
-                          } else {
-                            setPostTo(
-                              postTo.filter(
-                                (classroomToPost) =>
-                                  classroomToPost.id !== classroom.id
-                              )
-                            );
-                          }
-                        }}
-                      />
-                    }
-                    label={
-                      classroom.slug === classroomSlug
-                        ? `${classroom.name} (คลาสเรียนปัจจุบัน)`
-                        : classroom.name
-                    }
-                  />
-                ))}
-              </FormGroup>
-
-              {postTo.length === 0 && (
-                <FormHelperText>
-                  โปรดเลือกคลาสเรียนที่ต้องการโพสต์
-                </FormHelperText>
-              )}
-            </FormControl>
-          </DialogContent>
-        </TabPanel>
+          }
+        >
+          <PostToForm
+            classroomSlug={classroomSlug!}
+            courseSlug={courseSlug!}
+            postToAtom={postToAtom}
+          />
+        </CustomTabPanel>
       </TabContext>
     </Dialog>
   );
