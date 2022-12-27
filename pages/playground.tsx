@@ -1,6 +1,6 @@
 import BrandingButton from '@/components/buttons/branding/BrandingButton';
-import CodeEditor from '@/components/code-editor/CodeEditor';
 import InputDialog from '@/components/dialogs/input-dialog/InputDialog';
+import CodeEditor from '@/components/editors/code/CodeEditor';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
 import OutputBox from '@/components/output-box/OutputBox';
