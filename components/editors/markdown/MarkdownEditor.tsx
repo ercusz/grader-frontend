@@ -1,18 +1,20 @@
 import PreviewIcon from '@mui/icons-material/Preview';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { IconButton, Typography, useTheme } from '@mui/material';
+import { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
 import '@uiw/react-markdown-preview/markdown.css';
+import { MDEditorProps } from '@uiw/react-md-editor';
 import '@uiw/react-md-editor/markdown-editor.css';
 import { atom, useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 
-const MDEditor = dynamic(
+const MDEditor = dynamic<MDEditorProps>(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
   { ssr: false }
 );
 
-const Preview = dynamic(
+const Preview = dynamic<MarkdownPreviewProps>(
   () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
   { ssr: false }
 );
