@@ -1,24 +1,23 @@
+import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownEditor';
+import CreateAssignmentForm from '@/components/forms/create-assignment/CreateAssignmentForm';
+import PostToForm from '@/components/forms/post-to/PostToForm';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
-import { openCreateAssignmentDialogAtom } from '@/stores/create-assignment';
-import { Classroom } from '@/types/types';
+import {
+  openCreateAssignmentDialogAtom,
+  postToAtom,
+} from '@/stores/create-assignment';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
+
 import { TabContext, TabPanel } from '@mui/lab';
 import {
   alpha,
   AppBar,
   Button,
-  Checkbox,
   Chip,
   Dialog,
   DialogContent,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormHelperText,
-  FormLabel,
   IconButton,
   Stack,
   Toolbar,
@@ -27,9 +26,8 @@ import {
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
 import { atom, useAtom } from 'jotai';
-import { forwardRef, useEffect } from 'react';
+import React, { forwardRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
 
 export interface ICreateAssignmentDialog {
   classroomSlug?: string;
@@ -53,8 +51,46 @@ const Transition = forwardRef(function Transition(
 });
 
 const tabsValueAtom = atom('create-assignment');
-export const unsavedChangesAtom = atom(false);
-export const postToAtom = atom<Classroom[]>([]);
+
+const CustomTabPanel = ({
+  tabValue,
+  actionButton,
+  children,
+}: {
+  tabValue: string;
+  actionButton: React.ReactNode;
+  children: React.ReactNode;
+}) => {
+  return (
+    <TabPanel
+      value={tabValue}
+      sx={{
+        p: 0,
+        height: '100%',
+        bgcolor: (theme) => theme.palette.background.default,
+      }}
+    >
+      <AppBar
+        color="transparent"
+        elevation={0}
+        sx={{
+          position: 'relative',
+          borderBottom: (theme) =>
+            `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
+        }}
+      >
+        <Toolbar>{actionButton}</Toolbar>
+      </AppBar>
+      <DialogContent
+        sx={{
+          bgcolor: (theme) => theme.palette.background.default,
+        }}
+      >
+        {children}
+      </DialogContent>
+    </TabPanel>
+  );
+};
 
 const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   classroomSlug,
@@ -63,6 +99,7 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   const [openDialog, setOpenDialog] = useAtom(openCreateAssignmentDialogAtom);
   const [tabsValue, setTabsValue] = useAtom(tabsValueAtom);
   const [postTo, setPostTo] = useAtom(postToAtom);
+  const [editorValue, setEditorValue] = useAtom(markdownEditorValueAtom);
   const { data: course } = useCourseSlug({ slug: courseSlug });
 
   useEffect(() => {
@@ -74,30 +111,33 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
         setPostTo([classroom]);
       }
     }
-  }, [openDialog, classroomSlug, course, setPostTo]);
+  }, [classroomSlug, course, openDialog, setPostTo]);
 
   const postFormContext = useForm({
-    defaultValues: { title: '', description: '' },
+    defaultValues: { title: '' },
   });
 
   const { handleSubmit, watch, formState, reset } = postFormContext;
   const { isDirty } = formState;
 
   const onSubmit = () => {
-    const { title, description } = watch();
+    const { title } = watch();
     const obj = {
-      courseId: course?.id,
       classroomIds: postTo.map((classroom) => classroom.id),
       title: title,
-      description: description,
+      content: editorValue,
     };
     alert(JSON.stringify(obj, null, 2));
+
+    // if post success
     reset();
+    setEditorValue('');
+
     setOpenDialog(false);
   };
 
   const openUnsavedChangesDialog = (callback: () => void) => {
-    if (isDirty) {
+    if (isDirty || editorValue) {
       if (
         !confirm(
           'โพสต์ของคุณยังไม่ถูกเผยแพร่ \nคุณต้องการออกจากหน้านี้ใช่หรือไม่?'
@@ -115,6 +155,7 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       setOpenDialog(false);
       setTabsValue('create-assignment');
       reset();
+      setEditorValue('');
     });
   };
 
@@ -125,19 +166,17 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       onClose={handleCloseDialog}
       aria-labelledby="create-assignment-dialog"
       TransitionComponent={Transition}
+      sx={{
+        '& .MuiDialog-paper': {
+          bgcolor: (theme) => theme.palette.background.default,
+        },
+      }}
     >
       <TabContext value={tabsValue}>
-        <TabPanel value="create-assignment" sx={{ p: 0 }}>
-          <AppBar
-            color="transparent"
-            elevation={0}
-            sx={{
-              position: 'relative',
-              borderBottom: (theme) =>
-                `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
-            }}
-          >
-            <Toolbar>
+        <CustomTabPanel
+          tabValue="create-assignment"
+          actionButton={
+            <>
               <IconButton
                 edge="start"
                 color="inherit"
@@ -157,137 +196,53 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
               >
                 โพสต์
               </Button>
-            </Toolbar>
-          </AppBar>
-          <DialogContent>
-            <Stack
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              sx={{ mb: 2 }}
-            >
-              <Typography variant="body2">โพสต์ไปยัง</Typography>
-              <Chip
-                clickable
-                variant="outlined"
-                size="small"
-                deleteIcon={<ArrowDropDownIcon />}
-                onClick={() => {
-                  setTabsValue('set-post-to');
-                }}
-                onDelete={() => {
-                  setTabsValue('set-post-to');
-                }}
-                label={postTo.map((classroom) => classroom.name).join(', ')}
-              />
-            </Stack>
-            <FormContainer formContext={postFormContext}>
-              <Stack
-                sx={{ pt: 2 }}
-                direction="column"
-                spacing={2}
-                justifyContent="center"
-              >
-                <TextFieldElement
-                  fullWidth
-                  label="หัวข้อ"
-                  name="title"
-                  validation={{
-                    required: {
-                      value: true,
-                      message: 'คุณจำเป็นต้องกรอก หัวข้อ',
-                    },
-                  }}
-                />
-                <TextFieldElement
-                  fullWidth
-                  label="รายละเอียด"
-                  name="description"
-                  multiline
-                  rows={6}
-                />
-              </Stack>
-              <Divider light sx={{ my: 2 }} />
-            </FormContainer>
-          </DialogContent>
-        </TabPanel>
+            </>
+          }
+        >
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+            <Typography variant="body2">โพสต์ไปยัง</Typography>
+            <Chip
+              clickable
+              variant="outlined"
+              size="small"
+              deleteIcon={<ArrowDropDownIcon />}
+              onClick={() => {
+                setTabsValue('set-post-to');
+              }}
+              onDelete={() => {
+                setTabsValue('set-post-to');
+              }}
+              label={postTo.map((classroom) => classroom.name).join(', ')}
+            />
+          </Stack>
+          <CreateAssignmentForm formContext={postFormContext} />
+        </CustomTabPanel>
 
-        <TabPanel value="set-post-to" sx={{ p: 0 }}>
-          <AppBar
-            color="transparent"
-            elevation={0}
-            sx={{
-              position: 'relative',
-              borderBottom: (theme) =>
-                `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
-            }}
-          >
-            <Toolbar>
+        <CustomTabPanel
+          tabValue="set-post-to"
+          actionButton={
+            <>
               <IconButton
                 edge="start"
                 color="inherit"
+                onClick={() => setTabsValue('create-assignment')}
                 aria-label="back"
                 disabled={postTo.length === 0}
-                onClick={() => {
-                  setTabsValue('create-assignment');
-                }}
               >
                 <ArrowBackIcon />
               </IconButton>
               <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                เลือกคลาสเรียนที่ต้องการมอบหมาย
+                เลือกคลาสเรียนที่ต้องการโพสต์
               </Typography>
-            </Toolbar>
-          </AppBar>
-          <DialogContent>
-            <FormControl
-              required
-              error={postTo.length === 0}
-              component="fieldset"
-              variant="standard"
-            >
-              <FormLabel component="legend">คลาสเรียน</FormLabel>
-              <FormGroup>
-                {course?.classrooms.map((classroom) => (
-                  <FormControlLabel
-                    key={classroom.id}
-                    control={
-                      <Checkbox
-                        checked={postTo.some(
-                          (classroomToPost) =>
-                            classroomToPost.id === classroom.id
-                        )}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setPostTo([...postTo, classroom]);
-                          } else {
-                            setPostTo(
-                              postTo.filter(
-                                (classroomToPost) =>
-                                  classroomToPost.id !== classroom.id
-                              )
-                            );
-                          }
-                        }}
-                      />
-                    }
-                    label={
-                      classroom.slug === classroomSlug
-                        ? `${classroom.name} (คลาสเรียนปัจจุบัน)`
-                        : classroom.name
-                    }
-                  />
-                ))}
-              </FormGroup>
-
-              {postTo.length === 0 && (
-                <FormHelperText>
-                  โปรดเลือกคลาสเรียนที่ต้องการโพสต์
-                </FormHelperText>
-              )}
-            </FormControl>
-          </DialogContent>
-        </TabPanel>
+            </>
+          }
+        >
+          <PostToForm
+            classroomSlug={classroomSlug!}
+            courseSlug={courseSlug!}
+            postToAtom={postToAtom}
+          />
+        </CustomTabPanel>
       </TabContext>
     </Dialog>
   );
