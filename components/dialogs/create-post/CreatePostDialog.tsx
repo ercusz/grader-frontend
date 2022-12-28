@@ -26,6 +26,23 @@ export interface ICreatePostDialog {
   courseSlug?: string;
 }
 
+const CustomTabPanel = ({
+  tabValue,
+  dialogTitle,
+  children,
+}: {
+  tabValue: string;
+  dialogTitle: React.ReactNode;
+  children: React.ReactNode;
+}) => {
+  return (
+    <TabPanel value={tabValue}>
+      <DialogTitle id="create-post-dialog">{dialogTitle}</DialogTitle>
+      <DialogContent>{children}</DialogContent>
+    </TabPanel>
+  );
+};
+
 const tabsValueAtom = atom('post');
 
 const CreatePostDialog: React.FC<ICreatePostDialog> = ({
@@ -83,23 +100,6 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
       setTabsValue('post');
       reset();
     });
-  };
-
-  const CustomTabPanel = ({
-    tabValue,
-    dialogTitle,
-    children,
-  }: {
-    tabValue: string;
-    dialogTitle: React.ReactNode;
-    children: React.ReactNode;
-  }) => {
-    return (
-      <TabPanel value={tabValue}>
-        <DialogTitle id="create-post-dialog">{dialogTitle}</DialogTitle>
-        <DialogContent>{children}</DialogContent>
-      </TabPanel>
-    );
   };
 
   return (
