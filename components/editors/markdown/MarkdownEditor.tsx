@@ -1,4 +1,3 @@
-import { markdownEditorValueAtom } from '@/stores/create-assignment';
 import PreviewIcon from '@mui/icons-material/Preview';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { IconButton, Typography, useTheme } from '@mui/material';
@@ -38,6 +37,8 @@ const codePreview = {
   value: 'preview',
   icon: <PreviewButton />,
 };
+
+export const markdownEditorValueAtom = atom('');
 
 const MarkdownEditor: React.FC<IMarkdownEditor> = () => {
   const theme = useTheme();
