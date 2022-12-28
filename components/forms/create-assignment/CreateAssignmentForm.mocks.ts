@@ -1,8 +1,4 @@
-import { ICreateAssignmentForm } from './CreateAssignmentForm';
-
-const base: ICreateAssignmentForm = {
-  sampleTextProp: 'Hello world!',
-};
+const base: any = {};
 
 export const mockCreateAssignmentFormProps = {
   base,
