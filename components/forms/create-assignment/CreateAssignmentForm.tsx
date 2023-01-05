@@ -35,7 +35,9 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
     event: React.MouseEvent<HTMLElement>,
     newType: string
   ) => {
-    setProblemType(newType);
+    if (newType !== null) {
+      setProblemType(newType);
+    }
   };
 
   return (
