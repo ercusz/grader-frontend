@@ -1,5 +1,6 @@
 import { CreateAssignmentFormValues } from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import MarkdownEditor from '@/components/editors/markdown/MarkdownEditor';
+import { GraderConfig } from '@/constants/grader';
 import { problemTypeAtom } from '@/stores/create-assignment';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -11,7 +12,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { GraderConfig } from 'constants/grader';
 import { useAtom } from 'jotai';
 import {
   FormContainer,

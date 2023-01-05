@@ -1,5 +1,5 @@
+import { Java } from '@/constants/languageTemplate';
 import { atom, useAtom } from 'jotai';
-import { Java } from '@/utils/languageTemplate';
 
 export type IDETabs = {
   path: string;

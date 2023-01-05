@@ -21,6 +21,7 @@ const customJestConfig = {
     '^@/hooks/(.*)$': '<rootDir>/hooks/$1',
     '^@/stores/(.*)$': '<rootDir>/stores/$1',
     '^@/pages/(.*)$': '<rootDir>/pages/$1',
+    '^@/constants/(.*)$': '<rootDir>/constants/$1',
   },
 };
 

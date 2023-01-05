@@ -1,5 +1,5 @@
+import { compileStatus } from '@/constants/compileStatuses';
 import { useTestcases } from '@/hooks/grader/useTestcases';
-import { compileStatus } from '@/utils/compileStatuses';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';

@@ -1,4 +1,4 @@
-import { Java } from '@/utils/languageTemplate';
+import { Java } from '@/constants/languageTemplate';
 import { ICodeEditor } from './CodeEditor';
 
 const base: ICodeEditor = {
