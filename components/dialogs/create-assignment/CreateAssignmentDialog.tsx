@@ -5,6 +5,7 @@ import { useCourseSlug } from '@/hooks/courses/useCourses';
 import {
   openCreateAssignmentDialogAtom,
   postToAtom,
+  problemTypeAtom,
 } from '@/stores/create-assignment';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -92,6 +93,12 @@ const CustomTabPanel = ({
   );
 };
 
+export type CreateAssignmentFormValues = {
+  title: string;
+  timeLimit: number | null;
+  memoryLimit: number | null;
+};
+
 const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   classroomSlug,
   courseSlug,
@@ -100,6 +107,7 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   const [tabsValue, setTabsValue] = useAtom(tabsValueAtom);
   const [postTo, setPostTo] = useAtom(postToAtom);
   const [editorValue, setEditorValue] = useAtom(markdownEditorValueAtom);
+  const [problemType] = useAtom(problemTypeAtom);
   const { data: course } = useCourseSlug({ slug: courseSlug });
 
   useEffect(() => {
@@ -113,18 +121,21 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
     }
   }, [classroomSlug, course, openDialog, setPostTo]);
 
-  const postFormContext = useForm({
-    defaultValues: { title: '' },
+  const createAssignmentFormContext = useForm<CreateAssignmentFormValues>({
+    defaultValues: { title: '', timeLimit: null, memoryLimit: null },
   });
 
-  const { handleSubmit, watch, formState, reset } = postFormContext;
+  const { handleSubmit, watch, formState, reset } = createAssignmentFormContext;
   const { isDirty } = formState;
 
   const onSubmit = () => {
-    const { title } = watch();
+    const { title, timeLimit, memoryLimit } = watch();
     const obj = {
       classroomIds: postTo.map((classroom) => classroom.id),
       title: title,
+      problemType: problemType,
+      timeLimit: timeLimit,
+      memoryLimit: memoryLimit,
       content: editorValue,
     };
     alert(JSON.stringify(obj, null, 2));
@@ -215,7 +226,7 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
               label={postTo.map((classroom) => classroom.name).join(', ')}
             />
           </Stack>
-          <CreateAssignmentForm formContext={postFormContext} />
+          <CreateAssignmentForm formContext={createAssignmentFormContext} />
         </CustomTabPanel>
 
         <CustomTabPanel
