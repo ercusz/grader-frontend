@@ -3,6 +3,7 @@ import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/Classro
 import ClassroomCard from '@/components/cards/classroom/ClassroomCard';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { useClassroomsFilter } from '@/hooks/classrooms/useClassrooms';
+import { useDebounce } from '@/hooks/debounce/useDebounce';
 import { useUser } from '@/hooks/user/useUser';
 import {
   MyClassroom,
@@ -11,7 +12,6 @@ import {
 } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassrooms } from '@/utils/ClassroomService';
-import { useDebounce } from '@/utils/useDebounce';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import SearchIcon from '@mui/icons-material/Search';

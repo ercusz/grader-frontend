@@ -2,11 +2,11 @@ import ClassroomCardSkeleton from '@/components/cards/classroom-skeleton/Classro
 import CourseCard from '@/components/cards/course/CourseCard';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { useCoursesFilter } from '@/hooks/courses/useCourses';
+import { useDebounce } from '@/hooks/debounce/useDebounce';
 import { useUser } from '@/hooks/user/useUser';
 import { Course, MyCoursesResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getCourses } from '@/utils/ClassroomService';
-import { useDebounce } from '@/utils/useDebounce';
 import AddIcon from '@mui/icons-material/Add';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
