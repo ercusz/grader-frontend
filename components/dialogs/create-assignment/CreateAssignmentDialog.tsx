@@ -96,6 +96,8 @@ const CustomTabPanel = ({
 
 export type CreateAssignmentFormValues = {
   title: string;
+  startDate: Date;
+  endDate: Date;
   timeLimit: number | null;
   memoryLimit: number | null;
 };
@@ -132,17 +134,49 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   const { isDirty } = formState;
 
   const onSubmit = () => {
-    const { title, timeLimit, memoryLimit } = watch();
-    const obj = {
+    const { title, startDate, endDate, timeLimit, memoryLimit } = watch();
+    type Response = {
+      classroomIds: number[];
+      title: string;
+      startDate: string;
+      endDate: string;
+      problemType: string;
+      content: string;
+      timeLimit?: number | null;
+      memoryLimit?: number | null;
+      testcases?: {
+        name: string;
+        input: string;
+        expectedOutput: string;
+      }[];
+    };
+
+    if (problemType !== 'java-src' && problemType !== 'docs') {
+      alert('invalid problem type');
+      return;
+    }
+
+    let obj: Response = {
       classroomIds: postTo.map((classroom) => classroom.id),
       title: title,
+      startDate: startDate.toISOString(),
+      endDate: endDate.toISOString(),
       problemType: problemType,
-      timeLimit: timeLimit,
-      memoryLimit: memoryLimit,
       content: editorValue,
-      testcases: testcases,
     };
+
+    if (problemType === 'java-src') {
+      obj.timeLimit = timeLimit;
+      obj.memoryLimit = memoryLimit;
+      obj.testcases = testcases.map((testcase) => ({
+        name: testcase.name,
+        input: testcase.input,
+        expectedOutput: testcase.expectedOutput,
+      }));
+    }
+
     alert(JSON.stringify(obj, null, 2));
+    console.log(obj);
 
     // if post success
     reset();

@@ -13,8 +13,11 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useAtom } from 'jotai';
 import {
+  DateTimePickerElement,
   FormContainer,
   TextFieldElement,
   UseFormReturn,
@@ -28,6 +31,9 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
   formContext,
 }) => {
   const [problemType, setProblemType] = useAtom(problemTypeAtom);
+  const currentDateTime = new Date();
+  const { watch } = formContext;
+  const startDate = watch('startDate');
 
   const handleProblemType = (
     event: React.MouseEvent<HTMLElement>,
@@ -58,6 +64,45 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
               },
             }}
           />
+          <Stack direction="row" spacing={2}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DateTimePickerElement
+                className="w-full"
+                label="วันเวลาที่เริ่มการส่งงาน"
+                name="startDate"
+                required
+                validation={{
+                  required: 'กรุณาระบุวันเวลาที่เริ่มการส่งงาน',
+                  validate: (value) => {
+                    if (value < currentDateTime) {
+                      return 'วันเวลาที่เริ่มการส่งงานต้องมากกว่าวันเวลาปัจจุบัน';
+                    }
+                    return true;
+                  },
+                }}
+                minDateTime={currentDateTime}
+              />
+              <DateTimePickerElement
+                className="w-full"
+                label="วันเวลาที่สิ้นสุดการส่งงาน"
+                name="endDate"
+                required
+                validation={{
+                  required: 'กรุณาระบุวันเวลาที่สิ้นสุดการส่งงาน',
+                  validate: (value) => {
+                    let threeMinLater = new Date(
+                      startDate?.getTime() + 3 * 60000
+                    );
+                    if (value < threeMinLater) {
+                      return 'วันเวลาที่สิ้นสุดการส่งงานต้องมากกว่าวันเวลาที่เริ่มการส่งงานอย่างต่ำ 3 นาที';
+                    }
+                    return true;
+                  },
+                }}
+                minDateTime={new Date(startDate?.getTime() + 3 * 60000)} // 3 minutes after start date
+              />
+            </LocalizationProvider>
+          </Stack>
           <Stack direction="row" alignItems="center">
             <Typography variant="body2" sx={{ mr: 2 }}>
               ประเภทไฟล์ที่ยอมรับ
