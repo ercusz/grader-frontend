@@ -2,6 +2,7 @@ import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownE
 import CreateAssignmentForm from '@/components/forms/create-assignment/CreateAssignmentForm';
 import PostToForm from '@/components/forms/post-to/PostToForm';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
+import { useTestcases } from '@/hooks/grader/useTestcases';
 import {
   openCreateAssignmentDialogAtom,
   postToAtom,
@@ -108,6 +109,7 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   const [postTo, setPostTo] = useAtom(postToAtom);
   const [editorValue, setEditorValue] = useAtom(markdownEditorValueAtom);
   const [problemType] = useAtom(problemTypeAtom);
+  const { testcases, resetTestcases } = useTestcases();
   const { data: course } = useCourseSlug({ slug: courseSlug });
 
   useEffect(() => {
@@ -118,8 +120,9 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       if (classroom) {
         setPostTo([classroom]);
       }
+      resetTestcases();
     }
-  }, [classroomSlug, course, openDialog, setPostTo]);
+  }, [classroomSlug, course, openDialog, resetTestcases, setPostTo]);
 
   const createAssignmentFormContext = useForm<CreateAssignmentFormValues>({
     defaultValues: { title: '', timeLimit: null, memoryLimit: null },
@@ -137,18 +140,20 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       timeLimit: timeLimit,
       memoryLimit: memoryLimit,
       content: editorValue,
+      testcases: testcases,
     };
     alert(JSON.stringify(obj, null, 2));
 
     // if post success
     reset();
     setEditorValue('');
+    resetTestcases();
 
     setOpenDialog(false);
   };
 
   const openUnsavedChangesDialog = (callback: () => void) => {
-    if (isDirty || editorValue) {
+    if (isDirty || editorValue || testcases.length > 0) {
       if (
         !confirm(
           'โพสต์ของคุณยังไม่ถูกเผยแพร่ \nคุณต้องการออกจากหน้านี้ใช่หรือไม่?'
@@ -167,6 +172,7 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       setTabsValue('create-assignment');
       reset();
       setEditorValue('');
+      resetTestcases();
     });
   };
 

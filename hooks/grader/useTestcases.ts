@@ -2,28 +2,29 @@ import { Submission, TestCase } from '@/types/types';
 import { compressSourceCode, createSubmission } from '@/utils/GraderService';
 import { QueryClient, useQueries } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
+import { atomWithReset, useResetAtom } from 'jotai/utils';
 import { useCallback } from 'react';
 import { useIdeTabs } from './useIdeTabs';
 
-export const testcases = atom<TestCase[]>([]);
+export const testcasesAtom = atomWithReset<TestCase[]>([]);
 
-const testcasesAtom = atom(
-  (get) => get(testcases),
+const testcasesAtomRW = atom(
+  (get) => get(testcasesAtom),
   (_, set, newTestcase: TestCase) =>
-    set(testcases, (prev: TestCase[]) => [...prev, newTestcase])
+    set(testcasesAtom, (prev: TestCase[]) => [...prev, newTestcase])
 );
 
 const remover = atom(null, (get, set, id: number) =>
   set(
-    testcases,
-    get(testcases).filter((testcase) => testcase.id !== id)
+    testcasesAtom,
+    get(testcasesAtom).filter((testcase) => testcase.id !== id)
   )
 );
 
 const loadingStatusSetter = atom(null, (get, set, { id, loading, status }) =>
   set(
-    testcases,
-    get(testcases).map((testcase) =>
+    testcasesAtom,
+    get(testcasesAtom).map((testcase) =>
       id === testcase.id
         ? { ...testcase, loading: loading, status: status }
         : testcase
@@ -32,10 +33,11 @@ const loadingStatusSetter = atom(null, (get, set, { id, loading, status }) =>
 );
 
 export function useTestcases() {
-  const [testcases, addTestcase] = useAtom(testcasesAtom);
+  const [testcases, addTestcase] = useAtom(testcasesAtomRW);
   const [, removeTestcase] = useAtom(remover);
   const [, setTestcaseLoadAndStatus] = useAtom(loadingStatusSetter);
   const { ideTabs } = useIdeTabs();
+  const resetTestcases = useResetAtom(testcasesAtom);
 
   const runTestCase = async (testcase: TestCase) => {
     const src = await compressSourceCode(ideTabs);
@@ -95,5 +97,6 @@ export function useTestcases() {
     setTestcaseLoadAndStatus,
     runTestCase,
     runAllTestCases,
+    resetTestcases,
   } as const;
 }

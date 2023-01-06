@@ -1,5 +1,6 @@
 import { CreateAssignmentFormValues } from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import MarkdownEditor from '@/components/editors/markdown/MarkdownEditor';
+import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
 import { GraderConfig } from '@/constants/grader';
 import { problemTypeAtom } from '@/stores/create-assignment';
 import CodeIcon from '@mui/icons-material/Code';
@@ -136,6 +137,7 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                 💡 TIPS: หากไม่กรอก Time Limit / Memory Limit
                 จะใช้ค่าเริ่มต้นของระบบ
               </Typography>
+              <TestCasesList />
             </>
           )}
           {problemType === 'docs' && (

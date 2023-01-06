@@ -21,9 +21,11 @@ import Typography from '@mui/material/Typography';
 import { useEffect, useState } from 'react';
 import { MdOutlineAddCircleOutline, MdPostAdd } from 'react-icons/md';
 
-export interface ITestCasesList {}
+export interface ITestCasesList {
+  runnable?: boolean;
+}
 
-const TestCasesList: React.FC = () => {
+const TestCasesList: React.FC<ITestCasesList> = ({ runnable }) => {
   const [openTestCaseList, setOpenTestCaseList] = useState([false]);
   const [openNewTestCase, setOpenNewTestCase] = useState(true);
   const [input, setInput] = useState('');
@@ -34,7 +36,7 @@ const TestCasesList: React.FC = () => {
     useTestcases();
 
   useEffect(() => {
-    if (testcases) {
+    if (testcases && runnable) {
       if (testcases.length > 0) {
         let passed = testcases?.filter(
           (testcase) => testcase.status === 3
@@ -42,7 +44,7 @@ const TestCasesList: React.FC = () => {
         setPassedTestCases(passed);
       }
     }
-  }, [testcases]);
+  }, [testcases, runnable]);
 
   const handleInputChange = (event: { target: { value: any } }) => {
     setInput(event.target.value);
@@ -92,7 +94,7 @@ const TestCasesList: React.FC = () => {
 
   return (
     <Box>
-      {testcases.length > 0 && (
+      {testcases.length > 0 && runnable && (
         <Stack
           py={0.5}
           direction="row"
@@ -139,16 +141,18 @@ const TestCasesList: React.FC = () => {
                       alignItems="center"
                       spacing={1}
                     >
-                      <LoadingButton
-                        onClick={() => runTestCase(testcase)}
-                        loading={testcase.loading}
-                        color="success"
-                        disabled={testcase.loading}
-                      >
-                        <PlayCircleIcon fontSize="large" />
-                      </LoadingButton>
+                      {runnable && (
+                        <LoadingButton
+                          onClick={() => runTestCase(testcase)}
+                          loading={testcase.loading}
+                          color="success"
+                          disabled={testcase.loading}
+                        >
+                          <PlayCircleIcon fontSize="large" />
+                        </LoadingButton>
+                      )}
                       {testcase.name}
-                      {testcase.status >= 3 && (
+                      {testcase.status >= 3 && runnable && (
                         <Chip
                           sx={{
                             bgcolor:

@@ -389,7 +389,7 @@ const Playground: NextPageWithLayout = () => {
                 }
               />
               <CardContent>
-                <TestCasesList />
+                <TestCasesList runnable />
               </CardContent>
             </Card>
           </Container>
