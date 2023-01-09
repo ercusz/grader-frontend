@@ -40,6 +40,7 @@ specifiers:
   '@types/react-dom': 18.0.5
   '@typescript-eslint/eslint-plugin': ^5.46.0
   '@typescript-eslint/parser': ^5.46.0
+  '@uiw/react-markdown-preview': ^4.1.6
   '@uiw/react-md-editor': ^3.20.1
   autoprefixer: ^10.4.13
   axios: ^0.27.2
@@ -97,6 +98,7 @@ dependencies:
   '@tanstack/query-core': 4.19.1
   '@tanstack/react-query': 4.19.1_biqbaboplfbrettd7655fr4n2y
   '@tanstack/react-query-devtools': 4.19.1_xnkyuugmv5unvdsxvtkktqsuae
+  '@uiw/react-markdown-preview': 4.1.6_jbvntnid6ohjelon6ccj5dhg2u
   '@uiw/react-md-editor': 3.20.1_jbvntnid6ohjelon6ccj5dhg2u
   axios: 0.27.2
   date-fns: 2.29.3
