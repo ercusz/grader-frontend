@@ -1,21 +1,14 @@
+import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import PreviewIcon from '@mui/icons-material/Preview';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { IconButton, Typography, useTheme } from '@mui/material';
-import { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
-import '@uiw/react-markdown-preview/markdown.css';
 import { MDEditorProps } from '@uiw/react-md-editor';
 import '@uiw/react-md-editor/markdown-editor.css';
 import { atom, useAtom } from 'jotai';
 import dynamic from 'next/dynamic';
-import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 
 const MDEditor = dynamic<MDEditorProps>(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
-  { ssr: false }
-);
-
-const Preview = dynamic<MarkdownPreviewProps>(
-  () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
   { ssr: false }
 );
 
@@ -62,54 +55,7 @@ const MarkdownEditor: React.FC<IMarkdownEditor> = () => {
           <Typography variant="h6" component="h2" sx={{ paddingTop: 2 }}>
             Preview
           </Typography>
-          <Preview
-            source={value}
-            linkTarget="_blank"
-            pluginsFilter={(type, plugin) => {
-              if (type === 'rehype') {
-                plugin.unshift([
-                  rehypeSanitize,
-                  {
-                    ...defaultSchema,
-                    attributes: {
-                      ...defaultSchema.attributes,
-                      code: [
-                        ...(defaultSchema?.attributes?.code || []),
-                        // List of all allowed languages:
-                        [
-                          'className',
-                          'language-sh',
-                          'language-bash',
-                          'language-c',
-                          'language-cpp',
-                          'language-csharp',
-                          'language-diff',
-                          'language-go',
-                          'language-java',
-                          'language-javascript',
-                          'language-js',
-                          'language-jsx',
-                          'language-json',
-                          'language-python',
-                          'language-py',
-                          'language-rust',
-                          'language-rs',
-                          'language-sql',
-                          'language-typescript',
-                          'language-ts',
-                          'language-tsx',
-                          'language-xml',
-                          'language-yaml',
-                          'language-yml',
-                        ],
-                      ],
-                    },
-                  },
-                ]);
-              }
-              return plugin;
-            }}
-          />
+          <MarkdownPreview content={value} />
         </>
       )}
     </div>
