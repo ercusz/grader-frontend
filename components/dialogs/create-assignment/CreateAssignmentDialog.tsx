@@ -21,7 +21,9 @@ import {
   Dialog,
   DialogContent,
   IconButton,
+  InputAdornment,
   Stack,
+  TextField,
   Toolbar,
   Typography,
   Zoom,
@@ -73,10 +75,15 @@ const CustomTabPanel = ({
       }}
     >
       <AppBar
-        color="transparent"
+        position="sticky"
         elevation={0}
         sx={{
-          position: 'relative',
+          color: (theme) => theme.palette.text.primary,
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
+          backgroundColor: (theme) =>
+            alpha(theme.palette.background.default, 0.72),
+          transition: 'all 0.2s ease-in-out',
           borderBottom: (theme) =>
             `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
         }}
@@ -98,6 +105,7 @@ export type CreateAssignmentFormValues = {
   title: string;
   startDate: Date;
   endDate: Date;
+  point: number;
   timeLimit: number | null;
   memoryLimit: number | null;
 };
@@ -127,21 +135,30 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   }, [classroomSlug, course, openDialog, resetTestcases, setPostTo]);
 
   const createAssignmentFormContext = useForm<CreateAssignmentFormValues>({
-    defaultValues: { title: '', timeLimit: null, memoryLimit: null },
+    defaultValues: {
+      title: '',
+      timeLimit: null,
+      memoryLimit: null,
+      point: 100,
+    },
   });
 
-  const { handleSubmit, watch, formState, reset } = createAssignmentFormContext;
-  const { isDirty } = formState;
+  const { handleSubmit, watch, formState, reset, register } =
+    createAssignmentFormContext;
+  const { errors, dirtyFields } = formState;
 
   const onSubmit = () => {
-    const { title, startDate, endDate, timeLimit, memoryLimit } = watch();
+    const { title, startDate, endDate, timeLimit, memoryLimit, point } =
+      watch();
+
     type Response = {
       classroomIds: number[];
       title: string;
       startDate: string;
       endDate: string;
-      problemType: string;
+      type: string;
       content: string;
+      point: number;
       timeLimit?: number | null;
       memoryLimit?: number | null;
       testcases?: {
@@ -161,8 +178,9 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       title: title,
       startDate: startDate.toISOString(),
       endDate: endDate.toISOString(),
-      problemType: problemType,
+      type: problemType,
       content: editorValue,
+      point: point,
     };
 
     if (problemType === 'java-src') {
@@ -187,7 +205,11 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   };
 
   const openUnsavedChangesDialog = (callback: () => void) => {
-    if (isDirty || editorValue || testcases.length > 0) {
+    if (
+      editorValue ||
+      testcases.length > 0 ||
+      Object.keys(dirtyFields).length > 0
+    ) {
       if (
         !confirm(
           'โพสต์ของคุณยังไม่ถูกเผยแพร่ \nคุณต้องการออกจากหน้านี้ใช่หรือไม่?'
@@ -236,9 +258,43 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
               >
                 <CloseIcon />
               </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              <Typography
+                sx={{ ml: 2, flex: 1 }}
+                variant="h6"
+                component="div"
+                noWrap
+              >
                 มอบหมายงาน
               </Typography>
+              {errors.point && (
+                <Typography variant="caption" color="red" sx={{}}>
+                  {errors.point.message}
+                </Typography>
+              )}
+              <TextField
+                id="point"
+                label="คะแนน"
+                size="small"
+                sx={{ m: 1, width: '12ch' }}
+                autoComplete="off"
+                error={errors.point ? true : false}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">/100</InputAdornment>
+                  ),
+                }}
+                {...register('point', {
+                  required: 'คุณจำเป็นต้องกรอกคะแนน',
+                  min: {
+                    value: 1,
+                    message: 'คุณจำเป็นต้องกรอกคะแนนมากกว่า 0 คะแนน',
+                  },
+                  max: {
+                    value: 100,
+                    message: 'คุณจำเป็นต้องกรอกคะแนนน้อยกว่า 100 คะแนน',
+                  },
+                })}
+              />
               <Button
                 autoFocus
                 color="primary"
