@@ -63,13 +63,15 @@ body {
   filter: blur(2px);
 }
 
-[data-color-mode*='dark'] .wmde-markdown-var,
-[data-color-mode*='dark'] .wmde-markdown {
+[data-color-mode*='dark'] .wmde-markdown-var {
   --color-canvas-default: #222222 !important;
   --color-border-default: rgba(255, 255, 255, 0.2) !important;
 }
 
-[data-color-mode*='light'] .wmde-markdown-var,
 [data-color-mode*='light'] .wmde-markdown {
-  --color-canvas-default: #fcfcfc !important;
+  --color-canvas-default: #fff !important;
+}
+
+[data-color-mode*='dark'] .wmde-markdown {
+  --color-canvas-default: #18191a !important;
 }

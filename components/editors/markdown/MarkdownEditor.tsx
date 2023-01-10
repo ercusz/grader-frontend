@@ -1,7 +1,13 @@
 import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import PreviewIcon from '@mui/icons-material/Preview';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import { IconButton, Typography, useTheme } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  IconButton,
+  Typography,
+  useTheme,
+} from '@mui/material';
 import { MDEditorProps } from '@uiw/react-md-editor';
 import '@uiw/react-md-editor/markdown-editor.css';
 import { atom, useAtom } from 'jotai';
@@ -55,7 +61,15 @@ const MarkdownEditor: React.FC<IMarkdownEditor> = () => {
           <Typography variant="h6" component="h2" sx={{ paddingTop: 2 }}>
             Preview
           </Typography>
-          <MarkdownPreview content={value} />
+          <Card
+            className="shadow-xl w-full"
+            variant="outlined"
+            sx={{ px: 2, py: 4, mb: 4 }}
+          >
+            <CardContent className="w-full">
+              <MarkdownPreview content={value} />
+            </CardContent>
+          </Card>
         </>
       )}
     </div>
