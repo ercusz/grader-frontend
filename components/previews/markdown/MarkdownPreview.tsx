@@ -2,6 +2,7 @@ import { MarkdownPreviewProps } from '@uiw/react-markdown-preview';
 import '@uiw/react-markdown-preview/markdown.css';
 import dynamic from 'next/dynamic';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
+import remarkToc from 'remark-toc';
 
 const Preview = dynamic<MarkdownPreviewProps>(
   () => import('@uiw/react-markdown-preview').then((mod) => mod.default),
@@ -13,9 +14,11 @@ export interface IMarkdownPreview {
 }
 
 const MarkdownPreview: React.FC<IMarkdownPreview> = ({ content }) => {
+
   return (
     <Preview
       source={content}
+      remarkPlugins={[remarkToc]}
       pluginsFilter={(type, plugin) => {
         if (type === 'rehype') {
           plugin.unshift([
