@@ -55,6 +55,7 @@
     "react-hook-form-mui": "^5.11.0",
     "react-icons": "^4.7.1",
     "rehype-sanitize": "^5.0.1",
+    "remark-toc": "^8.0.1",
     "sharp": "^0.30.7",
     "storybook-addon-next-router": "^4.0.1",
     "swiper": "^8.4.5",
