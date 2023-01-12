@@ -102,3 +102,35 @@ export type TestCase = {
   status: number;
   loading: boolean;
 };
+
+export type CreateAssignment = {
+  classroomIds: number[];
+  title: string;
+  startDate: string;
+  endDate: string;
+  type: string;
+  content: string;
+  point: number;
+  timeLimit?: number | null;
+  memoryLimit?: number | null;
+  testcases?: {
+    name: string;
+    input: string;
+    expectedOutput: string;
+  }[];
+};
+
+export type Assignment = {
+  id: number;
+  classroomId: number;
+  title: string;
+  startDate: Date;
+  endDate: Date;
+  type: string;
+  content: string;
+  point: number;
+  createdAt: Date;
+  createdBy: UserResponse;
+  updatedAt: Date | null;
+  updatedBy: UserResponse | null;
+};

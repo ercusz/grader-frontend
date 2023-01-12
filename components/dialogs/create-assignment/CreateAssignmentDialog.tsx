@@ -8,6 +8,7 @@ import {
   postToAtom,
   problemTypeAtom,
 } from '@/stores/create-assignment';
+import { CreateAssignment } from '@/types/types';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
@@ -151,29 +152,12 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
     const { title, startDate, endDate, timeLimit, memoryLimit, point } =
       watch();
 
-    type Response = {
-      classroomIds: number[];
-      title: string;
-      startDate: string;
-      endDate: string;
-      type: string;
-      content: string;
-      point: number;
-      timeLimit?: number | null;
-      memoryLimit?: number | null;
-      testcases?: {
-        name: string;
-        input: string;
-        expectedOutput: string;
-      }[];
-    };
-
     if (problemType !== 'java-src' && problemType !== 'docs') {
       alert('invalid problem type');
       return;
     }
 
-    let obj: Response = {
+    let obj: CreateAssignment = {
       classroomIds: postTo.map((classroom) => classroom.id),
       title: title,
       startDate: startDate.toISOString(),
