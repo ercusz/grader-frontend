@@ -1,6 +1,7 @@
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { updateCourseCoverImage } from '@/utils/ClassroomService';
+import { getImagePath } from '@/utils/imagePath';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import { Box, Button, Container, Divider, Typography } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -127,9 +128,7 @@ const UploadCoverImageForm: React.FC<IUploadCoverImageForm> = ({
             <Typography className="font-bold" variant="body1" noWrap>
               รูปภาพหน้าปกปัจจุบัน
             </Typography>
-            <PreviewImage
-              src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.coverImage.url}`}
-            />
+            <PreviewImage src={getImagePath(course.coverImage)} />
           </>
         )
       )}

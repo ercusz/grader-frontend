@@ -1,5 +1,6 @@
 import { MyClassroomInvitation } from '@/types/types';
 import { responseClassroomInvitation } from '@/utils/ClassroomService';
+import { getImagePath } from '@/utils/imagePath';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import EmailIcon from '@mui/icons-material/Email';
@@ -192,11 +193,7 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
                   layout="fill"
                   quality={60}
                   alt={`${classroom.name} classroom cover image`}
-                  src={
-                    classroom.course.coverImage
-                      ? `${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.coverImage.url}`
-                      : ''
-                  }
+                  src={getImagePath(classroom.course.coverImage)}
                   sizes="100vw"
                 />
               </CardMedia>
@@ -215,7 +212,9 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
                       layout="fill"
                       quality={60}
                       alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
-                      src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.teachers[0].profileImage.url}`}
+                      src={getImagePath(
+                        classroom.course.teachers[0].profileImage
+                      )}
                       sizes="100vw"
                     />
                   )}

@@ -1,4 +1,5 @@
 import { MyClassroom } from '@/types/types';
+import { getImagePath } from '@/utils/imagePath';
 import CheckIcon from '@mui/icons-material/Check';
 import {
   Avatar,
@@ -174,11 +175,7 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                     layout="fill"
                     quality={60}
                     alt={`${classroom.name} classroom cover image`}
-                    src={
-                      classroom.course.coverImage
-                        ? `${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.coverImage.url}`
-                        : ''
-                    }
+                    src={getImagePath(classroom.course.coverImage)}
                     sizes="100vw"
                   />
                 </CardMedia>
@@ -195,7 +192,9 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                     layout="fill"
                     quality={60}
                     alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
-                    src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.teachers[0].profileImage.url}`}
+                    src={getImagePath(
+                      classroom.course.teachers[0].profileImage
+                    )}
                     sizes="100vw"
                   />
                 )}

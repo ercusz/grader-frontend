@@ -2,6 +2,7 @@ import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useDebounce } from '@/hooks/debounce/useDebounce';
 import { UserResponse } from '@/types/types';
 import { addStudentToClassroom, findUser } from '@/utils/ClassroomService';
+import { getImagePath } from '@/utils/imagePath';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -219,7 +220,7 @@ const AddStudentDialog: React.FC<IAddStudentDialog> = ({
                 <ListItemAvatar>
                   <Avatar
                     alt={getStudentName(user)}
-                    src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${user.profileImage?.url}`}
+                    src={getImagePath(user.profileImage)}
                   />
                 </ListItemAvatar>
                 <ListItemText

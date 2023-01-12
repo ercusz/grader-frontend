@@ -1,7 +1,6 @@
 import { User } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
-
-const strapiUrl = process.env.NEXT_PUBLIC_STRAPI_HOST;
+import { getImagePath } from './imagePath';
 
 interface ISignIn {
   identifier: string;
@@ -72,7 +71,7 @@ export async function getUserInfo(): Promise<User | null> {
   }
 
   if (res.data.profileImage !== null) {
-    res.data.profileImage.url = strapiUrl + res.data.profileImage.url;
+    res.data.profileImage.url = getImagePath(res.data.profileImage);
   }
 
   return res.data as User;

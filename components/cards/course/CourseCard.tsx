@@ -1,4 +1,5 @@
 import { Course } from '@/types/types';
+import { getImagePath } from '@/utils/imagePath';
 import {
   Avatar,
   Card,
@@ -78,11 +79,7 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                   layout="fill"
                   quality={60}
                   alt={`${course.name} classroom cover image`}
-                  src={
-                    course.coverImage
-                      ? `${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.coverImage.url}`
-                      : ''
-                  }
+                  src={getImagePath(course.coverImage)}
                   sizes="100vw"
                 />
               </CardMedia>
@@ -99,7 +96,7 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                   layout="fill"
                   quality={60}
                   alt={`${course.teachers[0].firstName} ${course.teachers[0].lastName}`}
-                  src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.teachers[0].profileImage.url}`}
+                  src={getImagePath(course.teachers[0].profileImage)}
                   sizes="100vw"
                 />
               )}

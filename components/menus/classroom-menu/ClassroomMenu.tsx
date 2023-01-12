@@ -2,6 +2,7 @@ import InviteCodeCard from '@/components/cards/invite-code/InviteCodeCard';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useUser } from '@/hooks/user/useUser';
 import { UserResponse } from '@/types/types';
+import { getImagePath } from '@/utils/imagePath';
 import LockIcon from '@mui/icons-material/Lock';
 import PeopleIcon from '@mui/icons-material/People';
 import PublicIcon from '@mui/icons-material/Public';
@@ -95,7 +96,7 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
                 <Avatar
                   className="shadow-md"
                   alt={getStudentName(student)}
-                  src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${student.profileImage?.url}`}
+                  src={getImagePath(student.profileImage)}
                 />
               </Tooltip>
             ))}

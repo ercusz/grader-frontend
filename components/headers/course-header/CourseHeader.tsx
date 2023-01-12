@@ -3,6 +3,7 @@ import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { useUser } from '@/hooks/user/useUser';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
+import { getImagePath } from '@/utils/imagePath';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
@@ -38,9 +39,9 @@ const CourseHeader: React.FC<ICourseHeader> = ({
       classroom.course.coverImage &&
       classroom.course.coverImage.url
     ) {
-      return `url(${process.env.NEXT_PUBLIC_STRAPI_HOST}${classroom.course.coverImage.url})`;
+      return `url(${getImagePath(classroom.course.coverImage)})`;
     } else if (course && course.coverImage && course.coverImage.url) {
-      return `url(${process.env.NEXT_PUBLIC_STRAPI_HOST}${course.coverImage.url})`;
+      return `url(${getImagePath(course.coverImage)})`;
     }
 
     return '';

@@ -6,6 +6,7 @@ import {
   removeStudentFromClassroom,
   removeStudentsFromClassroom,
 } from '@/utils/ClassroomService';
+import { getImagePath } from '@/utils/imagePath';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Avatar,
@@ -115,7 +116,7 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
           >
             <Avatar
               alt={getStudentName(row.original)}
-              src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${row.original.profileImage?.url}`}
+              src={getImagePath(row.original.profileImage)}
             />
             <Typography>{cell.getValue<string>()}</Typography>
           </Box>

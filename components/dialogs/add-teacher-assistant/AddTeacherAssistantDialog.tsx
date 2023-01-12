@@ -2,6 +2,7 @@ import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useDebounce } from '@/hooks/debounce/useDebounce';
 import { UserResponse } from '@/types/types';
 import { addTaToClassroom, findUser } from '@/utils/ClassroomService';
+import { getImagePath } from '@/utils/imagePath';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import GppGoodIcon from '@mui/icons-material/GppGood';
@@ -217,7 +218,7 @@ const AddTeacherAssistantDialog: React.FC<IAddTeacherAssistantDialog> = ({
                 <ListItemAvatar>
                   <Avatar
                     alt={getTaName(user)}
-                    src={`${process.env.NEXT_PUBLIC_STRAPI_HOST}${user.profileImage?.url}`}
+                    src={getImagePath(user.profileImage)}
                   />
                 </ListItemAvatar>
                 <ListItemText
