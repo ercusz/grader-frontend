@@ -21,7 +21,7 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { format, formatDistanceToNow, isAfter } from 'date-fns';
+import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
 import { MouseEvent, useState } from 'react';
@@ -101,24 +101,26 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
           sx={{ py: 0 }}
           title={
             <Stack direction="row" spacing={2}>
-              {isAfter(assignment.startDate, new Date()) && (
-                <Chip
-                  size="small"
-                  color="warning"
-                  icon={<InsertDriveFileIcon />}
-                  label="DRAFT"
-                  variant="outlined"
-                />
+              {isAfter(parseISO(assignment.startDate), new Date()) && (
+                <Tooltip
+                  title={
+                    'โพสต์นี้จะไม่ปรากฏให้นักศึกษาในคลาสเรียนเห็นจนกว่าจะถึงวันเวลาที่เริ่มการส่งงาน'
+                  }
+                >
+                  <Chip
+                    size="small"
+                    color="warning"
+                    icon={<InsertDriveFileIcon />}
+                    label="DRAFT"
+                    variant="outlined"
+                  />
+                </Tooltip>
               )}
               <Tooltip
-                title={
-                  <Typography className="font-bold" variant="caption">
-                    {`${formatDistanceToNow(assignment.endDate, {
-                      locale: th,
-                      addSuffix: true,
-                    })}`}
-                  </Typography>
-                }
+                title={formatDistanceToNow(parseISO(assignment.endDate), {
+                  locale: th,
+                  addSuffix: true,
+                })}
               >
                 <Chip
                   size="small"
@@ -126,7 +128,7 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
                   icon={<AlarmIcon />}
                   label={
                     <Typography variant="caption">{`กำหนดส่ง ${format(
-                      assignment.endDate,
+                      parseISO(assignment.endDate),
                       'PPp',
                       {
                         locale: th,
@@ -163,12 +165,12 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
             {assignment.updatedBy && assignment.updatedAt ? (
               <AuthorDetails
                 author={assignment.updatedBy}
-                date={assignment.updatedAt}
+                date={parseISO(assignment.updatedAt)}
               />
             ) : (
               <AuthorDetails
                 author={assignment.createdBy}
-                date={assignment.createdAt}
+                date={parseISO(assignment.createdAt)}
               />
             )}
             <Divider sx={{ my: 6 }} />
