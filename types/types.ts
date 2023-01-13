@@ -124,13 +124,20 @@ export type Assignment = {
   id: number;
   classroomId: number;
   title: string;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
   type: string;
   content: string;
   point: number;
-  createdAt: Date;
+  timeLimit?: number | null;
+  memoryLimit?: number | null;
+  testcases?: {
+    name: string;
+    input: string;
+    expectedOutput: string;
+  }[];
+  createdAt: string;
   createdBy: UserResponse;
-  updatedAt: Date | null;
+  updatedAt: string | null;
   updatedBy: UserResponse | null;
 };
