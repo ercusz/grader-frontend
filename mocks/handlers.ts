@@ -1,4 +1,5 @@
 import {
+  Assignment,
   ClassroomSlugResponse,
   CourseSlugResponse,
   CreateCourseReq,
@@ -291,5 +292,357 @@ export const handlers = [
         ],
       })
     );
+  }),
+  rest.get(`${strapiUrl}/api/classrooms/:id/assignments`, (req, res, ctx) => {
+    if (Number(req.params.id) === 1) {
+      return res(
+        ctx.json<Assignment[]>([
+          {
+            id: 1,
+            classroomId: 1,
+            title: 'Lab 1: A+B Problem',
+            startDate: new Date().toISOString(),
+            endDate: new Date(
+              new Date().getTime() + 24 * 60 * 60 * 1000
+            ).toISOString(),
+            type: 'java-src',
+            content: 'test',
+            point: 100,
+            createdAt: new Date().toISOString(),
+            createdBy: {
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1234,
+                url: 'https://i.pravatar.cc/?u=john',
+              },
+            },
+            updatedAt: new Date(
+              new Date().getTime() + 2 * 60 * 60 * 1000
+            ).toISOString(),
+            updatedBy: {
+              id: 1235,
+              firstName: 'Jane',
+              lastName: 'Doe',
+              username: 'janedoe69',
+              profileImage: {
+                id: 1235,
+                url: 'https://i.pravatar.cc/?u=jane',
+              },
+            },
+          },
+          {
+            id: 2,
+            classroomId: 1,
+            title: 'Lab 2: Grading',
+            startDate: new Date(
+              new Date().getTime() + 48 * 60 * 60 * 1000
+            ).toISOString(),
+            endDate: new Date(
+              new Date().getTime() + 72 * 60 * 60 * 1000
+            ).toISOString(),
+            type: 'java-src',
+            content: 'test',
+            point: 100,
+            createdAt: new Date(
+              new Date().getTime() + 48 * 60 * 60 * 1000
+            ).toISOString(),
+            createdBy: {
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1234,
+                url: 'https://i.pravatar.cc/?u=john',
+              },
+            },
+            updatedAt: new Date(
+              new Date().getTime() + 50 * 60 * 60 * 1000
+            ).toISOString(),
+            updatedBy: {
+              id: 1235,
+              firstName: 'Jane',
+              lastName: 'Doe',
+              username: 'janedoe69',
+              profileImage: {
+                id: 1235,
+                url: 'https://i.pravatar.cc/?u=jane',
+              },
+            },
+          },
+          {
+            id: 3,
+            classroomId: 1,
+            title: 'Lab 3: MinMax',
+            startDate: new Date(
+              new Date().getTime() + 50 * 60 * 60 * 1000
+            ).toISOString(),
+            endDate: new Date(
+              new Date().getTime() + 72 * 60 * 60 * 1000
+            ).toISOString(),
+            type: 'java-src',
+            content: 'test',
+            point: 100,
+            createdAt: new Date(
+              new Date().getTime() + 50 * 60 * 60 * 1000
+            ).toISOString(),
+            createdBy: {
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1234,
+                url: 'https://i.pravatar.cc/?u=john',
+              },
+            },
+            updatedAt: null,
+            updatedBy: null,
+          },
+          {
+            id: 4,
+            classroomId: 1,
+            title: 'Lecture 1: Flow Chart',
+            startDate: new Date(
+              new Date().getTime() + 72 * 60 * 60 * 1000
+            ).toISOString(),
+            endDate: new Date(
+              new Date().getTime() + 144 * 60 * 60 * 1000
+            ).toISOString(),
+            type: 'docs',
+            content: 'test',
+            point: 100,
+            createdAt: new Date(
+              new Date().getTime() + 72 * 60 * 60 * 1000
+            ).toISOString(),
+            createdBy: {
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1234,
+                url: 'https://i.pravatar.cc/?u=john',
+              },
+            },
+            updatedAt: null,
+            updatedBy: null,
+          },
+          {
+            id: 5,
+            classroomId: 1,
+            title: 'Lecture 2: ER Diagram',
+            startDate: new Date(
+              new Date().getTime() + 80 * 60 * 60 * 1000
+            ).toISOString(),
+            endDate: new Date(
+              new Date().getTime() + 48 * 60 * 60 * 1000
+            ).toISOString(),
+            type: 'docs',
+            content: 'test',
+            point: 100,
+            createdAt: new Date(
+              new Date().getTime() + 80 * 60 * 60 * 1000
+            ).toISOString(),
+            createdBy: {
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1234,
+                url: 'https://i.pravatar.cc/?u=john',
+              },
+            },
+            updatedAt: null,
+            updatedBy: null,
+          },
+        ])
+      );
+    }
+  }),
+  rest.get(`${strapiUrl}/api/assignments/:id`, (req, res, ctx) => {
+    const { id } = req.params;
+    if (Number(id) !== 1 && Number(id) !== 4) {
+      return res(
+        ctx.status(404),
+        ctx.json({
+          message: 'Assignment not found.',
+        })
+      );
+    }
+
+    if (Number(id) === 1) {
+      return res(
+        ctx.json<Assignment>({
+          id: 1,
+          classroomId: 1,
+          title: 'Lab 1: A+B Problem',
+          startDate: new Date(
+            new Date().getTime() + 24 * 60 * 60 * 1000
+          ).toISOString(),
+          endDate: new Date(
+            new Date().getTime() + 48 * 60 * 60 * 1000
+          ).toISOString(),
+          type: 'java-src',
+          content: `### Table of contents
+  
+  ### คำสั่ง
+  ให้นักศึกษาเขียนโปรแกรมภาษาจาวาในการคำนวณผลบวกของตัวเลขสองตัว โดยรับอินพุตจากทางหน้าจอ
+  
+  โดยรับ \`input\` เป็นตัวเลขจํานวนเต็ม \`a\` และ \`b\` จากนั้นให้ \`output\` ผลรวมของตัวเลขทั้ง 2 จํานวนออกทางหน้าจอ
+  
+  ### ข้อมูลนําเข้า
+  
+  บรรทัดแรก จํานวนเต็ม \`a\` โดยที่ \`0 ≤ a ≤ 109\`
+  
+  บรรทัดที่สอง จํานวนเต็ม \`b\` โดยที่ \`0 ≤ b ≤ 109\`
+  
+  ### ข้อมูลส่งออก
+  
+  ผลรวม แสดงเป็นตัวเลข เพียงบรรทัดเดียว
+  
+  ### ตัวอย่างข้อมูลนำเข้า
+  
+  \`\`\`
+  4
+  5
+  \`\`\`
+  
+  ### ตัวอย่างข้อมูลส่งออก
+  
+  \`\`\`
+  9
+  \`\`\`
+  
+  \`\`\`java
+  import java.io.*;
+  import java.util.*;
+  
+  class Main {
+      private static FastInput in = new FastInput(System.in);
+      private static PrintWriter out = new PrintWriter(new BufferedOutputStream(System.out));
+  
+      public static void main(String[] args) {
+          int a = in.nextInt();
+          int b = in.nextInt();
+  
+          out.println(a + b);
+          out.flush();
+      }
+  
+      static class FastInput {
+          BufferedReader br;
+          StringTokenizer tok;
+  
+          public FastInput(InputStream in) {
+              br = new BufferedReader(new InputStreamReader(System.in));
+              tok = new StringTokenizer("");
+          }
+  
+          public String next() {
+              while (!tok.hasMoreTokens()) {
+                  try {
+                      tok = new StringTokenizer(br.readLine());
+                  } catch (IOException e) {
+                  }
+              }
+              return tok.nextToken();
+          }
+  
+          public int nextInt() {
+              return Integer.parseInt(next());
+          }
+  
+          public long nextLong() {
+              return Long.parseLong(next());
+          }
+  
+          public double nextDouble() {
+              return Double.parseDouble(next());
+          }
+      }
+  }
+  \`\`\``,
+          point: 100,
+          createdAt: new Date().toISOString(),
+          createdBy: {
+            id: 1234,
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe69',
+            profileImage: {
+              id: 1234,
+              url: 'https://i.pravatar.cc/?u=john',
+            },
+          },
+          updatedAt: new Date(
+            new Date().getTime() + 24 * 60 * 60 * 1000
+          ).toISOString(),
+          updatedBy: {
+            id: 1235,
+            firstName: 'Jane',
+            lastName: 'Doe',
+            username: 'janedoe69',
+            profileImage: {
+              id: 1235,
+              url: 'https://i.pravatar.cc/?u=jane',
+            },
+          },
+        })
+      );
+    }
+
+    if (Number(id) === 4) {
+      return res(
+        ctx.json<Assignment>({
+          id: 4,
+          classroomId: 1,
+          title: 'Lecture 1: Flow Chart',
+          startDate: new Date(
+            new Date().getTime() + 72 * 60 * 60 * 1000
+          ).toISOString(),
+          endDate: new Date(
+            new Date().getTime() + 144 * 60 * 60 * 1000
+          ).toISOString(),
+          type: 'docs',
+          content: `**คำสั่ง:** ให้นักศึกษาเขียนผังงาน Flowchart ของโจทย์ต่อไปนี้
+
+## โจทย์
+จงเขียนโปรแกรมตรวจสอบว่าตัวเลขที่รับเข้ามาเป็น[เลขคู่หรือเลขคี่](https://www.mathsisfun.com/numbers/even-odd.html)
+
+โดยต้องเขียน Flowchart ให้ครบทุกกรณีที่เกิดขึ้นได้ และต้องเขียนเป็นภาษาอังกฤษ
+
+### ข้อมูลนำเข้า
+
+บรรทัดแรก จํานวนเต็ม \`a\` โดยที่ \`0 ≤ a ≤ 109\`
+
+### ข้อมูลส่งออก
+
+ถ้า \`a\` เป็นเลขคู่ให้แสดง \`Even\` ถ้าเป็นเลขคี่ให้แสดง \`Odd\` ทางหน้าจอ เพียงบรรทัดเดียว
+
+เมื่อเขียนเสร็จแล้วให้ส่งไฟล์ในรูปแบบ PDF เท่านั้น`,
+          point: 100,
+          createdAt: new Date(
+            new Date().getTime() + 72 * 60 * 60 * 1000
+          ).toISOString(),
+          createdBy: {
+            id: 1234,
+            firstName: 'John',
+            lastName: 'Doe',
+            username: 'johndoe69',
+            profileImage: {
+              id: 1234,
+              url: 'https://i.pravatar.cc/?u=john',
+            },
+          },
+          updatedAt: null,
+          updatedBy: null,
+        })
+      );
+    }
   }),
 ];
