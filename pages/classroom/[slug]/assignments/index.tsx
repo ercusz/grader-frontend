@@ -1,7 +1,7 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
 import CreateAssignmentDialog from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
-import LessonFiltersList from '@/components/lists/lessonfilters-list/LessonFiltersList';
+import { useAssignments } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { openCreateAssignmentDialogAtom } from '@/stores/create-assignment';
 import { setToken } from '@/utils/APIHelper';
@@ -15,8 +15,10 @@ import {
   Grid,
   List,
   ListItem,
+  Typography,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { isBefore, parseISO } from 'date-fns';
 import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
@@ -27,10 +29,18 @@ const ClassroomAssignments: NextPageWithLayout = ({
   slug,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const {
-    isLoading,
-    isSuccess,
+    isLoading: isLoadingClassroom,
+    isSuccess: isSuccessClassroom,
     data: classroom,
   } = useClassroomSlug({ slug: slug });
+
+  const {
+    isLoading: isLoadingAssignments,
+    isSuccess: isSuccessAssignments,
+    data: assignments,
+  } = useAssignments({
+    classroomId: classroom?.id ? classroom.id.toString() : '',
+  });
 
   const [, setOpenCreateAssignmentDialog] = useAtom(
     openCreateAssignmentDialogAtom
@@ -63,7 +73,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
         classroomSlug={slug}
         courseSlug={classroom?.course.slug}
       />
-      {isLoading && (
+      {isLoadingClassroom && isLoadingAssignments && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={true}
@@ -71,7 +81,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {isSuccess && classroom && (
+      {isSuccessClassroom && isSuccessAssignments && classroom && (
         <Grid
           container
           spacing={2}
@@ -104,15 +114,27 @@ const ClassroomAssignments: NextPageWithLayout = ({
                 </Button>
               </ListItem>
             </List>
-            <LessonFiltersList />
+            {/* <LessonFiltersList /> */}
           </Grid>
           <Grid item xs={12} md={8}>
             <List sx={{ width: '100%' }}>
-              {[...Array(15)].map((_, idx) => (
-                <ListItem key={idx} disableGutters>
-                  <AssignmentCard idx={idx} />
-                </ListItem>
-              ))}
+              {assignments.length > 0 ? (
+                assignments
+                  .sort((a, b) =>
+                    isBefore(parseISO(a.createdAt), parseISO(b.createdAt))
+                      ? 1
+                      : -1
+                  )
+                  .map((assignment) => (
+                    <ListItem key={assignment.id} disableGutters>
+                      <AssignmentCard assignment={assignment} />
+                    </ListItem>
+                  ))
+              ) : (
+                <Typography className="text-center" variant="h6">
+                  ไม่พบงานที่ได้รับมอบหมาย
+                </Typography>
+              )}
             </List>
           </Grid>
         </Grid>

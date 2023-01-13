@@ -1,4 +1,6 @@
+import { Assignment } from '@/types/types';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import CodeIcon from '@mui/icons-material/Code';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   Avatar,
@@ -6,18 +8,21 @@ import {
   CardActionArea,
   CardActions,
   CardHeader,
-  Chip,
   IconButton,
   Typography,
 } from '@mui/material';
+import { format, parseISO } from 'date-fns';
+import { th } from 'date-fns/locale';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { MouseEvent } from 'react';
 
 export interface IAssignmentCard {
-  idx: number;
+  assignment: Assignment;
 }
 
-const AssignmentCard: React.FC<IAssignmentCard> = ({ idx }) => {
+const AssignmentCard: React.FC<IAssignmentCard> = ({ assignment }) => {
+  const router = useRouter();
   const handleMoreButtonClick = (e: MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -25,7 +30,7 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({ idx }) => {
 
   return (
     <Card className="shadow-md w-full" variant="outlined">
-      <Link href="#">
+      <Link href={`${router.asPath}/${assignment.id}`} passHref>
         <CardActionArea component="a">
           <CardHeader
             sx={{
@@ -37,7 +42,8 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({ idx }) => {
             }}
             avatar={
               <Avatar aria-label="assignment">
-                <AssignmentIcon />
+                {assignment.type == 'java-src' && <CodeIcon />}
+                {assignment.type == 'docs' && <AssignmentIcon />}
               </Avatar>
             }
             action={
@@ -54,16 +60,20 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({ idx }) => {
             }
             title={
               <Typography noWrap gutterBottom variant="subtitle2">
-                {`${'John Doe'} ได้มอบหมายงานใหม่ ${`Lab ${idx} - Lorem ipsum dolor sit amet, consectetur adipisicing elit. A nobis dolorem nostrum soluta. Doloribus quaerat, eius voluptatibus assumenda eaque illo illum, labore at itaque ex, nemo repellat cupiditate praesentium explicabo!`}`}
+                {`${assignment.createdBy.firstName} ${assignment.createdBy.lastName}`}
+                {` ได้มอบหมายงานใหม่ `}
+                {`${assignment.title}`}
               </Typography>
             }
-            subheader="September 14, 2016"
+            subheader={format(parseISO(assignment.createdAt), 'PPp', {
+              locale: th,
+            })}
           />
           <CardActions sx={{ justifyContent: 'flex-end' }}>
-            <Typography variant="caption" sx={{ pr: 1 }}>
+            {/* <Typography variant="caption" sx={{ pr: 1 }}>
               แท็ก
             </Typography>
-            <Chip label={'บทที่ 1'} size="small" />
+            <Chip label={'บทที่ 1'} size="small" /> */}
           </CardActions>
         </CardActionArea>
       </Link>
