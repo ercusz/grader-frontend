@@ -1,4 +1,5 @@
 import BrandingButton from '@/components/buttons/branding/BrandingButton';
+import AssignmentContentCard from '@/components/cards/assignment-content/AssignmentContentCard';
 import InputDialog from '@/components/dialogs/input-dialog/InputDialog';
 import CodeEditor from '@/components/editors/code/CodeEditor';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
@@ -6,15 +7,20 @@ import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
 import OutputBox from '@/components/output-box/OutputBox';
 import { compileStatus } from '@/constants/compileStatuses';
 import { Java, PlainText } from '@/constants/languageTemplate';
+import { useAssignment } from '@/hooks/assignment/useAssignment';
 import { useIdeTabs } from '@/hooks/grader/useIdeTabs';
 import { useTestcases } from '@/hooks/grader/useTestcases';
 import { Submission } from '@/types/types';
 import { compressSourceCode, createSubmission } from '@/utils/GraderService';
 import { Monaco } from '@monaco-editor/react';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import PublishIcon from '@mui/icons-material/Publish';
+import { Box, Drawer, Fab, Toolbar, Tooltip } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
@@ -37,6 +43,7 @@ import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
@@ -58,6 +65,11 @@ const Playground: NextPageWithLayout = () => {
   const { testcases, runAllTestCases } = useTestcases();
   const { ideTabs } = useIdeTabs();
   const queryClient = useQueryClient();
+
+  const router = useRouter();
+  const assignmentId = router.query.assignmentId as string;
+  const { data: assignment } = useAssignment({ id: assignmentId });
+  const [openDrawer, setOpenDrawer] = useState(false);
 
   const {
     isFetching: loadingProgram,
@@ -179,9 +191,61 @@ const Playground: NextPageWithLayout = () => {
           severity="success"
           sx={{ width: '100%' }}
         >
-          Output copied!
+          คัดลอก Output แล้ว!
         </Alert>
       </Snackbar>
+
+      {assignment && (
+        <Fab
+          variant="extended"
+          color="success"
+          onClick={() => alert('ส่งงาน')}
+          sx={{
+            position: 'fixed',
+            bottom: 24,
+            right: 24,
+          }}
+        >
+          <PublishIcon sx={{ mr: 1 }} />
+          ส่งงาน
+        </Fab>
+      )}
+
+      {assignment && (
+        <Drawer
+          anchor="left"
+          sx={{
+            width: { xs: '100%', md: '60%' },
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: { xs: '100%', md: '60%' },
+              boxSizing: 'border-box',
+            },
+          }}
+          open={openDrawer}
+          onClose={() => {
+            setOpenDrawer(false);
+          }}
+        >
+          <Toolbar
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <IconButton
+              aria-label="hide-problem"
+              onClick={() => setOpenDrawer(false)}
+            >
+              <ChevronLeftIcon fontSize="large" />
+            </IconButton>
+          </Toolbar>
+          <Divider />
+          <Box sx={{ overflow: 'auto' }}>
+            <AssignmentContentCard assignment={assignment} />
+          </Box>
+        </Drawer>
+      )}
 
       <Grid
         container
@@ -194,32 +258,98 @@ const Playground: NextPageWithLayout = () => {
             <Card className="shadow-xl">
               <CardHeader
                 title={
-                  <Stack
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="center"
-                    spacing={1}
-                  >
-                    <CgCodeSlash />
-                    <Typography
-                      className="font-bold"
-                      variant="h5"
-                      marginBottom={1}
+                  <Stack direction="column">
+                    <Stack
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="center"
+                      spacing={1}
                     >
-                      Code Editor
+                      <CgCodeSlash />
+                      <Typography
+                        className="font-bold"
+                        variant="h5"
+                        gutterBottom
+                      >
+                        Code Editor
+                      </Typography>
+                    </Stack>
+                    <Typography
+                      variant="caption"
+                      marginBottom={1}
+                      noWrap
+                      sx={{ ml: 4, mb: 0 }}
+                    >
+                      {assignment?.title}
                     </Typography>
                   </Stack>
                 }
                 action={
-                  <Button
-                    className="font-bold"
-                    variant="contained"
-                    startIcon={<VscPlay />}
-                    onClick={handleExecProgram}
-                  >
-                    Execute
-                  </Button>
+                  <>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        display: {
+                          xs: 'flex',
+                          md: 'none',
+                        },
+                      }}
+                    >
+                      {assignment && (
+                        <Tooltip title="ดูโจทย์">
+                          <IconButton
+                            color="info"
+                            onClick={() => setOpenDrawer(true)}
+                          >
+                            <MenuBookIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      <Tooltip title="Execute">
+                        <IconButton color="primary" onClick={handleExecProgram}>
+                          <VscPlay />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        display: {
+                          xs: 'none',
+                          md: 'flex',
+                        },
+                      }}
+                    >
+                      {assignment && (
+                        <Button
+                          className="font-bold"
+                          variant="outlined"
+                          startIcon={<MenuBookIcon />}
+                          onClick={() => setOpenDrawer(true)}
+                        >
+                          ดูโจทย์
+                        </Button>
+                      )}
+                      <Button
+                        className="font-bold"
+                        variant="contained"
+                        startIcon={<VscPlay />}
+                        onClick={handleExecProgram}
+                      >
+                        Execute
+                      </Button>
+                    </Stack>
+                  </>
                 }
+                sx={{
+                  display: 'flex',
+                  overflow: 'hidden',
+                  '& .MuiCardHeader-content': {
+                    overflow: 'hidden',
+                  },
+                }}
               />
               <CardMedia>
                 <CodeEditor
