@@ -42,9 +42,12 @@ const base: IAssignmentCard = {
         url: 'https://i.pravatar.cc/?u=john',
       },
     },
-    updatedAt: null,
+    updatedAt: new Date(
+      new Date().getTime() + 72 * 60 * 60 * 1000
+    ).toISOString(),
     updatedBy: null,
   },
+  classroomSlug: '',
 };
 
 export const mockAssignmentCardProps = {

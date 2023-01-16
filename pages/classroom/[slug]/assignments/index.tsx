@@ -127,7 +127,10 @@ const ClassroomAssignments: NextPageWithLayout = ({
                   )
                   .map((assignment) => (
                     <ListItem key={assignment.id} disableGutters>
-                      <AssignmentCard assignment={assignment} />
+                      <AssignmentCard
+                        classroomSlug={slug}
+                        assignment={assignment}
+                      />
                     </ListItem>
                   ))
               ) : (

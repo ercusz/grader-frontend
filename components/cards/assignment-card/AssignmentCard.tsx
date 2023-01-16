@@ -14,15 +14,17 @@ import {
 import { format, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { MouseEvent } from 'react';
 
 export interface IAssignmentCard {
   assignment: Assignment;
+  classroomSlug: string;
 }
 
-const AssignmentCard: React.FC<IAssignmentCard> = ({ assignment }) => {
-  const router = useRouter();
+const AssignmentCard: React.FC<IAssignmentCard> = ({
+  assignment,
+  classroomSlug,
+}) => {
   const handleMoreButtonClick = (e: MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     e.preventDefault();
@@ -30,7 +32,10 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({ assignment }) => {
 
   return (
     <Card className="shadow-md w-full" variant="outlined">
-      <Link href={`${router.asPath}/${assignment.id}`} passHref>
+      <Link
+        href={`/classroom/${classroomSlug}/assignments/${assignment.id}`}
+        passHref
+      >
         <CardActionArea component="a">
           <CardHeader
             sx={{
