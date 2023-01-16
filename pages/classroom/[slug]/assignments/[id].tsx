@@ -4,6 +4,7 @@ import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import { useAssignment } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { setToken } from '@/utils/APIHelper';
+import { getAssignmentById } from '@/utils/AssignmentService';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
 import OutboxIcon from '@mui/icons-material/Outbox';
@@ -125,6 +126,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     await queryClient.fetchQuery(['classroom', { slug: slug }], () =>
       getClassroomBySlug(slug)
     );
+
+    await queryClient.fetchQuery(['assignment', { id: context.query.id }], () =>
+      getAssignmentById(context.query.id as string));
   } catch (error) {
     return {
       notFound: true,
