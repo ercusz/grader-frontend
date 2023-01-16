@@ -5,6 +5,7 @@ import {
   CreateCourseReq,
   MyClassroomsResponse,
   MyCoursesResponse,
+  Post,
 } from '@/types/types';
 import { rest } from 'msw';
 
@@ -399,7 +400,9 @@ export const handlers = [
                 url: 'https://i.pravatar.cc/?u=john',
               },
             },
-            updatedAt: null,
+            updatedAt: new Date(
+              new Date().getTime() + 50 * 60 * 60 * 1000
+            ).toISOString(),
             updatedBy: null,
           },
           {
@@ -428,7 +431,9 @@ export const handlers = [
                 url: 'https://i.pravatar.cc/?u=john',
               },
             },
-            updatedAt: null,
+            updatedAt: new Date(
+              new Date().getTime() + 72 * 60 * 60 * 1000
+            ).toISOString(),
             updatedBy: null,
           },
           {
@@ -457,7 +462,9 @@ export const handlers = [
                 url: 'https://i.pravatar.cc/?u=john',
               },
             },
-            updatedAt: null,
+            updatedAt: new Date(
+              new Date().getTime() + 80 * 60 * 60 * 1000
+            ).toISOString(),
             updatedBy: null,
           },
         ])
@@ -639,9 +646,111 @@ export const handlers = [
               url: 'https://i.pravatar.cc/?u=john',
             },
           },
-          updatedAt: null,
+          updatedAt: new Date(
+            new Date().getTime() + 72 * 60 * 60 * 1000
+          ).toISOString(),
           updatedBy: null,
         })
+      );
+    }
+  }),
+  rest.get(`${strapiUrl}/api/classrooms/:id/posts`, (req, res, ctx) => {
+    if (Number(req.params.id) === 1) {
+      return res(
+        ctx.json<Post[]>([
+          {
+            id: 1,
+            classroomId: 1,
+            content: 'ทดสอบโพสต์ 1',
+            isPinned: false,
+            createdAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
+            ).toISOString(),
+            createdBy: {
+              id: 999,
+              firstName: 'Somsak',
+              lastName: 'Chicken',
+              username: 'somsak999',
+              profileImage: {
+                id: 213423,
+                url: 'https://i.pravatar.cc/?u=somsak999',
+              },
+            },
+            updatedAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
+            ).toISOString(),
+          },
+          {
+            id: 2,
+            classroomId: 1,
+            content:
+              'ทดสอบโพสต์ 2 \n บรรทัดที่สอง \n บรรทัดที่สาม \n บรรทัดที่สี่ \n บรรทัดที่ห้า',
+            isPinned: true,
+            createdAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
+            ).toISOString(),
+            createdBy: {
+              id: 1234,
+              firstName: 'John',
+              lastName: 'Doe',
+              username: 'johndoe69',
+              profileImage: {
+                id: 1,
+                url: 'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&amp;ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&amp;auto=format&amp;fit=facearea&amp;facepad=4&amp;w=256&amp;h=256&amp;q=80',
+              },
+            },
+            updatedAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
+            ).toISOString(),
+          },
+          {
+            id: 3,
+            classroomId: 1,
+            content: `Lizards are a widespread group of squamate reptiles, with over 6,000
+            species, ranging across all continents except Antarctica.
+            
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est commodi qui consequatur nisi eum magnam recusandae impedit aliquid voluptas, voluptatibus officiis labore voluptatum necessitatibus assumenda esse magni! Optio, laudantium eum.`,
+            isPinned: false,
+            createdAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
+            ).toISOString(),
+            createdBy: {
+              id: 1001,
+              firstName: 'Somsri',
+              lastName: 'Srisom',
+              username: 'somsri007',
+              profileImage: {
+                id: 54353132,
+                url: 'https://i.pravatar.cc/?u=somsri007',
+              },
+            },
+            updatedAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
+            ).toISOString(),
+          },
+          {
+            id: 4,
+            classroomId: 1,
+            content: `Hello Test 123`,
+            isPinned: false,
+            createdAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
+            ).toISOString(),
+            createdBy: {
+              id: 1,
+              firstName: 'Hello',
+              lastName: 'World',
+              username: 'custard',
+              profileImage: {
+                id: 1,
+                url: 'http://localhost:1337/uploads/Custard_b537e2fc41.png',
+              },
+            },
+            updatedAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
+            ).toISOString(),
+          },
+        ])
       );
     }
   }),

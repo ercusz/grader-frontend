@@ -138,6 +138,21 @@ export type Assignment = {
   }[];
   createdAt: string;
   createdBy: UserResponse;
-  updatedAt: string | null;
+  updatedAt: string;
   updatedBy: UserResponse | null;
+};
+
+export type CreatePost = {
+  classroomIds: number[];
+  content: string;
+};
+
+export type Post = {
+  id: number;
+  classroomId: number;
+  content: string;
+  isPinned: boolean;
+  createdAt: string;
+  createdBy: UserResponse;
+  updatedAt: string;
 };
