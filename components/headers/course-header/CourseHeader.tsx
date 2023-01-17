@@ -1,9 +1,12 @@
 import EditCourseInfoDialog from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
+import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { useUser } from '@/hooks/user/useUser';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
+import { User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserRole } from '@/utils/role';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
@@ -93,12 +96,24 @@ const CourseHeader: React.FC<ICourseHeader> = ({
     return '';
   };
 
+  const getRole = (targetUser: UserResponse | User) => {
+    return getUserRole({
+      teachers: classroom?.course.teachers || ([] as UserResponse[]),
+      teacherAssistants: classroom?.teacherAssistants || ([] as UserResponse[]),
+      students: classroom?.students || ([] as UserResponse[]),
+      targetUser: targetUser,
+    });
+  };
+
   return (
     <>
-      <EditCourseInfoDialog
-        classroomSlug={classroomSlug}
-        courseSlug={courseSlug}
-      />
+      {user &&
+        (getRole(user) === Roles.TEACHER || getRole(user) === Roles.TA) && (
+          <EditCourseInfoDialog
+            classroomSlug={classroomSlug}
+            courseSlug={courseSlug}
+          />
+        )}
       <Paper
         sx={{
           position: 'relative',
@@ -155,20 +170,24 @@ const CourseHeader: React.FC<ICourseHeader> = ({
             >
               {getName()}
             </Typography>
-            {user?.role.name === 'Teacher' && (
-              <Tooltip
-                title={`แก้ไขข้อมูล${classroom ? 'กลุ่มการเรียน' : 'รายวิชา'}`}
-              >
-                <IconButton
-                  aria-label="edit course info"
-                  color="inherit"
-                  size="large"
-                  onClick={() => setOpenEditCourseDialog(true)}
+            {user &&
+              (getRole(user) === Roles.TEACHER ||
+                getRole(user) === Roles.TA) && (
+                <Tooltip
+                  title={`แก้ไขข้อมูล${
+                    classroom ? 'กลุ่มการเรียน' : 'รายวิชา'
+                  }`}
                 >
-                  <EditIcon fontSize="inherit" />
-                </IconButton>
-              </Tooltip>
-            )}
+                  <IconButton
+                    aria-label="edit course info"
+                    color="inherit"
+                    size="large"
+                    onClick={() => setOpenEditCourseDialog(true)}
+                  >
+                    <EditIcon fontSize="inherit" />
+                  </IconButton>
+                </Tooltip>
+              )}
           </Stack>
           <Typography variant="h5" color="inherit" paragraph>
             {getSemesterYear()}

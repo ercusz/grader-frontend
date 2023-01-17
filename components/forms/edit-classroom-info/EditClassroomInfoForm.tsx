@@ -1,6 +1,7 @@
 import DeleteConfirmationDialog from '@/components/dialogs/delete-confirmation/DeleteConfirmationDialog';
 import { unsavedChangesAtom } from '@/components/dialogs/edit-course-info/EditCourseInfoDialog';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useUser } from '@/hooks/user/useUser';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import { deleteClassroom, updateClassroomInfo } from '@/utils/ClassroomService';
 import { Button, Stack } from '@mui/material';
@@ -20,6 +21,7 @@ const deleteDialogAtom = atom(false);
 const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
   classroomSlug,
 }) => {
+  const { data: user } = useUser();
   const router = useRouter();
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const queryClient = useQueryClient();
@@ -124,14 +126,16 @@ const EditClassroomInfoForm: React.FC<IEditClassroomInfoForm> = ({
         <Button type="submit" variant="contained" sx={{ my: 3, mr: 2 }}>
           อัปเดตข้อมูลกลุ่มการเรียน
         </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => setOpenDeleteDialog(true)}
-          sx={{ my: 3 }}
-        >
-          ลบกลุ่มการเรียน
-        </Button>
+        {user?.role.name === 'Teacher' && (
+          <Button
+            variant="outlined"
+            color="error"
+            onClick={() => setOpenDeleteDialog(true)}
+            sx={{ my: 3 }}
+          >
+            ลบกลุ่มการเรียน
+          </Button>
+        )}
       </FormContainer>
     </>
   );

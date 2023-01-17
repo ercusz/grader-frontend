@@ -162,7 +162,7 @@ export const updateClassroomInfo = async (
   id: number
 ) => {
   const { err }: Response = await contentHttpClient.patch(
-    `/api/classroom/${id}`,
+    `/api/classrooms/${id}`,
     data
   );
 
@@ -181,7 +181,7 @@ export const deleteCourse = async (id: number) => {
 
 export const deleteClassroom = async (id: number) => {
   const { err }: Response = await contentHttpClient.delete(
-    `/api/classroom/${id}`
+    `/api/classrooms/${id}`
   );
 
   if (err) {
