@@ -97,12 +97,24 @@ const CourseHeader: React.FC<ICourseHeader> = ({
   };
 
   const getRole = (targetUser: UserResponse | User) => {
-    return getUserRole({
-      teachers: classroom?.course.teachers || ([] as UserResponse[]),
-      teacherAssistants: classroom?.teacherAssistants || ([] as UserResponse[]),
-      students: classroom?.students || ([] as UserResponse[]),
-      targetUser: targetUser,
-    });
+    if (classroom) {
+      return getUserRole({
+        teachers: classroom?.course.teachers || ([] as UserResponse[]),
+        teacherAssistants:
+          classroom?.teacherAssistants || ([] as UserResponse[]),
+        students: classroom?.students || ([] as UserResponse[]),
+        targetUser: targetUser,
+      });
+    }
+
+    if (course) {
+      return getUserRole({
+        teachers: course.teachers || ([] as UserResponse[]),
+        teacherAssistants: [] as UserResponse[],
+        students: [] as UserResponse[],
+        targetUser: targetUser,
+      });
+    }
   };
 
   return (
