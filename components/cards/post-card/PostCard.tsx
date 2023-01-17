@@ -3,6 +3,7 @@ import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useUser } from '@/hooks/user/useUser';
 import { Post, User, UserResponse } from '@/types/types';
 import { getUserRole } from '@/utils/role';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PushPinIcon from '@mui/icons-material/PushPin';
@@ -13,6 +14,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Divider,
   IconButton,
   Link as MuiLink,
   Menu,
@@ -229,18 +231,33 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             แก้ไข
           </MenuItem>
         )}
-        {(user && getRole(user) === Roles.TEACHER) ||
-          (user && getRole(user) === Roles.TA && (
-            <MenuItem
-              onClick={() => alert('ปักหมุด')}
-              dense
-              disableRipple
-              disabled={classroom?.enabledInviteCode !== true}
-            >
-              <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
-              ปักหมุด
+        {((user && getRole(user) === Roles.TEACHER) ||
+          (user && getRole(user) === Roles.TA)) && (
+          <>
+            {post.isPinned ? (
+              <MenuItem
+                onClick={() => alert('ยกเลิกปักหมุด')}
+                dense
+                disableRipple
+              >
+                <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
+                ยกเลิกปักหมุด
+              </MenuItem>
+            ) : (
+              <MenuItem onClick={() => alert('ปักหมุด')} dense disableRipple>
+                <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
+                ปักหมุด
+              </MenuItem>
+            )}
+            <Divider />
+            <MenuItem onClick={() => alert('ลบ')} dense disableRipple>
+              <DeleteIcon color="error" fontSize="inherit" sx={{ mr: 1 }} />
+              <Typography color="error" variant="body2">
+                ลบ
+              </Typography>
             </MenuItem>
-          ))}
+          </>
+        )}
       </Menu>
     </>
   );
