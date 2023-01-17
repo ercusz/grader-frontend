@@ -113,7 +113,9 @@ const Classroom: NextPageWithLayout = ({
                     </ListItem>
                   </div>
                 ))}
-              {posts &&
+              {isSuccessPosts &&
+                posts &&
+                isSuccessAssignments &&
                 assignments &&
                 [...posts, ...assignments]
                   .sort((a, b) =>
