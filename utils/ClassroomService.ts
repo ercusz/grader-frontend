@@ -194,9 +194,8 @@ export const addClassrooms = async (
   courseId: number
 ) => {
   const { err }: Response = await contentHttpClient.post(
-    '/api/classrooms/create',
+    `/api/courses/${courseId}/classrooms`,
     {
-      courseId: courseId,
       classrooms: classrooms,
     }
   );
