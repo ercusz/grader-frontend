@@ -1,9 +1,11 @@
 import CreatePostCard from '@/components/cards/create-post/CreatePostCard';
 import PostCard from '@/components/cards/post-card/PostCard';
+import PostCardSkeleton from '@/components/cards/post-skeleton/PostCardSkeleton';
 import CreatePostDialog from '@/components/dialogs/create-post/CreatePostDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { usePosts } from '@/hooks/post/usePost';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import {
@@ -12,8 +14,10 @@ import {
   Grid,
   List,
   ListItem,
+  Typography,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { isBefore, parseISO } from 'date-fns';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
@@ -23,10 +27,18 @@ const ClassroomPosts: NextPageWithLayout = ({
   slug,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const {
-    isLoading,
-    isSuccess,
+    isLoading: isLoadingClassroom,
+    isSuccess: isSuccessClassroom,
     data: classroom,
   } = useClassroomSlug({ slug: slug });
+
+  const {
+    isLoading: isLoadingPosts,
+    isSuccess: isSuccessPosts,
+    data: posts,
+  } = usePosts({
+    classroomId: classroom?.id ? classroom.id.toString() : '',
+  });
 
   return (
     <section>
@@ -41,7 +53,7 @@ const ClassroomPosts: NextPageWithLayout = ({
         classroomSlug={slug}
         courseSlug={classroom?.course?.slug}
       />
-      {isLoading && (
+      {isLoadingClassroom && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={true}
@@ -49,7 +61,7 @@ const ClassroomPosts: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {isSuccess && classroom && (
+      {isSuccessClassroom && classroom && (
         <Grid
           container
           spacing={2}
@@ -63,16 +75,38 @@ const ClassroomPosts: NextPageWithLayout = ({
                 <CreatePostCard />
               </ListItem>
             </List>
-            <PinList />
+            <PinList
+              classroomSlug={slug}
+              posts={posts ? posts?.filter((post) => post.isPinned) : []}
+            />
           </Grid>
           <Grid item xs={12} md={8}>
-            <List sx={{ width: '100%' }}>
-              {[...Array(15)].map((_, idx) => (
-                <ListItem key={idx} disableGutters>
-                  <PostCard />
-                </ListItem>
-              ))}
-            </List>
+            {isLoadingPosts &&
+              [...Array(4)].map((_, index) => <PostCardSkeleton key={index} />)}
+            {isSuccessPosts && posts && posts.length > 0 && (
+              <List sx={{ width: '100%' }}>
+                {posts
+                  .sort((a, b) =>
+                    isBefore(parseISO(a.updatedAt), parseISO(b.updatedAt))
+                      ? 1
+                      : -1
+                  )
+                  .map((post) => (
+                    <div id={post.id.toString()} key={post.id}>
+                      <ListItem disableGutters>
+                        <PostCard post={post} classroomSlug={slug} />
+                      </ListItem>
+                    </div>
+                  ))}
+              </List>
+            )}
+            {isSuccessPosts && posts.length < 1 && (
+              <List sx={{ width: '100%' }}>
+                <Typography className="text-center" variant="h6">
+                  ไม่พบโพสต์
+                </Typography>
+              </List>
+            )}
           </Grid>
         </Grid>
       )}
