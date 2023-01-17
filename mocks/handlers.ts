@@ -141,6 +141,16 @@ export const handlers = [
               url: 'https://i.pravatar.cc/?u=somsak999',
             },
           },
+          {
+            id: 1,
+            firstName: 'Hello',
+            lastName: 'World',
+            username: 'custard',
+            profileImage: {
+              id: 1,
+              url: 'http://localhost:1337/uploads/Custard_b537e2fc41.png',
+            },
+          },
         ],
         students: [
           {
@@ -304,12 +314,14 @@ export const handlers = [
             title: 'Lab 1: A+B Problem',
             startDate: new Date().toISOString(),
             endDate: new Date(
-              new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
+              new Date().getTime() + 24 * 60 * 60 * 1000
             ).toISOString(),
             type: 'java-src',
             content: 'test',
             point: 100,
-            createdAt: new Date().toISOString(),
+            createdAt: new Date(
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
+            ).toISOString(),
             createdBy: {
               id: 1234,
               firstName: 'John',
