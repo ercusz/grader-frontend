@@ -169,9 +169,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery(['classroom', { slug: slug }], () =>
-    getClassroomBySlug(slug)
-  );
+
+  try {
+    await queryClient.fetchQuery(['classroom', { slug: slug }], () =>
+      getClassroomBySlug(slug)
+    );
+  } catch (error) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
