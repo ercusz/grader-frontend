@@ -102,7 +102,7 @@ export const resetClassroomInviteCode = async (
   id: number
 ): Promise<Boolean> => {
   const { err }: Response = await contentHttpClient.patch(
-    `/api/classroom/reset-invite-code/${id}`
+    `/api/classrooms/${id}/reset-invite-code`
   );
   if (err) {
     return false;
@@ -116,7 +116,7 @@ export const toggleClassroomInviteCode = async (
   state: boolean
 ): Promise<Boolean> => {
   const { err }: Response = await contentHttpClient.patch(
-    `/api/classroom/toggle-invite-code/${id}`,
+    `/api/classrooms/${id}/toggle-invite-code`,
     {
       currentState: state,
     }

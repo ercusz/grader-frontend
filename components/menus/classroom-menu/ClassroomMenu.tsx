@@ -1,8 +1,10 @@
 import InviteCodeCard from '@/components/cards/invite-code/InviteCodeCard';
+import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useUser } from '@/hooks/user/useUser';
-import { UserResponse } from '@/types/types';
+import { User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserRole } from '@/utils/role';
 import LockIcon from '@mui/icons-material/Lock';
 import PeopleIcon from '@mui/icons-material/People';
 import PublicIcon from '@mui/icons-material/Public';
@@ -32,6 +34,15 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
     }
 
     return student.username;
+  };
+
+  const getRole = (targetUser: UserResponse | User) => {
+    return getUserRole({
+      teachers: classroom?.course.teachers || ([] as UserResponse[]),
+      teacherAssistants: classroom?.teacherAssistants || ([] as UserResponse[]),
+      students: classroom?.students || ([] as UserResponse[]),
+      targetUser: targetUser,
+    });
   };
 
   return (
@@ -102,11 +113,12 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
             ))}
           </AvatarGroup>
         </Box>
-        {user?.role.name === 'Teacher' && (
-          <Box>
-            <InviteCodeCard classroomSlug={classroomSlug} />
-          </Box>
-        )}
+        {user &&
+          (getRole(user) === Roles.TEACHER || getRole(user) === Roles.TA) && (
+            <Box>
+              <InviteCodeCard classroomSlug={classroomSlug} />
+            </Box>
+          )}
       </Stack>
       <Divider />
       <ClassroomTabs />
