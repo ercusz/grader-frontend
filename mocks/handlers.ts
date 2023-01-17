@@ -304,7 +304,7 @@ export const handlers = [
             title: 'Lab 1: A+B Problem',
             startDate: new Date().toISOString(),
             endDate: new Date(
-              new Date().getTime() + 24 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
             ).toISOString(),
             type: 'java-src',
             content: 'test',
@@ -321,7 +321,7 @@ export const handlers = [
               },
             },
             updatedAt: new Date(
-              new Date().getTime() + 2 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
             ).toISOString(),
             updatedBy: {
               id: 1235,
@@ -348,7 +348,7 @@ export const handlers = [
             content: 'test',
             point: 100,
             createdAt: new Date(
-              new Date().getTime() + 48 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
             ).toISOString(),
             createdBy: {
               id: 1234,
@@ -361,7 +361,7 @@ export const handlers = [
               },
             },
             updatedAt: new Date(
-              new Date().getTime() + 50 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
             updatedBy: {
               id: 1235,
@@ -388,7 +388,7 @@ export const handlers = [
             content: 'test',
             point: 100,
             createdAt: new Date(
-              new Date().getTime() + 50 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
             createdBy: {
               id: 1234,
@@ -401,7 +401,7 @@ export const handlers = [
               },
             },
             updatedAt: new Date(
-              new Date().getTime() + 50 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
             updatedBy: null,
           },
@@ -419,7 +419,7 @@ export const handlers = [
             content: 'test',
             point: 100,
             createdAt: new Date(
-              new Date().getTime() + 72 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 1
             ).toISOString(),
             createdBy: {
               id: 1234,
@@ -432,7 +432,7 @@ export const handlers = [
               },
             },
             updatedAt: new Date(
-              new Date().getTime() + 72 * 60 * 60 * 1000
+              new Date().valueOf() - 1000 * 60 * 60 * 24 * 1
             ).toISOString(),
             updatedBy: null,
           },
@@ -449,9 +449,7 @@ export const handlers = [
             type: 'docs',
             content: 'test',
             point: 100,
-            createdAt: new Date(
-              new Date().getTime() + 80 * 60 * 60 * 1000
-            ).toISOString(),
+            createdAt: new Date().toISOString(),
             createdBy: {
               id: 1234,
               firstName: 'John',
@@ -462,9 +460,7 @@ export const handlers = [
                 url: 'https://i.pravatar.cc/?u=john',
               },
             },
-            updatedAt: new Date(
-              new Date().getTime() + 80 * 60 * 60 * 1000
-            ).toISOString(),
+            updatedAt: new Date().toISOString(),
             updatedBy: null,
           },
         ])
@@ -733,9 +729,7 @@ export const handlers = [
             classroomId: 1,
             content: `Hello Test 123`,
             isPinned: false,
-            createdAt: new Date(
-              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
-            ).toISOString(),
+            createdAt: new Date().toISOString(),
             createdBy: {
               id: 1,
               firstName: 'Hello',
@@ -746,9 +740,7 @@ export const handlers = [
                 url: 'http://localhost:1337/uploads/Custard_b537e2fc41.png',
               },
             },
-            updatedAt: new Date(
-              new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
-            ).toISOString(),
+            updatedAt: new Date().toISOString(),
           },
         ])
       );
