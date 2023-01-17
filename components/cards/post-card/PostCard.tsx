@@ -96,9 +96,9 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             </Link>
           }
           action={
-            (user && getRole(user) === Roles.TEACHER) ||
-            (user && getRole(user) === Roles.TA) ||
-            (user && user.id === post.createdBy?.id && (
+            ((user && getRole(user) === Roles.TEACHER) ||
+              (user && getRole(user) === Roles.TA) ||
+              (user && user.id === post.createdBy?.id)) && (
               <Tooltip title="ตัวเลือก">
                 <IconButton
                   aria-label="more"
@@ -109,12 +109,12 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
                   <MoreVertIcon />
                 </IconButton>
               </Tooltip>
-            ))
+            )
           }
           title={
             <Link href={`/p/@${post.createdBy?.username}`} passHref>
               <MuiLink underline="hover">
-                <Typography noWrap variant="subtitle2">
+                <Typography noWrap variant="subtitle2" component="span">
                   {post.createdBy &&
                     post.createdBy.firstName + ' ' + post.createdBy.lastName}
                 </Typography>
@@ -224,8 +224,8 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
         }}
       >
         {user && user.id === post.createdBy?.id && (
-          <MenuItem onClick={() => alert('แก้ไข')} disableRipple>
-            <EditIcon sx={{ mr: 1 }} />
+          <MenuItem onClick={() => alert('แก้ไข')} dense disableRipple>
+            <EditIcon fontSize="inherit" sx={{ mr: 1 }} />
             แก้ไข
           </MenuItem>
         )}
@@ -233,10 +233,11 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           (user && getRole(user) === Roles.TA && (
             <MenuItem
               onClick={() => alert('ปักหมุด')}
+              dense
               disableRipple
               disabled={classroom?.enabledInviteCode !== true}
             >
-              <PushPinIcon sx={{ mr: 1 }} />
+              <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
               ปักหมุด
             </MenuItem>
           ))}
