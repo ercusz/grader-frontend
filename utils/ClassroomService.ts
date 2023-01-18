@@ -245,12 +245,8 @@ export const removeStudentFromClassroom = async (
   studentId: number,
   classroomId: number
 ) => {
-  const { err }: Response = await contentHttpClient.post(
-    `/api/classroom-student/remove`,
-    {
-      studentId: studentId,
-      classroomId: classroomId,
-    }
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/students/${studentId}`
   );
   if (err) {
     throw new Error('Remove student from classroom failed.');
@@ -333,10 +329,9 @@ export const addStudentToClassroom = async (
   classroomId: number
 ) => {
   const { err }: Response = await contentHttpClient.post(
-    `/api/classroom-student/add`,
+    `/api/classrooms/${classroomId}/students`,
     {
       studentId: studentId,
-      classroomId: classroomId,
     }
   );
   if (err) {
