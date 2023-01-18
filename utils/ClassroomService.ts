@@ -87,7 +87,7 @@ export const filterMyCoursesResponse = (
 
 export const createCourse = async (courseData: CreateCourseReq) => {
   const { res, err }: Response = await contentHttpClient.post(
-    '/api/course/create',
+    '/api/courses',
     courseData
   );
 
