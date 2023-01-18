@@ -3,7 +3,13 @@ import EditCourseInfoForm from '@/components/forms/edit-course-info/EditCourseIn
 import UploadCoverImageForm from '@/components/forms/upload-cover-image/UploadCoverImageForm';
 import StudentsTable from '@/components/tables/students/StudentsTable';
 import TeacherAssistantsTable from '@/components/tables/teacher-assistants/TeacherAssistantsTable';
+import { Roles } from '@/constants/roles';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useCourseSlug } from '@/hooks/courses/useCourses';
+import { useUser } from '@/hooks/user/useUser';
 import { openEditCourseDialogAtom } from '@/stores/edit-course';
+import { User, UserResponse } from '@/types/types';
+import { getUserRole } from '@/utils/role';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
 import {
@@ -30,6 +36,9 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
   classroomSlug,
   courseSlug,
 }) => {
+  const { data: user } = useUser();
+  const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
+  const { data: course } = useCourseSlug({ slug: courseSlug });
   const [openDialog, setOpenDialog] = useAtom(openEditCourseDialogAtom);
   const [tabsValue, setTabsValue] = useAtom(tabsValueAtom);
   const [unsavedChanges, setUnsavedChanges] = useAtom(unsavedChangesAtom);
@@ -59,6 +68,27 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
       setOpenDialog(false);
       setTabsValue('info');
     });
+  };
+
+  const getRole = (targetUser: UserResponse | User) => {
+    if (classroom) {
+      return getUserRole({
+        teachers: classroom?.course.teachers || ([] as UserResponse[]),
+        teacherAssistants:
+          classroom?.teacherAssistants || ([] as UserResponse[]),
+        students: classroom?.students || ([] as UserResponse[]),
+        targetUser: targetUser,
+      });
+    }
+
+    if (course) {
+      return getUserRole({
+        teachers: course.teachers || ([] as UserResponse[]),
+        teacherAssistants: [] as UserResponse[],
+        students: [] as UserResponse[],
+        targetUser: targetUser,
+      });
+    }
   };
 
   return (
@@ -96,7 +126,9 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
                 aria-label="edit-classroom-info-tabs"
               >
                 <Tab label="ข้อมูลกลุ่มการเรียน" value="info" />
-                <Tab label="จัดการผู้ช่วยสอน" value="manage-tas" />
+                {user && getRole(user) === Roles.TEACHER && (
+                  <Tab label="จัดการผู้ช่วยสอน" value="manage-tas" />
+                )}
                 <Tab label="จัดการนักศึกษา" value="manage-students" />
               </TabList>
             ) : (
@@ -115,9 +147,11 @@ const EditCourseInfoDialog: React.FC<IEditCourseInfoDialog> = ({
                 ข้อมูลกลุ่มการเรียน
                 <EditClassroomInfoForm classroomSlug={classroomSlug!} />
               </TabPanel>
-              <TabPanel value="manage-tas" sx={{ p: 0, m: 0 }}>
-                <TeacherAssistantsTable classroomSlug={classroomSlug!} />
-              </TabPanel>
+              {user && getRole(user) === Roles.TEACHER && (
+                <TabPanel value="manage-tas" sx={{ p: 0, m: 0 }}>
+                  <TeacherAssistantsTable classroomSlug={classroomSlug!} />
+                </TabPanel>
+              )}
               <TabPanel value="manage-students" sx={{ p: 0, m: 0 }}>
                 <StudentsTable classroomSlug={classroomSlug!} />
               </TabPanel>

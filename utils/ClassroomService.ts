@@ -266,12 +266,8 @@ export const removeTaFromClassroom = async (
   taId: number,
   classroomId: number
 ) => {
-  const { err }: Response = await contentHttpClient.post(
-    `/api/classroom-ta/remove`,
-    {
-      teacherAssistantId: taId,
-      classroomId: classroomId,
-    }
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/teacher-assistants/${taId}`
   );
   if (err) {
     throw new Error('Remove teacher assistant from classroom failed.');
@@ -313,10 +309,9 @@ export const findUser = async (keyword: IFindUser) => {
 
 export const addTaToClassroom = async (taId: number, classroomId: number) => {
   const { err }: Response = await contentHttpClient.post(
-    `/api/classroom-ta/add`,
+    `/api/classrooms/${classroomId}/teacher-assistants`,
     {
       teacherAssistantId: taId,
-      classroomId: classroomId,
     }
   );
   if (err) {
