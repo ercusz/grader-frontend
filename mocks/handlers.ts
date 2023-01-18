@@ -322,7 +322,7 @@ export const handlers = [
             createdAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
             ).toISOString(),
-            createdBy: {
+            createBy: {
               id: 1234,
               firstName: 'John',
               lastName: 'Doe',
@@ -335,7 +335,7 @@ export const handlers = [
             updatedAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
             ).toISOString(),
-            updatedBy: {
+            updateBy: {
               id: 1235,
               firstName: 'Jane',
               lastName: 'Doe',
@@ -362,7 +362,7 @@ export const handlers = [
             createdAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
             ).toISOString(),
-            createdBy: {
+            createBy: {
               id: 1234,
               firstName: 'John',
               lastName: 'Doe',
@@ -375,7 +375,7 @@ export const handlers = [
             updatedAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
-            updatedBy: {
+            updateBy: {
               id: 1235,
               firstName: 'Jane',
               lastName: 'Doe',
@@ -402,7 +402,7 @@ export const handlers = [
             createdAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
-            createdBy: {
+            createBy: {
               id: 1234,
               firstName: 'John',
               lastName: 'Doe',
@@ -415,7 +415,7 @@ export const handlers = [
             updatedAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
-            updatedBy: null,
+            updateBy: null,
           },
           {
             id: 4,
@@ -433,7 +433,7 @@ export const handlers = [
             createdAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 1
             ).toISOString(),
-            createdBy: {
+            createBy: {
               id: 1234,
               firstName: 'John',
               lastName: 'Doe',
@@ -446,7 +446,7 @@ export const handlers = [
             updatedAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 1
             ).toISOString(),
-            updatedBy: null,
+            updateBy: null,
           },
           {
             id: 5,
@@ -462,7 +462,7 @@ export const handlers = [
             content: 'test',
             point: 100,
             createdAt: new Date().toISOString(),
-            createdBy: {
+            createBy: {
               id: 1234,
               firstName: 'John',
               lastName: 'Doe',
@@ -473,7 +473,7 @@ export const handlers = [
               },
             },
             updatedAt: new Date().toISOString(),
-            updatedBy: null,
+            updateBy: null,
           },
         ])
       );
@@ -584,7 +584,7 @@ export const handlers = [
   \`\`\``,
           point: 100,
           createdAt: new Date().toISOString(),
-          createdBy: {
+          createBy: {
             id: 1234,
             firstName: 'John',
             lastName: 'Doe',
@@ -597,7 +597,7 @@ export const handlers = [
           updatedAt: new Date(
             new Date().getTime() + 24 * 60 * 60 * 1000
           ).toISOString(),
-          updatedBy: {
+          updateBy: {
             id: 1235,
             firstName: 'Jane',
             lastName: 'Doe',
@@ -644,7 +644,7 @@ export const handlers = [
           createdAt: new Date(
             new Date().getTime() + 72 * 60 * 60 * 1000
           ).toISOString(),
-          createdBy: {
+          createBy: {
             id: 1234,
             firstName: 'John',
             lastName: 'Doe',
@@ -657,7 +657,7 @@ export const handlers = [
           updatedAt: new Date(
             new Date().getTime() + 72 * 60 * 60 * 1000
           ).toISOString(),
-          updatedBy: null,
+          updateBy: null,
         })
       );
     }
@@ -674,7 +674,7 @@ export const handlers = [
             createdAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
             ).toISOString(),
-            createdBy: {
+            createBy: {
               id: 999,
               firstName: 'Somsak',
               lastName: 'Chicken',
@@ -697,7 +697,7 @@ export const handlers = [
             createdAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
             ).toISOString(),
-            createdBy: {
+            createBy: {
               id: 1234,
               firstName: 'John',
               lastName: 'Doe',
@@ -722,7 +722,7 @@ export const handlers = [
             createdAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
             ).toISOString(),
-            createdBy: {
+            createBy: {
               id: 1001,
               firstName: 'Somsri',
               lastName: 'Srisom',
@@ -742,7 +742,7 @@ export const handlers = [
             content: `Hello Test 123`,
             isPinned: false,
             createdAt: new Date().toISOString(),
-            createdBy: {
+            createBy: {
               id: 1,
               firstName: 'Hello',
               lastName: 'World',

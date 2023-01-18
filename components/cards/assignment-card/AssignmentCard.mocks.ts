@@ -32,7 +32,7 @@ const base: IAssignmentCard = {
     createdAt: new Date(
       new Date().getTime() + 72 * 60 * 60 * 1000
     ).toISOString(),
-    createdBy: {
+    createBy: {
       id: 1234,
       firstName: 'John',
       lastName: 'Doe',
@@ -45,7 +45,7 @@ const base: IAssignmentCard = {
     updatedAt: new Date(
       new Date().getTime() + 72 * 60 * 60 * 1000
     ).toISOString(),
-    updatedBy: null,
+    updateBy: null,
   },
   classroomSlug: '',
 };

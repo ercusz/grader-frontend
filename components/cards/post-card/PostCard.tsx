@@ -73,26 +73,26 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             },
           }}
           avatar={
-            <Link href={`/p/@${post.createdBy?.username}`} passHref>
+            <Link href={`/p/@${post.createBy?.username}`} passHref>
               <MuiLink>
                 <Avatar
                   alt={
-                    post.createdBy
-                      ? `${post.createdBy?.username}'s profile image`
+                    post.createBy
+                      ? `${post.createBy?.username}'s profile image`
                       : undefined
                   }
                   src={
-                    post.createdBy?.profileImage
-                      ? post.createdBy.profileImage.url
+                    post.createBy?.profileImage
+                      ? post.createBy.profileImage.url
                       : undefined
                   }
                 >
-                  {post.createdBy &&
-                  post.createdBy.firstName &&
-                  post.createdBy.lastName
-                    ? post.createdBy.firstName?.charAt(0) +
-                      post.createdBy.lastName?.charAt(0)
-                    : post.createdBy.username?.charAt(0)}
+                  {post.createBy &&
+                  post.createBy.firstName &&
+                  post.createBy.lastName
+                    ? post.createBy.firstName?.charAt(0) +
+                      post.createBy.lastName?.charAt(0)
+                    : post.createBy.username?.charAt(0)}
                 </Avatar>
               </MuiLink>
             </Link>
@@ -100,7 +100,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           action={
             ((user && getRole(user) === Roles.TEACHER) ||
               (user && getRole(user) === Roles.TA) ||
-              (user && user.id === post.createdBy?.id)) && (
+              (user && user.id === post.createBy?.id)) && (
               <Tooltip title="ตัวเลือก">
                 <IconButton
                   aria-label="more"
@@ -114,11 +114,11 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             )
           }
           title={
-            <Link href={`/p/@${post.createdBy?.username}`} passHref>
+            <Link href={`/p/@${post.createBy?.username}`} passHref>
               <MuiLink underline="hover">
                 <Typography noWrap variant="subtitle2" component="span">
-                  {post.createdBy &&
-                    post.createdBy.firstName + ' ' + post.createdBy.lastName}
+                  {post.createBy &&
+                    post.createBy.firstName + ' ' + post.createBy.lastName}
                 </Typography>
               </MuiLink>
             </Link>
@@ -130,10 +130,10 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
               alignItems="center"
               spacing={0.5}
             >
-              <Link href={`/p/@${post.createdBy?.username}`} passHref>
+              <Link href={`/p/@${post.createBy?.username}`} passHref>
                 <MuiLink underline="hover">
                   <Typography noWrap variant="caption" color="textSecondary">
-                    @{post.createdBy?.username}
+                    @{post.createBy?.username}
                   </Typography>
                 </MuiLink>
               </Link>
@@ -225,7 +225,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           horizontal: 'right',
         }}
       >
-        {user && user.id === post.createdBy?.id && (
+        {user && user.id === post.createBy?.id && (
           <MenuItem onClick={() => alert('แก้ไข')} dense disableRipple>
             <EditIcon fontSize="inherit" sx={{ mr: 1 }} />
             แก้ไข

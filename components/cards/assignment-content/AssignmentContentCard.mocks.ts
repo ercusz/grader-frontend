@@ -11,7 +11,7 @@ const base: IAssignmentContentCard = {
     content: 'test',
     point: 100,
     createdAt: new Date().toISOString(),
-    createdBy: {
+    createBy: {
       id: 1234,
       firstName: 'John',
       lastName: 'Doe',
@@ -24,7 +24,7 @@ const base: IAssignmentContentCard = {
     updatedAt: new Date(
       new Date().getTime() + 2 * 60 * 60 * 1000
     ).toISOString(),
-    updatedBy: {
+    updateBy: {
       id: 1235,
       firstName: 'Jane',
       lastName: 'Doe',

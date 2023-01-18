@@ -137,9 +137,9 @@ export type Assignment = {
     expectedOutput: string;
   }[];
   createdAt: string;
-  createdBy: UserResponse;
+  createBy: UserResponse;
   updatedAt: string;
-  updatedBy: UserResponse | null;
+  updateBy: UserResponse | null;
 };
 
 export type CreatePost = {
@@ -153,6 +153,6 @@ export type Post = {
   content: string;
   isPinned: boolean;
   createdAt: string;
-  createdBy: UserResponse;
+  createBy: UserResponse;
   updatedAt: string;
 };

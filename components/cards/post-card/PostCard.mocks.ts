@@ -9,7 +9,7 @@ const base: IPostCard = {
     createdAt: new Date(
       new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
     ).toISOString(),
-    createdBy: {
+    createBy: {
       id: 999,
       firstName: 'Somsak',
       lastName: 'Chicken',

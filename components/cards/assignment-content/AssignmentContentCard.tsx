@@ -162,14 +162,14 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
             >
               {assignment.title}
             </Typography>
-            {assignment.updatedBy && assignment.updatedAt ? (
+            {assignment.updateBy && assignment.updatedAt ? (
               <AuthorDetails
-                author={assignment.updatedBy}
+                author={assignment.updateBy}
                 date={parseISO(assignment.updatedAt)}
               />
             ) : (
               <AuthorDetails
-                author={assignment.createdBy}
+                author={assignment.createBy}
                 date={parseISO(assignment.createdAt)}
               />
             )}

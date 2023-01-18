@@ -99,7 +99,7 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({
               }
               title={
                 <Typography noWrap gutterBottom variant="subtitle2">
-                  {`${assignment.createdBy.firstName} ${assignment.createdBy.lastName}`}
+                  {`${assignment.createBy.firstName} ${assignment.createBy.lastName}`}
                   {` ได้มอบหมายงานใหม่ `}
                   {`${assignment.title}`}
                 </Typography>
