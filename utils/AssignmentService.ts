@@ -15,10 +15,11 @@ export const getAssignments = async (
 };
 
 export const getAssignmentById = async (
-  assignmentId: string
+  assignmentId: string,
+  classroomId: string
 ): Promise<Assignment> => {
   const { res, err }: Response = await contentHttpClient.get(
-    `/api/assignments/${assignmentId}`
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}`
   );
   if (err) {
     throw new Error('get assignment data failed');

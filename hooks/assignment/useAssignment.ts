@@ -11,11 +11,21 @@ export const useAssignments = ({ classroomId }: { classroomId?: string }) =>
     }
   );
 
-export const useAssignment = ({ id }: { id?: string }) =>
+export const useAssignment = ({
+  classroomId,
+  assignmentId,
+}: {
+  assignmentId?: string;
+  classroomId?: string;
+}) =>
   useQuery<Assignment, Error>(
-    ['assignment', { id: id }],
-    () => getAssignmentById(id ? id : ''),
+    ['assignment', { id: assignmentId }],
+    () =>
+      getAssignmentById(
+        assignmentId ? assignmentId : '',
+        classroomId ? classroomId : ''
+      ),
     {
-      enabled: Boolean(id),
+      enabled: Boolean(classroomId) && Boolean(assignmentId),
     }
   );

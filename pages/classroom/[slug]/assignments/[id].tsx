@@ -34,7 +34,10 @@ const ClassroomAssignment: NextPageWithLayout = ({
     isLoading: isLoadingAssignment,
     isSuccess: isSuccessAssignment,
     data: assignment,
-  } = useAssignment({ id: id });
+  } = useAssignment({
+    assignmentId: id,
+    classroomId: classroom?.id.toString(),
+  });
 
   return (
     <section>
@@ -123,12 +126,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const queryClient = new QueryClient();
 
   try {
-    await queryClient.fetchQuery(['classroom', { slug: slug }], () =>
-      getClassroomBySlug(slug)
+    const classroom = await queryClient.fetchQuery(
+      ['classroom', { slug: slug }],
+      () => getClassroomBySlug(slug)
     );
 
     await queryClient.fetchQuery(['assignment', { id: context.query.id }], () =>
-      getAssignmentById(context.query.id as string));
+      getAssignmentById(context.query.id as string, classroom.id)
+    );
   } catch (error) {
     return {
       notFound: true,
