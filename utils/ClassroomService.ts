@@ -130,7 +130,7 @@ export const toggleClassroomInviteCode = async (
 
 export const updateCourseInfo = async (data: CreateCourseReq, id: number) => {
   const { err }: Response = await contentHttpClient.patch(
-    `/api/course/${id}`,
+    `/api/courses/${id}`,
     data
   );
 
@@ -143,7 +143,7 @@ export const updateCourseCoverImage = async (file: File, id: number) => {
   try {
     const coverImage = await uploadImage(file);
     const { err }: Response = await contentHttpClient.patch(
-      `/api/course/${id}`,
+      `/api/courses/${id}`,
       {
         coverImage: coverImage,
       }
@@ -172,7 +172,9 @@ export const updateClassroomInfo = async (
 };
 
 export const deleteCourse = async (id: number) => {
-  const { err }: Response = await contentHttpClient.delete(`/api/course/${id}`);
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/courses/${id}`
+  );
 
   if (err) {
     throw new Error('Delete course failed.');
