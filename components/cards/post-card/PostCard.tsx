@@ -2,6 +2,7 @@ import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useUser } from '@/hooks/user/useUser';
 import { Post, User, UserResponse } from '@/types/types';
+import { getImagePath } from '@/utils/imagePath';
 import { getUserRole } from '@/utils/role';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -81,11 +82,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
                       ? `${post.createBy?.username}'s profile image`
                       : undefined
                   }
-                  src={
-                    post.createBy?.profileImage
-                      ? post.createBy.profileImage.url
-                      : undefined
-                  }
+                  src={getImagePath(post.createBy.profileImage)}
                 >
                   {post.createBy &&
                   post.createBy.firstName &&

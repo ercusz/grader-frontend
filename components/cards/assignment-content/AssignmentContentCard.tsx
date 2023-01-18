@@ -1,5 +1,6 @@
 import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import { Assignment, UserResponse } from '@/types/types';
+import { getImagePath } from '@/utils/imagePath';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import EditIcon from '@mui/icons-material/Edit';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
@@ -53,7 +54,7 @@ const AuthorDetails: React.FC<IAuthorDetail> = ({ author, date }) => {
           alt={
             author.username ? `${author.username}'s profile image` : undefined
           }
-          src={author?.profileImage ? author.profileImage.url : undefined}
+          src={getImagePath(author.profileImage)}
         >
           {author.firstName && author.lastName
             ? author.firstName?.charAt(0) + author.lastName?.charAt(0)
