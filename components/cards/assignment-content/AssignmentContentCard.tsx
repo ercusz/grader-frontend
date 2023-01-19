@@ -22,7 +22,13 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
+import {
+  format,
+  formatDistanceToNow,
+  isAfter,
+  isBefore,
+  parseISO,
+} from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
 import { MouseEvent, useState } from 'react';
@@ -125,7 +131,11 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
               >
                 <Chip
                   size="small"
-                  color="info"
+                  color={
+                    isBefore(parseISO(assignment.endDate), new Date())
+                      ? 'error'
+                      : 'info'
+                  }
                   icon={<AlarmIcon />}
                   label={
                     <Typography variant="caption">{`กำหนดส่ง ${format(
