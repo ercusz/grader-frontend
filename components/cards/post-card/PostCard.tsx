@@ -229,32 +229,41 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           </MenuItem>
         )}
         {((user && getRole(user) === Roles.TEACHER) ||
-          (user && getRole(user) === Roles.TA)) && (
-          <>
-            {post.isPinned ? (
-              <MenuItem
-                onClick={() => alert('ยกเลิกปักหมุด')}
-                dense
-                disableRipple
-              >
-                <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
-                ยกเลิกปักหมุด
-              </MenuItem>
-            ) : (
-              <MenuItem onClick={() => alert('ปักหมุด')} dense disableRipple>
-                <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
-                ปักหมุด
-              </MenuItem>
-            )}
-            <Divider />
-            <MenuItem onClick={() => alert('ลบ')} dense disableRipple>
-              <DeleteIcon color="error" fontSize="inherit" sx={{ mr: 1 }} />
-              <Typography color="error" variant="body2">
-                ลบ
-              </Typography>
+          (user && getRole(user) === Roles.TA)) && [
+          post.isPinned ? (
+            <MenuItem
+              key="post-menu-unpin"
+              onClick={() => alert('ยกเลิกปักหมุด')}
+              dense
+              disableRipple
+            >
+              <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
+              ยกเลิกปักหมุด
             </MenuItem>
-          </>
-        )}
+          ) : (
+            <MenuItem
+              key="post-menu-pin"
+              onClick={() => alert('ปักหมุด')}
+              dense
+              disableRipple
+            >
+              <PushPinIcon fontSize="inherit" sx={{ mr: 1 }} />
+              ปักหมุด
+            </MenuItem>
+          ),
+          <Divider key="post-menu-divider" />,
+          <MenuItem
+            key="post-menu-delete"
+            onClick={() => alert('ลบ')}
+            dense
+            disableRipple
+          >
+            <DeleteIcon color="error" fontSize="inherit" sx={{ mr: 1 }} />
+            <Typography color="error" variant="body2">
+              ลบ
+            </Typography>
+          </MenuItem>,
+        ]}
       </Menu>
     </>
   );

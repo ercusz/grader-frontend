@@ -117,40 +117,39 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({
           </CardActionArea>
         </Link>
       </Card>
-      <Menu
-        id="post-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleCloseMenu}
-        MenuListProps={{
-          'aria-labelledby': 'post-menu',
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        {((user && getRole(user) === Roles.TEACHER) ||
-          (user && getRole(user) === Roles.TA)) && (
-          <>
-            <MenuItem onClick={() => alert('แก้ไข')} dense disableRipple>
-              <EditIcon fontSize="inherit" sx={{ mr: 1 }} />
-              แก้ไข
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={() => alert('ลบ')} dense disableRipple>
-              <DeleteIcon color="error" fontSize="inherit" sx={{ mr: 1 }} />
-              <Typography color="error" variant="body2">
-                ลบ
-              </Typography>
-            </MenuItem>
-          </>
-        )}
-      </Menu>
+
+      {((user && getRole(user) === Roles.TEACHER) ||
+        (user && getRole(user) === Roles.TA)) && (
+        <Menu
+          id="post-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleCloseMenu}
+          MenuListProps={{
+            'aria-labelledby': 'post-menu',
+          }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <MenuItem onClick={() => alert('แก้ไข')} dense disableRipple>
+            <EditIcon fontSize="inherit" sx={{ mr: 1 }} />
+            แก้ไข
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={() => alert('ลบ')} dense disableRipple>
+            <DeleteIcon color="error" fontSize="inherit" sx={{ mr: 1 }} />
+            <Typography color="error" variant="body2">
+              ลบ
+            </Typography>
+          </MenuItem>
+        </Menu>
+      )}
     </>
   );
 };
