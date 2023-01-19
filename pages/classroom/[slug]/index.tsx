@@ -3,6 +3,7 @@ import AssignmentCardSkeleton from '@/components/cards/assignment-skeleton/Assig
 import CreatePostCard from '@/components/cards/create-post/CreatePostCard';
 import PostCard from '@/components/cards/post-card/PostCard';
 import PostCardSkeleton from '@/components/cards/post-skeleton/PostCardSkeleton';
+import CreateAssignmentDialog from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import CreatePostDialog from '@/components/dialogs/create-post/CreatePostDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
@@ -88,6 +89,10 @@ const Classroom: NextPageWithLayout = ({
       <CreatePostDialog
         classroomSlug={slug}
         courseSlug={classroom?.course?.slug}
+      />
+      <CreateAssignmentDialog
+        classroomSlug={slug}
+        courseSlug={classroom?.course.slug}
       />
       {isLoadingClassroom && (
         <Backdrop
