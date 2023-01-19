@@ -73,14 +73,8 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                 required
                 validation={{
                   required: 'กรุณาระบุวันเวลาที่เริ่มการส่งงาน',
-                  validate: (value) => {
-                    if (value < currentDateTime) {
-                      return 'วันเวลาที่เริ่มการส่งงานต้องมากกว่าวันเวลาปัจจุบัน';
-                    }
-                    return true;
-                  },
                 }}
-                minDateTime={currentDateTime}
+                minDate={currentDateTime}
               />
               <DateTimePickerElement
                 className="w-full"
