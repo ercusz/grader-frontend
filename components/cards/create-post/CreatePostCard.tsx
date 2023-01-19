@@ -1,4 +1,6 @@
+import { Roles } from '@/constants/roles';
 import { useUser } from '@/hooks/user/useUser';
+import { openCreateAssignmentDialogAtom } from '@/stores/create-assignment';
 import { openCreatePostDialogAtom } from '@/stores/create-post';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BookIcon from '@mui/icons-material/Book';
@@ -12,16 +14,28 @@ import {
 } from '@mui/material';
 import { useAtom } from 'jotai';
 
-export interface ICreatePostCard {}
+export interface ICreatePostCard {
+  userRole: Roles;
+}
 
-const CreatePostCard: React.FC<ICreatePostCard> = () => {
+const CreatePostCard: React.FC<ICreatePostCard> = ({ userRole }) => {
   const [, setOpenCreatePostDialog] = useAtom(openCreatePostDialogAtom);
+  const [, setOpenCreateAssignmentDialog] = useAtom(
+    openCreateAssignmentDialogAtom
+  );
   const { data: user } = useUser();
 
   return (
     <Card className="shadow-xl" variant="outlined" sx={{ width: '100%' }}>
       <CardContent className="pb-0" sx={{ width: '100%' }}>
-        <Stack direction="row" alignItems="center" spacing={2}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          spacing={2}
+          sx={{
+            mb: userRole === Roles.TEACHER || userRole === Roles.TA ? 0 : 2,
+          }}
+        >
           <Avatar
             alt={user ? `${user?.username}'s profile image` : undefined}
             src={user?.profileImage ? user.profileImage.url : undefined}
@@ -44,23 +58,28 @@ const CreatePostCard: React.FC<ICreatePostCard> = () => {
             เขียนอะไรสักหน่อย...
           </Button>
         </Stack>
-        <Divider sx={{ my: 2 }} />
-        <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-          <Button
-            variant="text"
-            fullWidth
-            startIcon={<AssignmentIcon color="secondary" />}
-          >
-            เพิ่มงาน
-          </Button>
-          <Button
-            variant="text"
-            fullWidth
-            startIcon={<BookIcon color="success" />}
-          >
-            เพิ่มเอกสาร
-          </Button>
-        </Stack>
+        {(userRole === Roles.TEACHER || userRole === Roles.TA) && (
+          <>
+            <Divider sx={{ my: 2 }} />
+            <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
+              <Button
+                variant="text"
+                fullWidth
+                startIcon={<AssignmentIcon color="secondary" />}
+                onClick={() => setOpenCreateAssignmentDialog(true)}
+              >
+                เพิ่มงาน
+              </Button>
+              <Button
+                variant="text"
+                fullWidth
+                startIcon={<BookIcon color="success" />}
+              >
+                เพิ่มเอกสาร
+              </Button>
+            </Stack>
+          </>
+        )}
       </CardContent>
     </Card>
   );
