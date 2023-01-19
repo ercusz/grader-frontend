@@ -1,11 +1,16 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
+import AssignmentCardSkeleton from '@/components/cards/assignment-skeleton/AssignmentCardSkeleton';
 import CreateAssignmentDialog from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
+import { Roles } from '@/constants/roles';
 import { useAssignments } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useUser } from '@/hooks/user/useUser';
 import { openCreateAssignmentDialogAtom } from '@/stores/create-assignment';
+import { User, UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
+import { getUserRole } from '@/utils/role';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Backdrop,
@@ -13,6 +18,7 @@ import {
   CircularProgress,
   Fab,
   Grid,
+  Link as MuiLink,
   List,
   ListItem,
   Typography,
@@ -28,6 +34,7 @@ import { NextPageWithLayout } from '../../../page';
 const ClassroomAssignments: NextPageWithLayout = ({
   slug,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const { data: user } = useUser();
   const {
     isLoading: isLoadingClassroom,
     isSuccess: isSuccessClassroom,
@@ -45,6 +52,15 @@ const ClassroomAssignments: NextPageWithLayout = ({
   const [, setOpenCreateAssignmentDialog] = useAtom(
     openCreateAssignmentDialogAtom
   );
+
+  const getRole = (targetUser: UserResponse | User) => {
+    return getUserRole({
+      teachers: classroom?.course.teachers || ([] as UserResponse[]),
+      teacherAssistants: classroom?.teacherAssistants || ([] as UserResponse[]),
+      students: classroom?.students || ([] as UserResponse[]),
+      targetUser: targetUser,
+    });
+  };
 
   return (
     <section>
@@ -73,7 +89,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
         classroomSlug={slug}
         courseSlug={classroom?.course.slug}
       />
-      {isLoadingClassroom && isLoadingAssignments && (
+      {isLoadingClassroom && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={true}
@@ -81,7 +97,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {isSuccessClassroom && isSuccessAssignments && classroom && (
+      {isSuccessClassroom && classroom && (
         <Grid
           container
           spacing={2}
@@ -90,36 +106,48 @@ const ClassroomAssignments: NextPageWithLayout = ({
           alignItems="flex-start"
         >
           <Grid item xs={12} md={4}>
-            <List>
-              <ListItem
-                disableGutters
-                alignItems="center"
-                sx={{
-                  display: { xs: 'none', md: 'flex' },
-                  p: 4,
-                  justifyContent: 'center',
-                }}
-              >
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="large"
-                  startIcon={<AddIcon />}
+            {((user && getRole(user) === Roles.TEACHER) ||
+              (user && getRole(user) === Roles.TA)) && (
+              <List>
+                <ListItem
+                  disableGutters
+                  alignItems="center"
                   sx={{
-                    borderRadius: 20,
+                    display: { xs: 'none', md: 'flex' },
+                    p: 4,
+                    justifyContent: 'center',
                   }}
-                  onClick={() => setOpenCreateAssignmentDialog(true)}
                 >
-                  มอบหมายงาน
-                </Button>
-              </ListItem>
-            </List>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="large"
+                    startIcon={<AddIcon />}
+                    sx={{
+                      borderRadius: 20,
+                    }}
+                    onClick={() => setOpenCreateAssignmentDialog(true)}
+                  >
+                    มอบหมายงาน
+                  </Button>
+                </ListItem>
+              </List>
+            )}
             {/* <LessonFiltersList /> */}
           </Grid>
-          <Grid item xs={12} md={8}>
-            <List sx={{ width: '100%' }}>
-              {assignments.length > 0 ? (
-                assignments
+          <Grid item xs={12} md={8} minHeight="40vh">
+            {isLoadingAssignments && (
+              <List sx={{ width: '100%' }}>
+                {[...Array(4)].map((_, index) => (
+                  <ListItem disableGutters key={index}>
+                    <AssignmentCardSkeleton />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+            {isSuccessAssignments && assignments && assignments.length > 0 && (
+              <List sx={{ width: '100%' }}>
+                {assignments
                   .sort((a, b) =>
                     isBefore(parseISO(a.createdAt), parseISO(b.createdAt))
                       ? 1
@@ -132,13 +160,29 @@ const ClassroomAssignments: NextPageWithLayout = ({
                         assignment={assignment}
                       />
                     </ListItem>
-                  ))
-              ) : (
-                <Typography className="text-center" variant="h6">
-                  ไม่พบงานที่ได้รับมอบหมาย
+                  ))}
+              </List>
+            )}
+            {isSuccessAssignments && assignments && assignments.length < 1 && (
+              <List sx={{ width: '100%' }}>
+                <Typography className="text-center mt-10" variant="h5">
+                  ยังไม่มีโพสต์ในรายวิชานี้
                 </Typography>
-              )}
-            </List>
+                {((user && getRole(user) === Roles.TEACHER) ||
+                  (user && getRole(user) === Roles.TA)) && (
+                  <Typography className="text-center">
+                    คุณต้องการ{' '}
+                    <MuiLink
+                      className="cursor-pointer"
+                      onClick={() => setOpenCreateAssignmentDialog(true)}
+                    >
+                      มอบหมายงานใหม่
+                    </MuiLink>{' '}
+                    ไหม?
+                  </Typography>
+                )}
+              </List>
+            )}
           </Grid>
         </Grid>
       )}

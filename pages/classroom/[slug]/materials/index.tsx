@@ -93,7 +93,7 @@ const ClassroomMaterials: NextPageWithLayout = ({
             </List>
             <LessonFiltersList />
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={8} minHeight="40vh">
             <List sx={{ width: '100%' }}>
               {[...Array(15)].map((_, idx) => (
                 <ListItem key={idx} disableGutters>
