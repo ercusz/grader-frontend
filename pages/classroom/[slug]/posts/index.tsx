@@ -81,8 +81,15 @@ const ClassroomPosts: NextPageWithLayout = ({
             />
           </Grid>
           <Grid item xs={12} md={8}>
-            {isLoadingPosts &&
-              [...Array(4)].map((_, index) => <PostCardSkeleton key={index} />)}
+            {isLoadingPosts && (
+              <List sx={{ width: '100%' }}>
+                {[...Array(4)].map((_, index) => (
+                  <ListItem disableGutters key={index}>
+                    <PostCardSkeleton />
+                  </ListItem>
+                ))}
+              </List>
+            )}
             {isSuccessPosts && posts && posts.length > 0 && (
               <List sx={{ width: '100%' }}>
                 {posts
