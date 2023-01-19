@@ -57,7 +57,10 @@ const ClassroomAssignment: NextPageWithLayout = ({
         </Backdrop>
       )}
       {assignment?.type === 'java-src' && (
-        <Link href={`/playground?assignmentId=${id}`}>
+        <Link
+          href={`/playground?assignmentId=${id}&classroomId=${classroom?.id}`}
+          as={`/playground`}
+        >
           <Fab
             variant="extended"
             color="primary"

@@ -68,7 +68,11 @@ const Playground: NextPageWithLayout = () => {
 
   const router = useRouter();
   const assignmentId = router.query.assignmentId as string;
-  const { data: assignment } = useAssignment({ id: assignmentId });
+  const classroomId = router.query.classroomId as string;
+  const { data: assignment } = useAssignment({
+    classroomId: classroomId,
+    assignmentId: assignmentId,
+  });
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const {
