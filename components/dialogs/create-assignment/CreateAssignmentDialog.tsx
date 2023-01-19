@@ -9,6 +9,7 @@ import {
   problemTypeAtom,
 } from '@/stores/create-assignment';
 import { CreateAssignment } from '@/types/types';
+import { addAssignments } from '@/utils/AssignmentService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
@@ -30,6 +31,7 @@ import {
   Zoom,
 } from '@mui/material';
 import { TransitionProps } from '@mui/material/transitions';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
 import React, { forwardRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -122,6 +124,22 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   const [problemType] = useAtom(problemTypeAtom);
   const { testcases, resetTestcases } = useTestcases();
   const { data: course } = useCourseSlug({ slug: courseSlug });
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    (assignment: CreateAssignment) => addAssignments(assignment),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['assignments']);
+        alert('เพิ่มงานใหม่สำเร็จ');
+        reset();
+        setEditorValue('');
+        resetTestcases();
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการเพิ่มงานใหม่');
+      },
+    }
+  );
 
   useEffect(() => {
     if (openDialog && course) {
@@ -177,13 +195,7 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       }));
     }
 
-    alert(JSON.stringify(obj, null, 2));
-    console.log(obj);
-
-    // if post success
-    reset();
-    setEditorValue('');
-    resetTestcases();
+    mutation.mutate(obj);
 
     setOpenDialog(false);
   };

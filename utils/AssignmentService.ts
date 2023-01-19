@@ -1,5 +1,16 @@
-import { Assignment } from '@/types/types';
+import { Assignment, CreateAssignment } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
+
+export const addAssignments = async (assignment: CreateAssignment) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/assignments`,
+    assignment
+  );
+
+  if (err) {
+    throw new Error('add assignments failed.');
+  }
+};
 
 export const getAssignments = async (
   classroomId: string
