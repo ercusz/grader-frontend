@@ -120,6 +120,24 @@ export type CreateAssignment = {
   }[];
 };
 
+export type EditAssignment = {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  type: string;
+  content: string;
+  point: number;
+  timeLimit?: number | null;
+  memoryLimit?: number | null;
+  testcases?: {
+    id: number;
+    name: string;
+    input: string;
+    expectedOutput: string;
+  }[];
+};
+
 export type Assignment = {
   id: number;
   classroomId: number;
@@ -132,6 +150,7 @@ export type Assignment = {
   timeLimit?: number | null;
   memoryLimit?: number | null;
   testcases?: {
+    id: number;
     name: string;
     input: string;
     expectedOutput: string;

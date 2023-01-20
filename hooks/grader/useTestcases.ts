@@ -1,4 +1,4 @@
-import { Submission, TestCase } from '@/types/types';
+import { Assignment, Submission, TestCase } from '@/types/types';
 import { compressSourceCode, createSubmission } from '@/utils/GraderService';
 import { QueryClient, useQueries } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
@@ -32,12 +32,29 @@ const loadingStatusSetter = atom(null, (get, set, { id, loading, status }) =>
   )
 );
 
+const setTestcasesFromAssignment = atom(
+  null,
+  (get, set, testcases: Assignment['testcases']) =>
+    set(
+      testcasesAtom,
+      testcases!.map((testcase) => ({
+        id: testcase.id,
+        name: testcase.name,
+        input: testcase.input,
+        expectedOutput: testcase.expectedOutput,
+        status: 0,
+        loading: false,
+      }))
+    )
+);
+
 export function useTestcases() {
   const [testcases, addTestcase] = useAtom(testcasesAtomRW);
   const [, removeTestcase] = useAtom(remover);
   const [, setTestcaseLoadAndStatus] = useAtom(loadingStatusSetter);
   const { ideTabs } = useIdeTabs();
   const resetTestcases = useResetAtom(testcasesAtom);
+  const [, setTestcases] = useAtom(setTestcasesFromAssignment);
 
   const runTestCase = async (testcase: TestCase) => {
     const src = await compressSourceCode(ideTabs);
@@ -98,5 +115,6 @@ export function useTestcases() {
     runTestCase,
     runAllTestCases,
     resetTestcases,
+    setTestcases,
   } as const;
 }

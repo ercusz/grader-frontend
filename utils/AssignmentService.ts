@@ -1,4 +1,4 @@
-import { Assignment, CreateAssignment } from '@/types/types';
+import { Assignment, CreateAssignment, EditAssignment } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
 export const addAssignments = async (assignment: CreateAssignment) => {
@@ -9,6 +9,20 @@ export const addAssignments = async (assignment: CreateAssignment) => {
 
   if (err) {
     throw new Error('add assignments failed.');
+  }
+};
+
+export const editAssignment = async (
+  assignment: EditAssignment,
+  classroomId: string
+) => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classrooms/${classroomId}/assignments/${assignment.id}`,
+    assignment
+  );
+
+  if (err) {
+    throw new Error('edit assignment failed.');
   }
 };
 
