@@ -9,7 +9,7 @@ import { useUser } from '@/hooks/user/useUser';
 import { openEditAssignmentDialogAtom } from '@/stores/edit-assignment';
 import { User, UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
-import { getAssignmentById } from '@/utils/AssignmentService';
+import { deleteAssignment, getAssignmentById } from '@/utils/AssignmentService';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getUserRole } from '@/utils/role';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -26,7 +26,12 @@ import {
   ListItem,
   Stack,
 } from '@mui/material';
-import { dehydrate, QueryClient } from '@tanstack/react-query';
+import {
+  dehydrate,
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 import '@uiw/react-markdown-preview/markdown.css';
 import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -60,6 +65,31 @@ const ClassroomAssignment: NextPageWithLayout = ({
     assignmentId: id,
     classroomId: classroom?.id.toString(),
   });
+
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    () => deleteAssignment(id, classroom?.id.toString() as string),
+    {
+      onSuccess: () => {
+        queryClient.resetQueries([
+          'assignments',
+          { classroomId: classroom?.id },
+        ]);
+        queryClient.resetQueries(['assignment', { id: id }]);
+        alert('ลบงานสำเร็จ');
+        router.push(`/classroom/${slug}/assignments`);
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการลบงาน');
+      },
+    }
+  );
+
+  const handleDeleteAssignment = () => {
+    if (confirm('ต้องการลบงานนี้หรือไม่?')) {
+      mutation.mutate();
+    }
+  };
 
   const getRole = (targetUser: UserResponse | User) => {
     return getUserRole({
@@ -171,7 +201,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
                       variant="outlined"
                       size="large"
                       startIcon={<DeleteIcon />}
-                      onClick={() => alert('Delete')}
+                      onClick={() => handleDeleteAssignment()}
                     >
                       ลบ
                     </Button>
@@ -216,9 +246,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       () => getClassroomBySlug(slug)
     );
 
-    await queryClient.fetchQuery(['assignment', { id: context.query.id }], () =>
-      getAssignmentById(context.query.id as string, classroom.id)
+    const assignment = await queryClient.fetchQuery(
+      ['assignment', { id: context.query.id }],
+      () => getAssignmentById(context.query.id as string, classroom.id)
     );
+
+    if (!assignment.title) {
+      return {
+        notFound: true,
+      };
+    }
   } catch (error) {
     return {
       notFound: true,

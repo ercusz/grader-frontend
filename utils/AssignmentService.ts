@@ -26,6 +26,19 @@ export const editAssignment = async (
   }
 };
 
+export const deleteAssignment = async (
+  assignmentId: string,
+  classroomId: string
+) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}`
+  );
+
+  if (err) {
+    throw new Error('delete assignment failed.');
+  }
+};
+
 export const getAssignments = async (
   classroomId: string
 ): Promise<Assignment[]> => {

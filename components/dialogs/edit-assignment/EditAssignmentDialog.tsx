@@ -2,14 +2,11 @@ import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownE
 import CreateAssignmentForm from '@/components/forms/create-assignment/CreateAssignmentForm';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useTestcases } from '@/hooks/grader/useTestcases';
-import {
-  openEditAssignmentDialogAtom,
-  problemTypeAtom,
-} from '@/stores/edit-assignment';
+import { problemTypeAtom } from '@/stores/create-assignment';
+import { openEditAssignmentDialogAtom } from '@/stores/edit-assignment';
 import { Assignment, EditAssignment } from '@/types/types';
 import { editAssignment } from '@/utils/AssignmentService';
 import CloseIcon from '@mui/icons-material/Close';
-
 import { TabContext, TabPanel } from '@mui/lab';
 import {
   alpha,
@@ -135,7 +132,7 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
       editAssignment(assignment, classroom?.id.toString() as string),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['assignments']);
+        queryClient.invalidateQueries(['assignment', { id: assignment.id }]);
         alert('แก้ไขงานสำเร็จ');
       },
       onError: () => {

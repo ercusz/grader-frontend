@@ -25,8 +25,9 @@ import {
 import {
   format,
   formatDistanceToNow,
-  isAfter,
-  isBefore,
+  isFuture,
+  isPast,
+  isValid,
   parseISO,
 } from 'date-fns';
 import { th } from 'date-fns/locale';
@@ -44,40 +45,44 @@ export interface IAuthorDetail {
 
 const AuthorDetails: React.FC<IAuthorDetail> = ({ author, date }) => {
   return (
-    <Stack
-      direction="column"
-      spacing={2}
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Typography variant="caption">
-        {`อัปเดตล่าสุดเมื่อ ${format(date, 'PPPPp', {
-          locale: th,
-        })}`}
-      </Typography>
-      <Stack direction="row" spacing={2}>
-        <Avatar
-          alt={
-            author.username ? `${author.username}'s profile image` : undefined
-          }
-          src={getImagePath(author.profileImage)}
-        >
-          {author.firstName && author.lastName
-            ? author.firstName?.charAt(0) + author.lastName?.charAt(0)
-            : author.username?.charAt(0)}
-        </Avatar>
-        <Stack direction="column">
-          <Typography className="font-bold" variant="body2">
-            {author.firstName + ' ' + author.lastName}
-          </Typography>
-          <Link href={`/p/@${author.username}`} passHref>
-            <MuiLink sx={{ p: 0, m: 0 }}>
-              <Typography variant="caption">@{author.username}</Typography>
-            </MuiLink>
-          </Link>
+    author &&
+    date && (
+      <Stack
+        direction="column"
+        spacing={2}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Typography variant="caption">
+          {isValid(date) &&
+            `อัปเดตล่าสุดเมื่อ ${format(date, 'PPPPp', {
+              locale: th,
+            })}`}
+        </Typography>
+        <Stack direction="row" spacing={2}>
+          <Avatar
+            alt={
+              author.username ? `${author.username}'s profile image` : undefined
+            }
+            src={getImagePath(author.profileImage)}
+          >
+            {author.firstName && author.lastName
+              ? author.firstName?.charAt(0) + author.lastName?.charAt(0)
+              : author.username?.charAt(0)}
+          </Avatar>
+          <Stack direction="column">
+            <Typography className="font-bold" variant="body2">
+              {author.firstName + ' ' + author.lastName}
+            </Typography>
+            <Link href={`/p/@${author.username}`} passHref>
+              <MuiLink sx={{ p: 0, m: 0 }}>
+                <Typography variant="caption">@{author.username}</Typography>
+              </MuiLink>
+            </Link>
+          </Stack>
         </Stack>
       </Stack>
-    </Stack>
+    )
   );
 };
 
@@ -108,47 +113,48 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
           sx={{ py: 0 }}
           title={
             <Stack direction="row" spacing={2}>
-              {isAfter(parseISO(assignment.startDate), new Date()) && (
+              {isValid(parseISO(assignment.startDate)) &&
+                isFuture(parseISO(assignment.startDate)) && (
+                  <Tooltip
+                    title={
+                      'โพสต์นี้จะไม่ปรากฏให้นักศึกษาในคลาสเรียนเห็นจนกว่าจะถึงวันเวลาที่เริ่มการส่งงาน'
+                    }
+                  >
+                    <Chip
+                      size="small"
+                      color="warning"
+                      icon={<InsertDriveFileIcon />}
+                      label="DRAFT"
+                      variant="outlined"
+                    />
+                  </Tooltip>
+                )}
+              {isValid(parseISO(assignment.endDate)) && (
                 <Tooltip
-                  title={
-                    'โพสต์นี้จะไม่ปรากฏให้นักศึกษาในคลาสเรียนเห็นจนกว่าจะถึงวันเวลาที่เริ่มการส่งงาน'
-                  }
+                  title={formatDistanceToNow(parseISO(assignment.endDate), {
+                    locale: th,
+                    addSuffix: true,
+                  })}
                 >
                   <Chip
                     size="small"
-                    color="warning"
-                    icon={<InsertDriveFileIcon />}
-                    label="DRAFT"
+                    color={
+                      isPast(parseISO(assignment.endDate)) ? 'error' : 'info'
+                    }
+                    icon={<AlarmIcon />}
+                    label={
+                      <Typography variant="caption">{`กำหนดส่ง ${format(
+                        parseISO(assignment.endDate),
+                        'PPp',
+                        {
+                          locale: th,
+                        }
+                      )}`}</Typography>
+                    }
                     variant="outlined"
                   />
                 </Tooltip>
               )}
-              <Tooltip
-                title={formatDistanceToNow(parseISO(assignment.endDate), {
-                  locale: th,
-                  addSuffix: true,
-                })}
-              >
-                <Chip
-                  size="small"
-                  color={
-                    isBefore(parseISO(assignment.endDate), new Date())
-                      ? 'error'
-                      : 'info'
-                  }
-                  icon={<AlarmIcon />}
-                  label={
-                    <Typography variant="caption">{`กำหนดส่ง ${format(
-                      parseISO(assignment.endDate),
-                      'PPp',
-                      {
-                        locale: th,
-                      }
-                    )}`}</Typography>
-                  }
-                  variant="outlined"
-                />
-              </Tooltip>
             </Stack>
           }
           action={
@@ -173,7 +179,7 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
             >
               {assignment.title}
             </Typography>
-            {assignment.updateBy && assignment.updatedAt ? (
+            {assignment.updateBy && isValid(parseISO(assignment.updatedAt)) ? (
               <AuthorDetails
                 author={assignment.updateBy}
                 date={parseISO(assignment.updatedAt)}
