@@ -1,6 +1,8 @@
 import PostToForm from '@/components/forms/post-to/PostToForm';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { openCreatePostDialogAtom, postToAtom } from '@/stores/create-post';
+import { CreatePost } from '@/types/types';
+import { createPosts } from '@/utils/PostService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,6 +19,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
@@ -65,18 +68,31 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
     }
   }, [classroomSlug, course, openDialog, setPostTo]);
 
-  const postFormContext = useForm({ defaultValues: { message: '' } });
+  const postFormContext = useForm({ defaultValues: { content: '' } });
 
   const { handleSubmit, register, formState, reset } = postFormContext;
   const { isDirty } = formState;
 
+  const queryClient = useQueryClient();
+  const mutation = useMutation((post: CreatePost) => createPosts(post), {
+    onSuccess: () => {
+      queryClient.invalidateQueries(['posts']);
+      alert('สร้างโพสต์สำเร็จ');
+      reset();
+    },
+    onError: () => {
+      alert('เกิดข้อผิดพลาดในการสร้างโพสต์');
+    },
+  });
+
   const onSubmit = () => {
-    const obj = {
+    const obj: CreatePost = {
       classroomIds: postTo.map((classroom) => classroom.id),
-      message: postFormContext.getValues().message,
+      content: postFormContext.getValues().content,
     };
-    alert(JSON.stringify(obj, null, 2));
-    reset();
+
+    mutation.mutate(obj);
+
     setOpenDialog(false);
   };
 
@@ -161,7 +177,7 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
               sx={{
                 fontSize: '1.2rem',
               }}
-              {...register('message')}
+              {...register('content')}
             />
             <Divider light sx={{ my: 2 }} />
             <Button

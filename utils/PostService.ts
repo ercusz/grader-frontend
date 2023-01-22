@@ -1,4 +1,4 @@
-import { Post } from '@/types/types';
+import { CreatePost, Post } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
 export const getPosts = async (classroomId: string): Promise<Post[]> => {
@@ -21,4 +21,12 @@ export const getPostById = async (postId: string): Promise<Post> => {
   }
 
   return res.data as Post;
+};
+
+export const createPosts = async (post: CreatePost) => {
+  const { err }: Response = await contentHttpClient.post(`/api/posts`, post);
+
+  if (err) {
+    throw new Error('create posts failed.');
+  }
 };
