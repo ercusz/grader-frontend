@@ -30,3 +30,21 @@ export const createPosts = async (post: CreatePost) => {
     throw new Error('create posts failed.');
   }
 };
+
+
+export const setPinPost = async (
+  classroomId: string,
+  postId: string,
+  pinState: boolean
+) => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classrooms/${classroomId}/posts/${postId}/pin`,
+    {
+      isPinned: pinState,
+    }
+  );
+
+  if (err) {
+    throw new Error('update post failed.');
+  }
+};

@@ -3,6 +3,7 @@ import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useUser } from '@/hooks/user/useUser';
 import { Post, User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { setPinPost } from '@/utils/PostService';
 import { getUserRole } from '@/utils/role';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -25,6 +26,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
@@ -39,6 +41,25 @@ export interface IPostCard {
 const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
   const { data: user } = useUser();
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
+
+  const queryClient = useQueryClient();
+  const pinMutation = useMutation(
+    (state: boolean) =>
+      setPinPost(
+        classroom?.id.toString() as string,
+        post.id.toString() as string,
+        state
+      ),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['posts']);
+        alert('แก้ไขการปักหมุดโพสต์สำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการแก้ไขการปักหมุด');
+      },
+    }
+  );
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -233,7 +254,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           post.isPinned ? (
             <MenuItem
               key="post-menu-unpin"
-              onClick={() => alert('ยกเลิกปักหมุด')}
+              onClick={() => pinMutation.mutate(false)}
               dense
               disableRipple
             >
@@ -243,7 +264,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           ) : (
             <MenuItem
               key="post-menu-pin"
-              onClick={() => alert('ปักหมุด')}
+              onClick={() => pinMutation.mutate(true)}
               dense
               disableRipple
             >
