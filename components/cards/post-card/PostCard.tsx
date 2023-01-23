@@ -1,6 +1,8 @@
 import EditPostDialog from '@/components/dialogs/edit-post/EditPostDialog';
+import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useIsOverflow } from '@/hooks/is-overflow/useIsOverflow';
 import { useUser } from '@/hooks/user/useUser';
 import { Post, User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
@@ -32,7 +34,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useRef, useState } from 'react';
 
 export interface IPostCard {
   compact?: boolean;
@@ -44,6 +46,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
   const theme = useTheme();
 
   const [openEditPost, setOpenEditPostDialog] = useState(false);
+  const [viewMore, setViewMore] = useState(false);
 
   const { data: user } = useUser();
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
@@ -66,6 +69,9 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
       },
     }
   );
+
+  const ref = useRef<HTMLDivElement>(null);
+  const isOverflow = useIsOverflow(ref);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -186,24 +192,49 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           }
         />
         <CardContent>
-          <Typography
-            variant="body1"
-            sx={
-              compact
+          <div
+            ref={ref}
+            data-color-mode={theme.palette.mode}
+            style={
+              compact || !viewMore
                 ? {
                     whiteSpace: 'break-spaces',
                     display: '-webkit-box',
                     overflow: 'hidden',
                     WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: 4,
+                    WebkitLineClamp: 3,
                   }
                 : {
                     whiteSpace: 'break-spaces',
                   }
             }
           >
-            {post.content}
-          </Typography>
+            <MarkdownPreview content={post.content} />
+          </div>
+          {!compact && isOverflow && (
+            <MuiLink
+              component="button"
+              variant="subtitle2"
+              underline="hover"
+              color="textSecondary"
+              onClick={() => setViewMore(true)}
+              sx={{ mt: 2 }}
+            >
+              ดูเพิ่มเติม
+            </MuiLink>
+          )}
+          {!compact && viewMore && (
+            <MuiLink
+              component="button"
+              variant="subtitle2"
+              underline="hover"
+              color="textSecondary"
+              onClick={() => setViewMore(false)}
+              sx={{ mt: 2 }}
+            >
+              ดูน้อยลง
+            </MuiLink>
+          )}
         </CardContent>
         {!compact ? (
           <CardActions sx={{ px: 3 }}>
