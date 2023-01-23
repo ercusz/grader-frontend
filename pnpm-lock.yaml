@@ -57,6 +57,8 @@ specifiers:
   jotai: ^1.11.1
   jotai-tanstack-query: ^0.4.0
   jszip: ^3.10.1
+  linkify-react: ^4.1.0
+  linkifyjs: ^4.1.0
   material-react-table: ^1.4.0
   mermaid: ^9.3.0
   msw: ^0.49.2
@@ -107,6 +109,8 @@ dependencies:
   jotai: 1.11.1_5sa4bl72cu2i3cuhlti2rgvzhq
   jotai-tanstack-query: 0.4.0_rg7adxsjgt2pz5ibtqw3lfp74a
   jszip: 3.10.1
+  linkify-react: 4.1.0_w5fbl633f7mujs73uwm6v5bhhm
+  linkifyjs: 4.1.0
   material-react-table: 1.4.0_hpofto4dteou42vfjyvxodo2da
   mermaid: 9.3.0
   mui-chips-input: 1.3.1_agciamjzuxvdacqtbqysdybvyy
@@ -11855,6 +11859,20 @@ packages:
 
   /lines-and-columns/1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==}
+
+  /linkify-react/4.1.0_w5fbl633f7mujs73uwm6v5bhhm:
+    resolution: {integrity: sha512-PG+ulIQkrHHDluuH/YgvRZDX1GFi0sarb7jNL4BdFOBH+muoiIVvBVwHkP9K7lSn7OmC6k8JEXKe+QvwBUsuOg==}
+    peerDependencies:
+      linkifyjs: ^4.0.0
+      react: '>= 15.0.0'
+    dependencies:
+      linkifyjs: 4.1.0
+      react: 18.2.0
+    dev: false
+
+  /linkifyjs/4.1.0:
+    resolution: {integrity: sha512-Ffv8VoY3+ixI1b3aZ3O+jM6x17cOsgwfB1Wq7pkytbo1WlyRp6ZO0YDMqiWT/gQPY/CmtiGuKfzDIVqxh1aCTA==}
+    dev: false
 
   /lit-element/3.2.2:
     resolution: {integrity: sha512-6ZgxBR9KNroqKb6+htkyBwD90XGRiqKDHVrW/Eh0EZ+l+iC+u+v+w3/BA5NGi4nizAVHGYvQBHUDuSmLjPp7NQ==}
