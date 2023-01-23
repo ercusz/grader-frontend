@@ -74,4 +74,9 @@ body {
 
 [data-color-mode*='dark'] .wmde-markdown {
   --color-canvas-default: #18191a !important;
+  --color-canvas-subtle: #222222 !important;
+}
+
+[data-color-mode*='dark'] pre.language-mermaid > code > svg {
+  filter: invert(1) hue-rotate(300deg);
 }
