@@ -1,5 +1,4 @@
 import EditPostDialog from '@/components/dialogs/edit-post/EditPostDialog';
-import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useIsOverflow } from '@/hooks/is-overflow/useIsOverflow';
@@ -33,6 +32,7 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
+import Linkify from 'linkify-react';
 import Link from 'next/link';
 import { MouseEvent, useRef, useState } from 'react';
 
@@ -93,6 +93,23 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
       students: classroom?.students || ([] as UserResponse[]),
       targetUser: targetUser,
     });
+  };
+
+  const renderLink = ({
+    attributes,
+    content,
+  }: {
+    attributes: {
+      [attr: string]: any;
+    };
+    content: string;
+  }) => {
+    const { href, ...props } = attributes;
+    return (
+      <MuiLink href={href} target="_blank" {...props}>
+        {content}
+      </MuiLink>
+    );
   };
 
   return (
@@ -209,7 +226,16 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
                   }
             }
           >
-            <MarkdownPreview content={post.content} />
+            <Linkify
+              as="p"
+              options={{
+                render: {
+                  url: renderLink,
+                },
+              }}
+            >
+              {post.content}
+            </Linkify>
           </div>
           {!compact && isOverflow && (
             <MuiLink
