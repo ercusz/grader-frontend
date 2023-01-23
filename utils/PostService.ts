@@ -1,4 +1,4 @@
-import { CreatePost, Post } from '@/types/types';
+import { CreatePost, EditPost, Post } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
 export const getPosts = async (classroomId: string): Promise<Post[]> => {
@@ -31,6 +31,18 @@ export const createPosts = async (post: CreatePost) => {
   }
 };
 
+export const editPost = async (post: EditPost) => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classrooms/${post.classroomId}/posts/${post.id}`,
+    {
+      content: post.content,
+    }
+  );
+
+  if (err) {
+    throw new Error('update post failed.');
+  }
+};
 
 export const setPinPost = async (
   classroomId: string,

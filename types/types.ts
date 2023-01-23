@@ -166,6 +166,12 @@ export type CreatePost = {
   content: string;
 };
 
+export type EditPost = {
+  id: number;
+  classroomId: number;
+  content: string;
+};
+
 export type Post = {
   id: number;
   classroomId: number;

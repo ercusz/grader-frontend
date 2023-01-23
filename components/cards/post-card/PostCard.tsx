@@ -1,3 +1,4 @@
+import EditPostDialog from '@/components/dialogs/edit-post/EditPostDialog';
 import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useUser } from '@/hooks/user/useUser';
@@ -25,6 +26,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useTheme,
 } from '@mui/material';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
@@ -39,6 +41,10 @@ export interface IPostCard {
 }
 
 const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
+  const theme = useTheme();
+
+  const [openEditPost, setOpenEditPostDialog] = useState(false);
+
   const { data: user } = useUser();
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
 
@@ -85,6 +91,12 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
 
   return (
     <>
+      <EditPostDialog
+        openDialog={openEditPost}
+        setOpenDialog={setOpenEditPostDialog}
+        post={post}
+      />
+
       <Card className="shadow-md w-full" variant="outlined">
         <CardHeader
           sx={{
@@ -122,7 +134,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
               <Tooltip title="ตัวเลือก">
                 <IconButton
                   aria-label="more"
-                  aria-controls="post-menu"
+                  aria-controls={`post-menu-${post.id}`}
                   aria-haspopup="true"
                   onClick={handleMoreButtonClick}
                 >
@@ -227,12 +239,12 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
         )}
       </Card>
       <Menu
-        id="post-menu"
+        id={`post-menu-${post.id}`}
         anchorEl={anchorEl}
         open={open}
         onClose={handleCloseMenu}
         MenuListProps={{
-          'aria-labelledby': 'post-menu',
+          'aria-labelledby': `post-menu-${post.id}`,
         }}
         anchorOrigin={{
           vertical: 'bottom',
@@ -244,7 +256,12 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
         }}
       >
         {user && user.id === post.createBy?.id && (
-          <MenuItem onClick={() => alert('แก้ไข')} dense disableRipple>
+          <MenuItem
+            key="post-menu-edit"
+            onClick={() => setOpenEditPostDialog(true)}
+            dense
+            disableRipple
+          >
             <EditIcon fontSize="inherit" sx={{ mr: 1 }} />
             แก้ไข
           </MenuItem>
