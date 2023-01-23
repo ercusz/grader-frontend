@@ -67,7 +67,7 @@ export async function getUserInfo(): Promise<User | null> {
 
   if (err) {
     // console.log(`Get user data failed with error:\n${err}`);
-    return null;
+    throw new Error(err);
   }
 
   if (res.data.profileImage !== null) {
