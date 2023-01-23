@@ -57,6 +57,16 @@ export const setPinPost = async (
   );
 
   if (err) {
-    throw new Error('update post failed.');
+    throw new Error('update pin post failed.');
+  }
+};
+
+export const deletePost = async (classroomId: string, postId: string) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/posts/${postId}`
+  );
+
+  if (err) {
+    throw new Error('delete post failed.');
   }
 };

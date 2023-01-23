@@ -5,7 +5,7 @@ import { useIsOverflow } from '@/hooks/is-overflow/useIsOverflow';
 import { useUser } from '@/hooks/user/useUser';
 import { Post, User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
-import { setPinPost } from '@/utils/PostService';
+import { deletePost, setPinPost } from '@/utils/PostService';
 import { getUserRole } from '@/utils/role';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -61,7 +61,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
       ),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['posts']);
+        queryClient.resetQueries(['posts', { classroomId: classroom?.id }]);
         alert('แก้ไขการปักหมุดโพสต์สำเร็จ');
       },
       onError: () => {
@@ -69,6 +69,29 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
       },
     }
   );
+
+  const deleteMutation = useMutation(
+    () =>
+      deletePost(
+        classroom?.id.toString() as string,
+        post.id.toString() as string
+      ),
+    {
+      onSuccess: () => {
+        queryClient.resetQueries(['posts', { classroomId: classroom?.id }]);
+        alert('ลบโพสต์สำเร็จ');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการลบโพสต์');
+      },
+    }
+  );
+
+  const handleDeletePost = () => {
+    if (confirm('ต้องการลบโพสต์นี้หรือไม่?')) {
+      deleteMutation.mutate();
+    }
+  };
 
   const ref = useRef<HTMLDivElement>(null);
   const isOverflow = useIsOverflow(ref);
@@ -349,7 +372,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           <Divider key="post-menu-divider" />,
           <MenuItem
             key="post-menu-delete"
-            onClick={() => alert('ลบ')}
+            onClick={() => handleDeletePost()}
             dense
             disableRipple
           >
