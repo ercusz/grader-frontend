@@ -121,7 +121,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
         <>
           {assignment?.type === 'java-src' && (
             <Link
-              href={`/playground?assignmentId=${id}&classroomId=${classroom?.id}`}
+              href={`/playground?assignmentId=${id}&classroomId=${classroom?.id}&classroomSlug=${slug}`}
               as={`/playground`}
             >
               <Fab
@@ -212,7 +212,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
               <SubmissionStatusCard />
             )}
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={8} sx={{ mb: 6 }}>
             {assignment && <AssignmentContentCard assignment={assignment} />}
           </Grid>
         </Grid>

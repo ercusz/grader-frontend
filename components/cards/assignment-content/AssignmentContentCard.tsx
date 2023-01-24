@@ -2,7 +2,7 @@ import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import { Assignment, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import AlarmIcon from '@mui/icons-material/Alarm';
-import EditIcon from '@mui/icons-material/Edit';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
@@ -32,10 +32,13 @@ import {
 } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
 
 export interface IAssignmentContentCard {
   assignment: Assignment;
+  showMenu?: boolean;
+  classroomSlug?: string;
 }
 
 export interface IAuthorDetail {
@@ -88,7 +91,10 @@ const AuthorDetails: React.FC<IAuthorDetail> = ({ author, date }) => {
 
 const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
   assignment,
+  showMenu,
+  classroomSlug,
 }) => {
+  const router = useRouter();
   const theme = useTheme();
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -107,7 +113,7 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
       <Card
         className="shadow-xl w-full"
         variant="outlined"
-        sx={{ px: 2, py: 4, mb: 4 }}
+        sx={{ px: 2, py: 4 }}
       >
         <CardHeader
           sx={{ py: 0 }}
@@ -158,15 +164,17 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
             </Stack>
           }
           action={
-            <IconButton
-              aria-controls={open ? 'invite-code-menu' : undefined}
-              aria-haspopup="true"
-              aria-expanded={open ? 'true' : undefined}
-              onClick={handleMoreButtonClick}
-              aria-label="more"
-            >
-              <MoreVertIcon />
-            </IconButton>
+            showMenu && (
+              <IconButton
+                aria-controls={open ? 'invite-code-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? 'true' : undefined}
+                onClick={handleMoreButtonClick}
+                aria-label="more"
+              >
+                <MoreVertIcon />
+              </IconButton>
+            )
           }
         />
         <CardContent className="w-full">
@@ -198,28 +206,37 @@ const AssignmentContentCard: React.FC<IAssignmentContentCard> = ({
           </div>
         </CardContent>
       </Card>
-      <Menu
-        id="post-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleCloseMenu}
-        MenuListProps={{
-          'aria-labelledby': 'post-menu',
-        }}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <MenuItem onClick={() => handleCloseMenu()} disableRipple>
-          <EditIcon sx={{ mr: 1 }} />
-          แก้ไขโพสต์
-        </MenuItem>
-      </Menu>
+      {showMenu && (
+        <Menu
+          id="post-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleCloseMenu}
+          MenuListProps={{
+            'aria-labelledby': 'post-menu',
+          }}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <MenuItem
+            onClick={() =>
+              router.push(
+                `/classroom/${classroomSlug}/assignments/${assignment.id}`
+              )
+            }
+            disableRipple
+          >
+            <AssignmentIcon sx={{ mr: 1 }} />
+            ไปยังหน้าโพสต์
+          </MenuItem>
+        </Menu>
+      )}
     </>
   );
 };

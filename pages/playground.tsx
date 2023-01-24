@@ -20,7 +20,7 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PublishIcon from '@mui/icons-material/Publish';
-import { Box, Drawer, Fab, Toolbar, Tooltip } from '@mui/material';
+import { alpha, Box, Drawer, Fab, Toolbar, Tooltip } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
@@ -69,6 +69,7 @@ const Playground: NextPageWithLayout = () => {
   const router = useRouter();
   const assignmentId = router.query.assignmentId as string;
   const classroomId = router.query.classroomId as string;
+  const classroomSlug = router.query.classroomSlug as string;
   const { data: assignment } = useAssignment({
     classroomId: classroomId,
     assignmentId: assignmentId,
@@ -224,6 +225,7 @@ const Playground: NextPageWithLayout = () => {
             '& .MuiDrawer-paper': {
               width: { xs: '100%', md: '60%' },
               boxSizing: 'border-box',
+              bgcolor: (theme) => theme.palette.background.paper,
             },
           }}
           open={openDrawer}
@@ -235,6 +237,14 @@ const Playground: NextPageWithLayout = () => {
             sx={{
               alignItems: 'center',
               justifyContent: 'flex-end',
+              color: (theme) => theme.palette.text.primary,
+              backdropFilter: 'blur(6px)',
+              WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
+              backgroundColor: (theme) =>
+                alpha(theme.palette.background.default, 0.72),
+              transition: 'all 0.2s ease-in-out',
+              borderBottom: (theme) =>
+                `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
             }}
           >
             <IconButton
@@ -246,7 +256,11 @@ const Playground: NextPageWithLayout = () => {
           </Toolbar>
           <Divider />
           <Box sx={{ overflow: 'auto' }}>
-            <AssignmentContentCard assignment={assignment} />
+            <AssignmentContentCard
+              assignment={assignment}
+              showMenu
+              classroomSlug={classroomSlug}
+            />
           </Box>
         </Drawer>
       )}
