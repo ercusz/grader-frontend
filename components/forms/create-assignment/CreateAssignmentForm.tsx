@@ -2,7 +2,6 @@ import { CreateAssignmentFormValues } from '@/components/dialogs/create-assignme
 import MarkdownEditor from '@/components/editors/markdown/MarkdownEditor';
 import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
 import { GraderConfig } from '@/constants/grader';
-import { problemTypeAtom } from '@/stores/create-assignment';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import {
@@ -15,7 +14,8 @@ import {
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { useAtom } from 'jotai';
+import { atom, useAtom } from 'jotai';
+import { useEffect, useMemo } from 'react';
 import {
   DateTimePickerElement,
   FormContainer,
@@ -27,13 +27,23 @@ export interface ICreateAssignmentForm {
   formContext: UseFormReturn<CreateAssignmentFormValues, any>;
 }
 
+export const postDateTypeAtom = atom('now');
+export const problemTypeAtom = atom('java-src');
+
 const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
   formContext,
 }) => {
   const [problemType, setProblemType] = useAtom(problemTypeAtom);
-  const currentDateTime = new Date();
-  const { watch } = formContext;
+  const [postDateType, setPostDateType] = useAtom(postDateTypeAtom);
+  const currentDateTime = useMemo(() => new Date(), []);
+  const { watch, setValue } = formContext;
   const startDate = watch('startDate');
+
+  useEffect(() => {
+    if (postDateType === 'now') {
+      setValue('startDate', currentDateTime);
+    }
+  }, [currentDateTime, postDateType, setValue]);
 
   const handleProblemType = (
     event: React.MouseEvent<HTMLElement>,
@@ -41,6 +51,15 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
   ) => {
     if (newType !== null) {
       setProblemType(newType);
+    }
+  };
+
+  const handlePostDateType = (
+    event: React.MouseEvent<HTMLElement>,
+    newType: string
+  ) => {
+    if (newType !== null) {
+      setPostDateType(newType);
     }
   };
 
@@ -64,21 +83,46 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
               },
             }}
           />
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Typography variant="body2">วันเวลาโพสต์</Typography>
+            <ToggleButtonGroup
+              value={postDateType}
+              exclusive
+              size="small"
+              onChange={handlePostDateType}
+              aria-label="วันเวลาโพสต์"
+              sx={{
+                alignItems: 'center',
+              }}
+            >
+              <ToggleButton value="now" aria-label="เดี๋ยวนี้">
+                <Tooltip title="โพสต์จะปรากฏทันที">
+                  <Typography variant="body2">เดี๋ยวนี้</Typography>
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton value="custom" aria-label="กำหนดเอง">
+                <Tooltip title="โพสต์จะปรากฏเมื่อถึงเวลาที่กำหนดไว้">
+                  <Typography variant="body2">กำหนดเอง</Typography>
+                </Tooltip>
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Stack>
           <Stack direction="row" spacing={2}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePickerElement
                 className="w-full"
-                label="วันเวลาที่เริ่มการส่งงาน"
+                label="วันเวลาที่โพสต์จะปรากฏ"
                 name="startDate"
                 required
                 validation={{
                   required: 'กรุณาระบุวันเวลาที่เริ่มการส่งงาน',
                 }}
                 minDate={currentDateTime}
+                disabled={postDateType === 'now'}
               />
               <DateTimePickerElement
                 className="w-full"
-                label="วันเวลาที่สิ้นสุดการส่งงาน"
+                label="วันเวลาที่ครบกำหนดส่งงาน"
                 name="endDate"
                 required
                 validation={{

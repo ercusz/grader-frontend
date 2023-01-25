@@ -1,8 +1,10 @@
 import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownEditor';
-import CreateAssignmentForm from '@/components/forms/create-assignment/CreateAssignmentForm';
+import CreateAssignmentForm, {
+  postDateTypeAtom,
+  problemTypeAtom,
+} from '@/components/forms/create-assignment/CreateAssignmentForm';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useTestcases } from '@/hooks/grader/useTestcases';
-import { problemTypeAtom } from '@/stores/create-assignment';
 import { openEditAssignmentDialogAtom } from '@/stores/edit-assignment';
 import { Assignment, EditAssignment } from '@/types/types';
 import { editAssignment } from '@/utils/AssignmentService';
@@ -115,16 +117,24 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
   const [editorValue, setEditorValue] = useAtom(markdownEditorValueAtom);
   const [problemType, setProblemType] = useAtom(problemTypeAtom);
   const { testcases, setTestcases } = useTestcases();
+  const [, setPostDateType] = useAtom(postDateTypeAtom);
 
   useEffect(() => {
     if (assignment) {
+      setPostDateType('custom');
       setProblemType(assignment.type);
       setEditorValue(assignment.content);
       if (assignment.testcases) {
         setTestcases(assignment.testcases);
       }
     }
-  }, [assignment, setEditorValue, setProblemType, setTestcases]);
+  }, [
+    assignment,
+    setEditorValue,
+    setPostDateType,
+    setProblemType,
+    setTestcases,
+  ]);
 
   const queryClient = useQueryClient();
   const mutation = useMutation(

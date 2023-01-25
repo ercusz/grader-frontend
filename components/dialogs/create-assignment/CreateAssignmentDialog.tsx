@@ -1,12 +1,13 @@
 import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownEditor';
-import CreateAssignmentForm from '@/components/forms/create-assignment/CreateAssignmentForm';
+import CreateAssignmentForm, {
+  problemTypeAtom,
+} from '@/components/forms/create-assignment/CreateAssignmentForm';
 import PostToForm from '@/components/forms/post-to/PostToForm';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { useTestcases } from '@/hooks/grader/useTestcases';
 import {
   openCreateAssignmentDialogAtom,
   postToAtom,
-  problemTypeAtom,
 } from '@/stores/create-assignment';
 import { CreateAssignment } from '@/types/types';
 import { addAssignments } from '@/utils/AssignmentService';
