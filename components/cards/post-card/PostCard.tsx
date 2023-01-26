@@ -61,7 +61,10 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
       ),
     {
       onSuccess: () => {
-        queryClient.resetQueries(['posts', { classroomId: classroom?.id }]);
+        queryClient.invalidateQueries([
+          'posts',
+          { classroomId: classroom?.id },
+        ]);
         alert('แก้ไขการปักหมุดโพสต์สำเร็จ');
       },
       onError: () => {
@@ -78,7 +81,10 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
       ),
     {
       onSuccess: () => {
-        queryClient.resetQueries(['posts', { classroomId: classroom?.id }]);
+        queryClient.invalidateQueries([
+          'posts',
+          { classroomId: classroom?.id },
+        ]);
         alert('ลบโพสต์สำเร็จ');
       },
       onError: () => {

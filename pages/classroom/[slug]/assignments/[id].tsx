@@ -71,11 +71,11 @@ const ClassroomAssignment: NextPageWithLayout = ({
     () => deleteAssignment(id, classroom?.id.toString() as string),
     {
       onSuccess: () => {
-        queryClient.resetQueries([
+        queryClient.invalidateQueries([
           'assignments',
           { classroomId: classroom?.id },
         ]);
-        queryClient.resetQueries(['assignment', { id: id }]);
+        queryClient.invalidateQueries(['assignment', { id: id }]);
         alert('ลบงานสำเร็จ');
         router.push(`/classroom/${slug}/assignments`);
       },
