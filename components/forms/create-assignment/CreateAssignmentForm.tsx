@@ -5,7 +5,9 @@ import { GraderConfig } from '@/constants/grader';
 import CodeIcon from '@mui/icons-material/Code';
 import DescriptionIcon from '@mui/icons-material/Description';
 import {
+  Alert,
   Divider,
+  InputAdornment,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
@@ -14,6 +16,8 @@ import {
 } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { format } from 'date-fns';
+import { th } from 'date-fns/locale';
 import { atom, useAtom } from 'jotai';
 import { useEffect, useMemo } from 'react';
 import {
@@ -29,15 +33,22 @@ export interface ICreateAssignmentForm {
 
 export const postDateTypeAtom = atom('now');
 export const problemTypeAtom = atom('java-src');
+export const isDeductPointAtom = atom(false);
+export const deductTypeAtom = atom('day');
 
 const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
   formContext,
 }) => {
   const [problemType, setProblemType] = useAtom(problemTypeAtom);
   const [postDateType, setPostDateType] = useAtom(postDateTypeAtom);
+  const [isDeductPoint, setIsDeductPoint] = useAtom(isDeductPointAtom);
+  const [deductType, setDeductType] = useAtom(deductTypeAtom);
   const currentDateTime = useMemo(() => new Date(), []);
   const { watch, setValue } = formContext;
   const startDate = watch('startDate');
+  const endDate = watch('endDate');
+  const deductPoint = watch('deductPoint');
+  const minPoint = watch('minPoint');
 
   useEffect(() => {
     if (postDateType === 'now') {
@@ -60,6 +71,24 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
   ) => {
     if (newType !== null) {
       setPostDateType(newType);
+    }
+  };
+
+  const handleIsDeductPoint = (
+    event: React.MouseEvent<HTMLElement>,
+    newType: boolean
+  ) => {
+    if (newType !== null) {
+      setIsDeductPoint(newType);
+    }
+  };
+
+  const handleDeductType = (
+    event: React.MouseEvent<HTMLElement>,
+    newType: string
+  ) => {
+    if (newType !== null) {
+      setDeductType(newType);
     }
   };
 
@@ -141,6 +170,110 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
               />
             </LocalizationProvider>
           </Stack>
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Typography variant="body2">การหักคะแนนเมื่อส่งงานช้า</Typography>
+              <ToggleButtonGroup
+                value={isDeductPoint}
+                exclusive
+                size="small"
+                onChange={handleIsDeductPoint}
+                aria-label="การหักคะแนนเมื่อส่งงานช้า"
+                sx={{
+                  alignItems: 'center',
+                }}
+              >
+                <ToggleButton value={false} aria-label="ไม่หักคะแนน">
+                  <Tooltip title="เมื่อนักศึกษาส่งงานช้ากว่ากำหนด จะไม่ถูกหักคะแนน">
+                    <Typography variant="body2">ไม่หักคะแนน</Typography>
+                  </Tooltip>
+                </ToggleButton>
+                <ToggleButton value={true} aria-label="หักคะแนน">
+                  <Tooltip title="เมื่อนักศึกษาส่งงานช้ากว่ากำหนด จะถูกหักคะแนนตามค่าที่กำหนด">
+                    <Typography variant="body2">หักคะแนน</Typography>
+                  </Tooltip>
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Stack>
+            {isDeductPoint && (
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <ToggleButtonGroup
+                  value={deductType}
+                  exclusive
+                  size="small"
+                  onChange={handleDeductType}
+                  aria-label="ประเภทการหักคะแนน"
+                  sx={{
+                    alignItems: 'center',
+                  }}
+                >
+                  <ToggleButton value="day" aria-label="รายวัน">
+                    <Tooltip title="คะแนนจะถูกหักรายวัน">
+                      <Typography variant="body2">รายวัน</Typography>
+                    </Tooltip>
+                  </ToggleButton>
+                  <ToggleButton value="hour" aria-label="รายชั่วโมง">
+                    <Tooltip title="คะแนนจะถูกหักรายชั่วโมง">
+                      <Typography variant="body2">รายชั่วโมง</Typography>
+                    </Tooltip>
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Stack>
+            )}
+          </Stack>
+          {isDeductPoint && (
+            <>
+              <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+                <TextFieldElement
+                  name="deductPoint"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">หักคะแนน</InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">{`คะแนน/${
+                        (deductType === 'day' && 'วัน') ||
+                        (deductType === 'hour' && 'ชั่วโมง')
+                      }`}</InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    '& input': {
+                      textAlign: 'center',
+                    },
+                  }}
+                />
+                <TextFieldElement
+                  name="minPoint"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        จนกว่าคะแนนจะเหลือ
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">คะแนน</InputAdornment>
+                    ),
+                  }}
+                  sx={{
+                    '& input': {
+                      textAlign: 'center',
+                    },
+                  }}
+                />
+              </Stack>
+              {endDate && deductPoint && minPoint && (
+                <Alert severity="info">
+                  {`หากนักศึกษาส่งงานช้ากว่า ${format(endDate, 'PPPPp', {
+                    locale: th,
+                  })}\nนักศึกษาจะถูกหักคะแนนงาน${
+                    (deductType === 'day' && 'วัน') ||
+                    (deductType === 'hour' && 'ชั่วโมง')
+                  }ละ ${deductPoint} คะแนน\nแต่นักศึกษาจะได้คะแนนไม่ต่ำกว่า ${minPoint} คะแนน`}
+                </Alert>
+              )}
+            </>
+          )}
           <Stack direction="row" alignItems="center">
             <Typography variant="body2" sx={{ mr: 2 }}>
               ประเภทไฟล์ที่ยอมรับ

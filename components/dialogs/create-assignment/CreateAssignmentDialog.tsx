@@ -112,6 +112,8 @@ export type CreateAssignmentFormValues = {
   point: number;
   timeLimit: number | null;
   memoryLimit: number | null;
+  deductPoint: number | null;
+  minPoint: number | null;
 };
 
 const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
@@ -160,6 +162,8 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
       timeLimit: null,
       memoryLimit: null,
       point: 100,
+      deductPoint: null,
+      minPoint: null,
     },
   });
 
