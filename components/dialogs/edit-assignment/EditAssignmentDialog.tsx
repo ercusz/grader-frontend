@@ -29,6 +29,7 @@ import { parseISO } from 'date-fns';
 import { atom, useAtom } from 'jotai';
 import React, { forwardRef, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { CreateAssignmentFormValues } from '../create-assignment/CreateAssignmentDialog';
 
 export interface IEditAssignmentDialog {
   classroomSlug?: string;
@@ -96,15 +97,6 @@ const CustomTabPanel = ({
       </DialogContent>
     </TabPanel>
   );
-};
-
-export type CreateAssignmentFormValues = {
-  title: string;
-  startDate: Date;
-  endDate: Date;
-  point: number;
-  timeLimit: number | null;
-  memoryLimit: number | null;
 };
 
 const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({

@@ -24,8 +24,8 @@ import {
   DateTimePickerElement,
   FormContainer,
   TextFieldElement,
-  UseFormReturn,
 } from 'react-hook-form-mui';
+import { UseFormReturn } from 'react-hook-form';
 
 export interface ICreateAssignmentForm {
   formContext: UseFormReturn<CreateAssignmentFormValues, any>;
