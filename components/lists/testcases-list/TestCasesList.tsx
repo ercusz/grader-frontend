@@ -77,7 +77,7 @@ const TestCasesList: React.FC<ITestCasesList> = ({ runnable }) => {
   const handleAddTestCaseButton = () => {
     if (testcases && name != '' && expectedOutput != '') {
       const testcase = {
-        id: new Date().getUTCMilliseconds(),
+        id: new Date().valueOf() + Math.floor(Math.random()),
         name: name,
         input: input,
         expectedOutput: expectedOutput,

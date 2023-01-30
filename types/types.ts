@@ -181,3 +181,32 @@ export type Post = {
   createBy: UserResponse;
   updatedAt: string;
 };
+
+export type CreateSubmission = {
+  languageId: number;
+  additionalFiles: string;
+};
+
+export type UserSubmission = {
+  id: number;
+  point: number;
+  passedTestcases: number;
+  createdAt: string;
+  assignment: Assignment;
+  sourceCode: string;
+  testcases: {
+    id: number;
+    time: number;
+    memory: number;
+    status: number;
+  }[];
+};
+
+export type UserSubmissionResponse = {
+  submissions: UserSubmission[];
+  meta: {
+    total: number;
+    start: number;
+    limit: number;
+  };
+};

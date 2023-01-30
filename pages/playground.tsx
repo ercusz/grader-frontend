@@ -1,26 +1,30 @@
 import BrandingButton from '@/components/buttons/branding/BrandingButton';
+import PlaygroundSpeedDialButton from '@/components/buttons/playground-speed-dial/PlaygroundSpeedDialButton';
 import AssignmentContentCard from '@/components/cards/assignment-content/AssignmentContentCard';
+import SubmissionHistoryCard from '@/components/cards/submission-history/SubmissionHistoryCard';
+import GraderStatusChip from '@/components/chips/grader-status/GraderStatusChip';
 import InputDialog from '@/components/dialogs/input-dialog/InputDialog';
+import SideDrawer from '@/components/drawers/side/SideDrawer';
 import CodeEditor from '@/components/editors/code/CodeEditor';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import TestCasesList from '@/components/lists/testcases-list/TestCasesList';
 import OutputBox from '@/components/output-box/OutputBox';
-import { compileStatus } from '@/constants/compileStatuses';
 import { Java, PlainText } from '@/constants/languageTemplate';
 import { useAssignment } from '@/hooks/assignment/useAssignment';
 import { useIdeTabs } from '@/hooks/grader/useIdeTabs';
 import { useTestcases } from '@/hooks/grader/useTestcases';
-import { Submission } from '@/types/types';
+import { CreateSubmission, Submission } from '@/types/types';
 import { compressSourceCode, createSubmission } from '@/utils/GraderService';
+import { createSubmission as createStudentSubmission } from '@/utils/SubmissionService';
 import { Monaco } from '@monaco-editor/react';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
+import HistoryIcon from '@mui/icons-material/History';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PublishIcon from '@mui/icons-material/Publish';
-import { alpha, Box, Drawer, Fab, Toolbar, Tooltip } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import Alert from '@mui/material/Alert';
 import Backdrop from '@mui/material/Backdrop';
 import Button from '@mui/material/Button';
@@ -42,7 +46,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
@@ -75,6 +79,35 @@ const Playground: NextPageWithLayout = () => {
     assignmentId: assignmentId,
   });
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [drawerContent, setDrawerContent] = useState('assignment');
+
+  const createStudentSubmissionMutation = useMutation(
+    (submission: CreateSubmission) =>
+      createStudentSubmission(submission, classroomId, assignmentId),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['submissions']);
+        if (confirm('ส่งงานสำเร็จ\nต้องการดูผลตรวจหรือไม่?')) {
+          setDrawerContent('history');
+          setOpenDrawer(true);
+        }
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการส่งงาน');
+      },
+    }
+  );
+
+  const handleSubmit = async () => {
+    if (assignment) {
+      const src = await compressSourceCode(ideTabs);
+      const submission: CreateSubmission = {
+        languageId: 89,
+        additionalFiles: src,
+      };
+      createStudentSubmissionMutation.mutate(submission);
+    }
+  };
 
   const {
     isFetching: loadingProgram,
@@ -145,29 +178,6 @@ const Playground: NextPageWithLayout = () => {
     handleCloseOutputMenu();
   };
 
-  const renderStatusChip = (statusId: number) => {
-    const getBgColorAndLabel = (statusId: number) => {
-      const status = compileStatus.find((obj) => obj.id === statusId);
-      return {
-        bgColor: `${status ? status.color : compileStatus[0].color}.main`,
-        label: status ? status.description : compileStatus[0].description,
-      };
-    };
-    const { bgColor, label } = getBgColorAndLabel(statusId);
-
-    return (
-      <Chip
-        className="font-bold"
-        sx={{
-          bgcolor: bgColor,
-          color: 'white',
-        }}
-        size="small"
-        label={label}
-      />
-    );
-  };
-
   return (
     <section className="pt-24 px-10 min-h-screen">
       <InputDialog
@@ -179,7 +189,7 @@ const Playground: NextPageWithLayout = () => {
 
       <Backdrop
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loadingProgram}
+        open={loadingProgram || createStudentSubmissionMutation.isLoading}
       >
         <CircularProgress color="inherit" />
       </Backdrop>
@@ -201,69 +211,42 @@ const Playground: NextPageWithLayout = () => {
       </Snackbar>
 
       {assignment && (
-        <Fab
-          variant="extended"
-          color="success"
-          onClick={() => alert('ส่งงาน')}
-          sx={{
-            position: 'fixed',
-            bottom: 24,
-            right: 24,
-          }}
-        >
-          <PublishIcon sx={{ mr: 1 }} />
-          ส่งงาน
-        </Fab>
+        <PlaygroundSpeedDialButton
+          actions={[
+            {
+              icon: <PublishIcon color="success" />,
+              name: 'ส่งงาน',
+              onClick: () => handleSubmit(),
+            },
+            {
+              icon: <HistoryIcon color="info" />,
+              name: 'ดูประวัติการส่งงาน',
+              onClick: () => {
+                setDrawerContent('history');
+                setOpenDrawer(true);
+              },
+            },
+          ]}
+        />
       )}
 
-      {assignment && (
-        <Drawer
-          anchor="left"
-          sx={{
-            width: { xs: '100%', md: '60%' },
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: { xs: '100%', md: '60%' },
-              boxSizing: 'border-box',
-              bgcolor: (theme) => theme.palette.background.paper,
-            },
-          }}
-          open={openDrawer}
-          onClose={() => {
-            setOpenDrawer(false);
-          }}
-        >
-          <Toolbar
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'flex-end',
-              color: (theme) => theme.palette.text.primary,
-              backdropFilter: 'blur(6px)',
-              WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
-              backgroundColor: (theme) =>
-                alpha(theme.palette.background.default, 0.72),
-              transition: 'all 0.2s ease-in-out',
-              borderBottom: (theme) =>
-                `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
-            }}
-          >
-            <IconButton
-              aria-label="hide-problem"
-              onClick={() => setOpenDrawer(false)}
-            >
-              <ChevronLeftIcon fontSize="large" />
-            </IconButton>
-          </Toolbar>
-          <Divider />
-          <Box sx={{ overflow: 'auto' }}>
-            <AssignmentContentCard
-              assignment={assignment}
-              showMenu
-              classroomSlug={classroomSlug}
-            />
-          </Box>
-        </Drawer>
-      )}
+      <SideDrawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer}>
+        {assignment && drawerContent === 'assignment' && (
+          <AssignmentContentCard
+            assignment={assignment}
+            showMenu
+            classroomSlug={classroomSlug}
+          />
+        )}
+        {drawerContent === 'history' && (
+          <SubmissionHistoryCard
+            classroomId={classroomId}
+            assignmentId={assignmentId}
+            showMenu
+            classroomSlug={classroomSlug}
+          />
+        )}
+      </SideDrawer>
 
       <Grid
         container
@@ -318,7 +301,10 @@ const Playground: NextPageWithLayout = () => {
                         <Tooltip title="ดูโจทย์">
                           <IconButton
                             color="info"
-                            onClick={() => setOpenDrawer(true)}
+                            onClick={() => {
+                              setDrawerContent('assignment');
+                              setOpenDrawer(true);
+                            }}
                           >
                             <MenuBookIcon />
                           </IconButton>
@@ -345,7 +331,10 @@ const Playground: NextPageWithLayout = () => {
                           className="font-bold"
                           variant="outlined"
                           startIcon={<MenuBookIcon />}
-                          onClick={() => setOpenDrawer(true)}
+                          onClick={() => {
+                            setDrawerContent('assignment');
+                            setOpenDrawer(true);
+                          }}
                         >
                           ดูโจทย์
                         </Button>
@@ -381,7 +370,9 @@ const Playground: NextPageWithLayout = () => {
                   <Typography variant="caption" display="block">
                     Status:
                   </Typography>
-                  {renderStatusChip(program ? program.status_id : 0)}
+                  <GraderStatusChip
+                    statusId={program ? program.status_id : 0}
+                  />
                 </Stack>
               </CardActions>
             </Card>
