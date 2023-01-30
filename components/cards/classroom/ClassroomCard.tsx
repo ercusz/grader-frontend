@@ -2,7 +2,6 @@ import { MyClassroom } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import CheckIcon from '@mui/icons-material/Check';
 import {
-  alpha,
   Avatar,
   Box,
   Card,
@@ -18,6 +17,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';

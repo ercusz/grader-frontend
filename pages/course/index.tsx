@@ -19,8 +19,8 @@ import {
   IconButton,
   Stack,
   useMediaQuery,
-  useTheme,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
 import { getToken } from 'next-auth/jwt';

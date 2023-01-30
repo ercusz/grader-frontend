@@ -1,4 +1,5 @@
-import { alpha, Tab, Tabs } from '@mui/material';
+import { Tab, Tabs } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { atom, useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

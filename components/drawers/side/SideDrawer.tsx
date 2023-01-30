@@ -1,12 +1,6 @@
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import {
-  alpha,
-  Box,
-  Divider,
-  Drawer,
-  IconButton,
-  Toolbar,
-} from '@mui/material';
+import { Box, Divider, Drawer, IconButton, Toolbar } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { Dispatch, ReactNode, SetStateAction } from 'react';
 
 export interface ISideDrawer {

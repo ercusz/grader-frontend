@@ -1,5 +1,4 @@
 import {
-  alpha,
   Card,
   CardActions,
   CardHeader,
@@ -8,6 +7,7 @@ import {
   Skeleton,
   Typography,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import React from 'react';
 
 export interface IClassroomCardSkeleton {}

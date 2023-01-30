@@ -11,7 +11,6 @@ import { editAssignment } from '@/utils/AssignmentService';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabPanel } from '@mui/lab';
 import {
-  alpha,
   AppBar,
   Button,
   Dialog,
@@ -23,6 +22,7 @@ import {
   Typography,
   Zoom,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { parseISO } from 'date-fns';

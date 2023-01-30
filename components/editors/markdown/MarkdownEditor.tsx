@@ -1,13 +1,8 @@
 import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import PreviewIcon from '@mui/icons-material/Preview';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import {
-  Card,
-  CardContent,
-  IconButton,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Card, CardContent, IconButton, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { MDEditorProps } from '@uiw/react-md-editor';
 import '@uiw/react-md-editor/markdown-editor.css';
 import { atom, useAtom } from 'jotai';

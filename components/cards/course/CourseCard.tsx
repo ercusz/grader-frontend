@@ -1,7 +1,6 @@
 import { Course } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import {
-  alpha,
   Avatar,
   Card,
   CardActions,
@@ -11,6 +10,7 @@ import {
   Link as MuiLink,
   Typography,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';

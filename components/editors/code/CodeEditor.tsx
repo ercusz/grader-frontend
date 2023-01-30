@@ -2,14 +2,8 @@ import { useIdeTabs } from '@/hooks/grader/useIdeTabs';
 import Editor, { OnMount } from '@monaco-editor/react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import {
-  IconButton,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { IconButton, Stack, Tab, Tabs, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { SyntheticEvent, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { SiJava } from 'react-icons/si';

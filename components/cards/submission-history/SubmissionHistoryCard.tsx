@@ -7,7 +7,6 @@ import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
-  alpha,
   Avatar,
   Box,
   Card,
@@ -34,8 +33,8 @@ import {
   TableRow,
   Tooltip,
   Typography,
-  useTheme,
 } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import { format, isAfter, isBefore, isValid, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';

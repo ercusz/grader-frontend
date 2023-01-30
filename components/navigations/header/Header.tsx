@@ -3,14 +3,7 @@ import BrandingButton from '@/components/buttons/branding/BrandingButton';
 import { useUser } from '@/hooks/user/useUser';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import * as React from 'react';
-import UserMenu from '../user-menu/UserMenu';
-
 import {
-  alpha,
   AppBar,
   Box,
   Button,
@@ -23,6 +16,12 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import * as React from 'react';
+import UserMenu from '../user-menu/UserMenu';
 
 export interface IHeader extends React.ComponentPropsWithoutRef<'header'> {}
 

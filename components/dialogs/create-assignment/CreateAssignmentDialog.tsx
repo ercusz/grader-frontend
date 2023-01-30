@@ -1,13 +1,13 @@
 import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownEditor';
 import CreateAssignmentForm, {
-  problemTypeAtom
+  problemTypeAtom,
 } from '@/components/forms/create-assignment/CreateAssignmentForm';
 import PostToForm from '@/components/forms/post-to/PostToForm';
 import { useCourseSlug } from '@/hooks/courses/useCourses';
 import { useTestcases } from '@/hooks/grader/useTestcases';
 import {
   openCreateAssignmentDialogAtom,
-  postToAtom
+  postToAtom,
 } from '@/stores/create-assignment';
 import { CreateAssignment } from '@/types/types';
 import { addAssignments } from '@/utils/AssignmentService';
@@ -16,7 +16,6 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabPanel } from '@mui/lab';
 import {
-  alpha,
   AppBar,
   Button,
   Chip,
@@ -28,8 +27,9 @@ import {
   TextField,
   Toolbar,
   Typography,
-  Zoom
+  Zoom,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
