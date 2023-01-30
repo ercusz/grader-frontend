@@ -10,6 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import WarningIcon from '@mui/icons-material/Warning';
 import {
+  alpha,
   Box,
   Chip,
   Divider,
@@ -21,7 +22,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import * as React from 'react';

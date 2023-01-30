@@ -5,6 +5,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import EmailIcon from '@mui/icons-material/Email';
 import {
+  alpha,
   Avatar,
   Box,
   Button,
@@ -24,7 +25,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
 import Image from 'next/image';

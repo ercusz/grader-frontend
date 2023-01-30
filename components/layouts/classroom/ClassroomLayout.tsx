@@ -1,4 +1,4 @@
-import Container from '@mui/material/Container';
+import { Container } from '@mui/material';
 import Head from 'next/head';
 import { Suspense } from 'react';
 import CourseHeader from '../../headers/course-header/CourseHeader';

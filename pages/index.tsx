@@ -1,7 +1,5 @@
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
-import { Button, Grid, Stack, Typography } from '@mui/material';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
+import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';

@@ -1,11 +1,7 @@
 import { useAtomTheme } from '@/hooks/atom-theme/useAtomTheme';
 import { darkTheme, lightTheme } from '@/utils/theme';
-import { NoSsr } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
-import {
-  responsiveFontSizes,
-  ThemeProvider as MuiThemeProvider,
-} from '@mui/material/styles';
+import { CssBaseline, NoSsr, responsiveFontSizes } from '@mui/material';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { atomWithStorage } from 'jotai/utils';
 import { ReactNode } from 'react';
 

@@ -1,7 +1,5 @@
 import GraderIcon, { IGraderIcon } from '@/components/icons/grader/GraderIcon';
-import { Link as MuiLink, useTheme } from '@mui/material';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import { Link as MuiLink, Stack, Typography, useTheme } from '@mui/material';
 import Link from 'next/link';
 
 export interface IBrandingButton {

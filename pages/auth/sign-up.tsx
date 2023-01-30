@@ -1,12 +1,18 @@
-import { Alert, AlertTitle, Button, Collapse, Divider } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
 import SignUpForm from '@/components/forms/sign-up-form/SignUpForm';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { mainHttpClient, Response } from '@/utils/APIHelper';
+import {
+  Alert,
+  AlertTitle,
+  Button,
+  Collapse,
+  Divider,
+  Grid,
+  Typography,
+} from '@mui/material';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { NextPageWithLayout } from '../page';
 
 const SignUp: NextPageWithLayout = () => {

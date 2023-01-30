@@ -1,6 +1,4 @@
 import { CacheProvider } from '@emotion/react';
-import CssBaseline from '@mui/material/CssBaseline';
-import { ThemeProvider } from '@mui/material/styles';
 import addons from '@storybook/addons';
 import { SessionProvider } from 'next-auth/react';
 import { RouterContext } from 'next/dist/shared/lib/router-context'; // next 12
@@ -14,6 +12,8 @@ import { ColorContext } from '../state/color/ColorContext';
 import '../styles/globals.css';
 import createEmotionCache from '../utils/createEmotionCache';
 import { darkTheme, lightTheme } from '../utils/theme';
+
+import { CssBaseline, ThemeProvider } from '@mui/material';
 
 const BREAKPOINTS_INT = {
   xs: 375,

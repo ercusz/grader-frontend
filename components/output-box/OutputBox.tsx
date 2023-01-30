@@ -1,5 +1,5 @@
 import Editor, { OnMount } from '@monaco-editor/react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
 export interface IOutputBox {

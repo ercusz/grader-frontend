@@ -6,10 +6,10 @@ import {
   Button,
   Collapse,
   Divider,
+  Grid,
   Link as MuiLink,
+  Typography,
 } from '@mui/material';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

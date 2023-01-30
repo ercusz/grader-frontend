@@ -2,6 +2,7 @@ import { CreateCourseClassroom } from '@/types/types';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Avatar,
+  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -11,7 +12,6 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
 import * as React from 'react';
 
 export interface IUploadedStudentsDialog {

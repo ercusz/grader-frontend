@@ -114,9 +114,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
         >
           <CardHeader
             sx={{ py: 0 }}
-            title={<Typography variant="body2">
-              {`หน้า ${page}`}
-            </Typography>}
+            title={<Typography variant="body2">{`หน้า ${page}`}</Typography>}
             action={
               showMenu && (
                 <IconButton
