@@ -63,7 +63,7 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
         (classroom) => classroom.slug === classroomSlug
       );
       if (classroom) {
-        setPostTo([classroom]);
+        setPostTo([{ classroom, topic: null }]);
       }
     }
   }, [classroomSlug, course, openDialog, setPostTo]);
@@ -87,7 +87,7 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
 
   const onSubmit = () => {
     const obj: CreatePost = {
-      classroomIds: postTo.map((classroom) => classroom.id),
+      classroomIds: postTo.map(({ classroom }) => classroom.id),
       content: postFormContext.getValues().content,
     };
 
@@ -163,7 +163,7 @@ const CreatePostDialog: React.FC<ICreatePostDialog> = ({
               onDelete={() => {
                 setTabsValue('set-post-to');
               }}
-              label={postTo.map((classroom) => classroom.name).join(', ')}
+              label={postTo.map(({ classroom }) => classroom.name).join(', ')}
             />
           </Stack>
           <form>

@@ -103,12 +103,12 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
         >
           <TextFieldElement
             fullWidth
-            label="หัวข้อ"
+            label="ชื่องาน"
             name="title"
             validation={{
               required: {
                 value: true,
-                message: 'คุณจำเป็นต้องกรอก หัวข้อ',
+                message: 'คุณจำเป็นต้องกรอก ชื่องาน',
               },
             }}
           />

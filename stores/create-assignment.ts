@@ -1,5 +1,5 @@
-import { Classroom } from '@/types/types';
+import { PostTo } from '@/types/types';
 import { atom } from 'jotai';
 
 export const openCreateAssignmentDialogAtom = atom(false);
-export const postToAtom = atom<Classroom[]>([]);
+export const postToAtom = atom<PostTo[]>([]);

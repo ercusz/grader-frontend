@@ -1,5 +1,5 @@
 import { useCourseSlug } from '@/hooks/courses/useCourses';
-import { Classroom } from '@/types/types';
+import { PostTo } from '@/types/types';
 import {
   Checkbox,
   FormControl,
@@ -11,7 +11,7 @@ import {
 import { PrimitiveAtom, useAtom } from 'jotai';
 
 export interface IPostToForm {
-  postToAtom: PrimitiveAtom<Classroom[]>;
+  postToAtom: PrimitiveAtom<PostTo[]>;
   courseSlug: string;
   classroomSlug: string;
 }
@@ -39,16 +39,20 @@ const PostToForm: React.FC<IPostToForm> = ({
             control={
               <Checkbox
                 checked={postTo.some(
-                  (classroomToPost) => classroomToPost.id === classroom.id
+                  ({ classroom: c }) => c.id === classroom.id
                 )}
                 onChange={(e) => {
                   if (e.target.checked) {
-                    setPostTo([...postTo, classroom]);
+                    setPostTo([
+                      ...postTo,
+                      {
+                        classroom,
+                        topic: null,
+                      },
+                    ]);
                   } else {
                     setPostTo(
-                      postTo.filter(
-                        (classroomToPost) => classroomToPost.id !== classroom.id
-                      )
+                      postTo.filter(({ classroom: c }) => c.id !== classroom.id)
                     );
                   }
                 }}

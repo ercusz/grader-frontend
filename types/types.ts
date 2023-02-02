@@ -104,7 +104,10 @@ export type TestCase = {
 };
 
 export type CreateAssignment = {
-  classroomIds: number[];
+  postTo: {
+    classroomId: number;
+    topicId: number | null;
+  }[];
   title: string;
   startDate: string;
   endDate: string;
@@ -209,4 +212,18 @@ export type UserSubmissionResponse = {
     start: number;
     limit: number;
   };
+};
+
+export type PostTo = {
+  classroom: Classroom;
+  topic: Topic | null;
+};
+
+export type CreateTopic = {
+  name: string;
+};
+
+export type Topic = {
+  id: number;
+  name: string;
 };
