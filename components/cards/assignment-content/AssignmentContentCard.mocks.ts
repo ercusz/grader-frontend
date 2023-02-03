@@ -34,6 +34,7 @@ const base: IAssignmentContentCard = {
         url: 'https://i.pravatar.cc/?u=jane',
       },
     },
+    topic: null,
   },
 };
 

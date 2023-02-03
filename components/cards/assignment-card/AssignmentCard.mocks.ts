@@ -46,6 +46,7 @@ const base: IAssignmentCard = {
       new Date().getTime() + 72 * 60 * 60 * 1000
     ).toISOString(),
     updateBy: null,
+    topic: null,
   },
   classroomSlug: '',
 };

@@ -1,5 +1,6 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
 import AssignmentCardSkeleton from '@/components/cards/assignment-skeleton/AssignmentCardSkeleton';
+import AssignmentTopicCard from '@/components/cards/assignment-topic/AssignmentTopicCard';
 import CreateAssignmentDialog from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import { Roles } from '@/constants/roles';
@@ -7,7 +8,7 @@ import { useAssignments } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useUser } from '@/hooks/user/useUser';
 import { openCreateAssignmentDialogAtom } from '@/stores/create-assignment';
-import { User, UserResponse } from '@/types/types';
+import { Assignment, Topic, User, UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getUserRole } from '@/utils/role';
@@ -44,7 +45,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
   const {
     isLoading: isLoadingAssignments,
     isSuccess: isSuccessAssignments,
-    data: assignments,
+    data: { assignments, topics } = { assignments: [], topics: [] },
   } = useAssignments({
     classroomId: classroom?.id ? classroom.id.toString() : '',
   });
@@ -61,6 +62,14 @@ const ClassroomAssignments: NextPageWithLayout = ({
       targetUser: targetUser,
     });
   };
+
+  function isAssignment(obj: any): obj is Assignment {
+    return obj.point !== undefined;
+  }
+
+  function isTopic(obj: any): obj is Topic {
+    return obj.name !== undefined;
+  }
 
   return (
     <section>
@@ -147,20 +156,34 @@ const ClassroomAssignments: NextPageWithLayout = ({
             )}
             {isSuccessAssignments && assignments && assignments.length > 0 && (
               <List sx={{ width: '100%' }}>
-                {assignments
+                {[...topics, ...assignments]
                   .sort((a, b) =>
                     isBefore(parseISO(a.createdAt), parseISO(b.createdAt))
                       ? 1
                       : -1
                   )
-                  .map((assignment) => (
-                    <ListItem key={assignment.id} disableGutters>
-                      <AssignmentCard
-                        classroomSlug={slug}
-                        assignment={assignment}
-                      />
-                    </ListItem>
-                  ))}
+                  .map((obj) => {
+                    if (isAssignment(obj)) {
+                      return (
+                        <ListItem key={obj.id} disableGutters>
+                          <AssignmentCard
+                            classroomSlug={slug}
+                            assignment={obj}
+                          />
+                        </ListItem>
+                      );
+                    }
+                    if (isTopic(obj)) {
+                      return (
+                        <ListItem disableGutters key={obj.id}>
+                          <AssignmentTopicCard
+                            classroomSlug={slug}
+                            topic={obj}
+                          />
+                        </ListItem>
+                      );
+                    }
+                  })}
               </List>
             )}
             {isSuccessAssignments && assignments && assignments.length < 1 && (

@@ -345,6 +345,7 @@ export const handlers = [
                 url: 'https://i.pravatar.cc/?u=jane',
               },
             },
+            topic: null,
           },
           {
             id: 2,
@@ -385,6 +386,7 @@ export const handlers = [
                 url: 'https://i.pravatar.cc/?u=jane',
               },
             },
+            topic: null,
           },
           {
             id: 3,
@@ -416,6 +418,7 @@ export const handlers = [
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
             updateBy: null,
+            topic: null,
           },
           {
             id: 4,
@@ -447,6 +450,7 @@ export const handlers = [
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 1
             ).toISOString(),
             updateBy: null,
+            topic: null,
           },
           {
             id: 5,
@@ -474,6 +478,7 @@ export const handlers = [
             },
             updatedAt: new Date().toISOString(),
             updateBy: null,
+            topic: null,
           },
         ])
       );
@@ -607,6 +612,7 @@ export const handlers = [
               url: 'https://i.pravatar.cc/?u=jane',
             },
           },
+          topic: null,
         })
       );
     }
@@ -658,6 +664,7 @@ export const handlers = [
             new Date().getTime() + 72 * 60 * 60 * 1000
           ).toISOString(),
           updateBy: null,
+          topic: null,
         })
       );
     }

@@ -121,6 +121,10 @@ export type CreateAssignment = {
     input: string;
     expectedOutput: string;
   }[];
+  enabledPointDeduction: boolean;
+  deductPoint?: number | null;
+  deductType?: 'day' | 'hour' | null;
+  minPoint?: number | null;
 };
 
 export type EditAssignment = {
@@ -162,6 +166,7 @@ export type Assignment = {
   createBy: UserResponse;
   updatedAt: string;
   updateBy: UserResponse | null;
+  topic: Topic | null;
 };
 
 export type CreatePost = {
@@ -226,4 +231,15 @@ export type CreateTopic = {
 export type Topic = {
   id: number;
   name: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type TopicWithAssignments = {
+  assignments: Assignment[];
+} & Topic;
+
+export type ClassroomAssignments = {
+  assignments: Assignment[];
+  topics: TopicWithAssignments[];
 };

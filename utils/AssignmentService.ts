@@ -1,4 +1,9 @@
-import { Assignment, CreateAssignment, EditAssignment } from '@/types/types';
+import {
+  Assignment,
+  ClassroomAssignments,
+  CreateAssignment,
+  EditAssignment,
+} from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
 export const addAssignments = async (assignment: CreateAssignment) => {
@@ -41,7 +46,7 @@ export const deleteAssignment = async (
 
 export const getAssignments = async (
   classroomId: string
-): Promise<Assignment[]> => {
+): Promise<ClassroomAssignments> => {
   const { res, err }: Response = await contentHttpClient.get(
     `/api/classrooms/${classroomId}/assignments`
   );
@@ -49,7 +54,7 @@ export const getAssignments = async (
     throw new Error('get assignment data failed');
   }
 
-  return res.data as Assignment[];
+  return res.data as ClassroomAssignments;
 };
 
 export const getAssignmentById = async (

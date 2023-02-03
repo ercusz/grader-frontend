@@ -46,6 +46,7 @@ const base: IEditAssignmentDialog = {
       new Date().getTime() + 72 * 60 * 60 * 1000
     ).toISOString(),
     updateBy: null,
+    topic: null,
   },
 };
 

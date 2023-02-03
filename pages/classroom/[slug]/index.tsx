@@ -1,5 +1,6 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
 import AssignmentCardSkeleton from '@/components/cards/assignment-skeleton/AssignmentCardSkeleton';
+import AssignmentTopicCard from '@/components/cards/assignment-topic/AssignmentTopicCard';
 import CreatePostCard from '@/components/cards/create-post/CreatePostCard';
 import PostCard from '@/components/cards/post-card/PostCard';
 import PostCardSkeleton from '@/components/cards/post-skeleton/PostCardSkeleton';
@@ -12,7 +13,7 @@ import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { usePosts } from '@/hooks/post/usePost';
 import { useUser } from '@/hooks/user/useUser';
 import { openCreatePostDialogAtom } from '@/stores/create-post';
-import { Assignment, Post, User, UserResponse } from '@/types/types';
+import { Assignment, Post, Topic, User, UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getUserRole } from '@/utils/role';
@@ -55,7 +56,7 @@ const Classroom: NextPageWithLayout = ({
   const {
     isLoading: isLoadingAssignments,
     isSuccess: isSuccessAssignments,
-    data: assignments,
+    data: { assignments, topics } = { assignments: [], topics: [] },
   } = useAssignments({
     classroomId: classroom?.id ? classroom.id.toString() : '',
   });
@@ -66,6 +67,10 @@ const Classroom: NextPageWithLayout = ({
 
   function isAssignment(obj: any): obj is Assignment {
     return obj.point !== undefined;
+  }
+
+  function isTopic(obj: any): obj is Topic {
+    return obj.name !== undefined;
   }
 
   const getRole = (targetUser: UserResponse | User) => {
@@ -138,7 +143,8 @@ const Classroom: NextPageWithLayout = ({
                 posts &&
                 isSuccessAssignments &&
                 assignments &&
-                [...posts, ...assignments]
+                topics &&
+                [...posts, ...assignments, ...topics]
                   .sort((a, b) =>
                     isBefore(parseISO(a.updatedAt), parseISO(b.updatedAt))
                       ? 1
@@ -159,6 +165,15 @@ const Classroom: NextPageWithLayout = ({
                           <AssignmentCard
                             classroomSlug={slug}
                             assignment={obj}
+                          />
+                        </ListItem>
+                      );
+                    } else if (isTopic(obj)) {
+                      return (
+                        <ListItem key={`topic-${obj.id}`} disableGutters>
+                          <AssignmentTopicCard
+                            classroomSlug={slug}
+                            topic={obj}
                           />
                         </ListItem>
                       );

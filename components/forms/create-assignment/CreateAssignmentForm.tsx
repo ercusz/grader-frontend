@@ -33,15 +33,17 @@ export interface ICreateAssignmentForm {
 
 export const postDateTypeAtom = atom('now');
 export const problemTypeAtom = atom('java-src');
-export const isDeductPointAtom = atom(false);
-export const deductTypeAtom = atom('day');
+export const enabledPointDeductionAtom = atom(false);
+export const deductTypeAtom = atom<'day' | 'hour'>('day');
 
 const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
   formContext,
 }) => {
   const [problemType, setProblemType] = useAtom(problemTypeAtom);
   const [postDateType, setPostDateType] = useAtom(postDateTypeAtom);
-  const [isDeductPoint, setIsDeductPoint] = useAtom(isDeductPointAtom);
+  const [enabledPointDeduction, setEnabledPointDeduction] = useAtom(
+    enabledPointDeductionAtom
+  );
   const [deductType, setDeductType] = useAtom(deductTypeAtom);
   const currentDateTime = useMemo(() => new Date(), []);
   const { watch, setValue } = formContext;
@@ -49,6 +51,7 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
   const endDate = watch('endDate');
   const deductPoint = watch('deductPoint');
   const minPoint = watch('minPoint');
+  const point = watch('point');
 
   useEffect(() => {
     if (postDateType === 'now') {
@@ -79,13 +82,13 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
     newType: boolean
   ) => {
     if (newType !== null) {
-      setIsDeductPoint(newType);
+      setEnabledPointDeduction(newType);
     }
   };
 
   const handleDeductType = (
     event: React.MouseEvent<HTMLElement>,
-    newType: string
+    newType: 'day' | 'hour'
   ) => {
     if (newType !== null) {
       setDeductType(newType);
@@ -174,7 +177,7 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
             <Stack direction="row" alignItems="center" spacing={2}>
               <Typography variant="body2">การหักคะแนนเมื่อส่งงานช้า</Typography>
               <ToggleButtonGroup
-                value={isDeductPoint}
+                value={enabledPointDeduction}
                 exclusive
                 size="small"
                 onChange={handleIsDeductPoint}
@@ -195,7 +198,7 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                 </ToggleButton>
               </ToggleButtonGroup>
             </Stack>
-            {isDeductPoint && (
+            {enabledPointDeduction && (
               <Stack direction="row" alignItems="center" spacing={2}>
                 <ToggleButtonGroup
                   value={deductType}
@@ -221,7 +224,7 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
               </Stack>
             )}
           </Stack>
-          {isDeductPoint && (
+          {enabledPointDeduction && (
             <>
               <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
                 <TextFieldElement
@@ -254,6 +257,16 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                     endAdornment: (
                       <InputAdornment position="end">คะแนน</InputAdornment>
                     ),
+                  }}
+                  validation={{
+                    min: {
+                      value: 0,
+                      message: 'คะแนนต่ำสุดต้องมากกว่า 0',
+                    },
+                    max: {
+                      value: point,
+                      message: 'คะแนนต่ำสุดต้องไม่เกินคะแนนเต็ม',
+                    },
                   }}
                   sx={{
                     '& input': {
