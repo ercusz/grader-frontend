@@ -1,4 +1,6 @@
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { Assignment } from '@/types/types';
+import { deleteAssignmentTopic } from '@/utils/TopicServices';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CodeIcon from '@mui/icons-material/Code';
@@ -18,6 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   format,
   formatDistanceToNow,
@@ -27,6 +30,7 @@ import {
 } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
 
 export interface ISubtaskCard {
@@ -40,6 +44,39 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
   classroomSlug,
   isTeacherTA,
 }) => {
+  const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
+
+  const router = useRouter();
+  const id = router.query.id as string;
+
+  const queryClient = useQueryClient();
+  const deleteMutation = useMutation(
+    () =>
+      deleteAssignmentTopic(
+        id,
+        classroom?.id.toString() as string,
+        assignment.id.toString() as string
+      ),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['topic', { id: id }]);
+        queryClient.invalidateQueries(['topics']);
+        queryClient.invalidateQueries(['assignment', { id: assignment.id }]);
+        queryClient.invalidateQueries(['assignments']);
+        alert('นำงานย่อยออกจากหัวข้อนี้เรียบร้อยแล้ว');
+      },
+      onError: () => {
+        alert('เกิดข้อผิดพลาดในการนำงานย่อยออกจากหัวข้อนี้');
+      },
+    }
+  );
+
+  const handleDeleteAssignment = () => {
+    if (confirm('คุณต้องการนำงานย่อยนี้ออกจากหัวข้อนี้ใช่หรือไม่?')) {
+      deleteMutation.mutate();
+    }
+  };
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -189,7 +226,7 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
             horizontal: 'right',
           }}
         >
-          <MenuItem onClick={() => alert('delete')} disableRipple>
+          <MenuItem onClick={() => handleDeleteAssignment()} disableRipple>
             <Typography
               color="error"
               sx={{ display: 'flex', alignItems: 'center' }}

@@ -38,3 +38,19 @@ export const getTopicById = async (
 
   return res.data as TopicWithAssignments;
 };
+
+export const deleteAssignmentTopic = async (
+  topicId: string,
+  classroomId: string,
+  assignmentId: string
+) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/topics/${topicId}/assignments/${assignmentId}`
+  );
+
+  if (err) {
+    throw new Error('delete assignment topic failed');
+  }
+
+  return;
+};

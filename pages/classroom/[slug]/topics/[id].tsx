@@ -40,7 +40,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NextPageWithLayout } from '../../../page';
 
-const ClassroomAssignment: NextPageWithLayout = ({
+const ClassroomTopic: NextPageWithLayout = ({
   slug,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: user } = useUser();
@@ -197,9 +197,9 @@ const ClassroomAssignment: NextPageWithLayout = ({
   );
 };
 
-export default ClassroomAssignment;
+export default ClassroomTopic;
 
-ClassroomAssignment.getLayout = (page) => {
+ClassroomTopic.getLayout = (page) => {
   const { props } = page;
   const { slug } = props;
   return <ClassroomLayout slug={slug}>{page}</ClassroomLayout>;
