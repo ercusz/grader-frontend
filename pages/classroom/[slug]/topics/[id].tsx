@@ -1,25 +1,21 @@
-import AssignmentContentCard from '@/components/cards/assignment-content/AssignmentContentCard';
 import SubmissionStatusCard from '@/components/cards/submission-status/SubmissionStatusCard';
-import EditAssignmentDialog from '@/components/dialogs/edit-assignment/EditAssignmentDialog';
+import TopicContentCard from '@/components/cards/topic-content/TopicContentCard';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import { Roles } from '@/constants/roles';
-import { useAssignment } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useTopic } from '@/hooks/topic/useTopic';
 import { useUser } from '@/hooks/user/useUser';
 import { openEditAssignmentDialogAtom } from '@/stores/edit-assignment';
 import { User, UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
-import { deleteAssignment, getAssignmentById } from '@/utils/AssignmentService';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getUserRole } from '@/utils/role';
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import { getTopicById } from '@/utils/TopicServices';
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
-import OutboxIcon from '@mui/icons-material/Outbox';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {
   Backdrop,
   Breadcrumbs,
@@ -27,7 +23,6 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Fab,
   Grid,
   Link as MuiLink,
   List,
@@ -35,12 +30,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {
-  dehydrate,
-  QueryClient,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
 import '@uiw/react-markdown-preview/markdown.css';
 import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
@@ -67,38 +57,13 @@ const ClassroomAssignment: NextPageWithLayout = ({
   const id = router.query.id as string;
 
   const {
-    isLoading: isLoadingAssignment,
-    isSuccess: isSuccessAssignment,
-    data: assignment,
-  } = useAssignment({
-    assignmentId: id,
+    isLoading: isLoadingTopic,
+    isSuccess: isSuccessTopic,
+    data: topic,
+  } = useTopic({
+    topicId: id,
     classroomId: classroom?.id.toString(),
   });
-
-  const queryClient = useQueryClient();
-  const mutation = useMutation(
-    () => deleteAssignment(id, classroom?.id.toString() as string),
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries([
-          'assignments',
-          { classroomId: classroom?.id },
-        ]);
-        queryClient.invalidateQueries(['assignment', { id: id }]);
-        alert('ลบงานสำเร็จ');
-        router.push(`/classroom/${slug}/assignments`);
-      },
-      onError: () => {
-        alert('เกิดข้อผิดพลาดในการลบงาน');
-      },
-    }
-  );
-
-  const handleDeleteAssignment = () => {
-    if (confirm('ต้องการลบงานนี้หรือไม่?')) {
-      mutation.mutate();
-    }
-  };
 
   const getRole = (targetUser: UserResponse | User) => {
     return getUserRole({
@@ -118,7 +83,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
             : 'ไม่พบรายวิชา'}
         </title>
       </Head>
-      {isLoadingClassroom && isLoadingAssignment && (
+      {isLoadingClassroom && isLoadingTopic && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={true}
@@ -126,44 +91,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {user && getRole(user) === Roles.STUDENT && (
-        <>
-          {assignment?.type === 'java-src' && (
-            <Link
-              href={`/playground?assignmentId=${id}&classroomId=${classroom?.id}&classroomSlug=${slug}`}
-              as={`/playground`}
-            >
-              <Fab
-                variant="extended"
-                color="primary"
-                sx={{
-                  position: 'fixed',
-                  bottom: 24,
-                  right: 24,
-                }}
-              >
-                <OpenInBrowserIcon sx={{ mr: 1 }} />
-                ไปยังเพลย์กราวด์
-              </Fab>
-            </Link>
-          )}
-          {assignment?.type === 'docs' && (
-            <Fab
-              variant="extended"
-              color="primary"
-              sx={{
-                position: 'fixed',
-                bottom: 24,
-                right: 24,
-              }}
-            >
-              <OutboxIcon sx={{ mr: 1 }} />
-              ส่งงาน
-            </Fab>
-          )}
-        </>
-      )}
-      {isSuccessClassroom && isSuccessAssignment && classroom && (
+      {isSuccessClassroom && isSuccessTopic && classroom && (
         <Grid
           container
           spacing={2}
@@ -175,13 +103,6 @@ const ClassroomAssignment: NextPageWithLayout = ({
             {(user && getRole(user) === Roles.TEACHER) ||
             (user && getRole(user) === Roles.TA) ? (
               <List>
-                {assignment && (
-                  <EditAssignmentDialog
-                    classroomSlug={slug}
-                    assignment={assignment}
-                  />
-                )}
-
                 <ListItem
                   disableGutters
                   sx={{
@@ -200,17 +121,17 @@ const ClassroomAssignment: NextPageWithLayout = ({
                       color="primary"
                       variant="contained"
                       size="large"
-                      startIcon={<EditIcon />}
-                      onClick={() => setOpenEditAssignmentDialog(true)}
+                      startIcon={<SettingsIcon />}
+                      // onClick={() => setOpenEditAssignmentDialog(true)}
                     >
-                      แก้ไข
+                      จัดการหัวข้อ
                     </Button>
                     <Button
                       color="error"
                       variant="outlined"
                       size="large"
                       startIcon={<DeleteIcon />}
-                      onClick={() => handleDeleteAssignment()}
+                      // onClick={() => handleDeleteAssignment()}
                     >
                       ลบ
                     </Button>
@@ -249,32 +170,26 @@ const ClassroomAssignment: NextPageWithLayout = ({
                       งานที่ได้รับมอบหมาย
                     </MuiLink>
                   </Link>
-                  {assignment?.topic && (
-                    <Link
-                      href={`/classroom/${slug}/topics/${assignment.topic.id}`}
-                      passHref
-                    >
-                      <MuiLink
-                        underline="hover"
-                        sx={{ display: 'flex', alignItems: 'center' }}
-                        color="inherit"
-                      >
-                        <LibraryBooksIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-                        {assignment.topic.name}
-                      </MuiLink>
-                    </Link>
-                  )}
                   <Typography
                     sx={{ display: 'flex', alignItems: 'center' }}
                     color="text.primary"
                   >
-                    <AssignmentIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-                    {assignment.title}
+                    <LibraryBooksIcon sx={{ mr: 0.5 }} fontSize="inherit" />
+                    {topic?.name}
                   </Typography>
                 </Breadcrumbs>
               </CardContent>
             </Card>
-            {assignment && <AssignmentContentCard assignment={assignment} />}
+            <TopicContentCard
+              classroomSlug={slug}
+              topic={topic}
+              isTeacherTA={
+                (user && getRole(user) === Roles.TEACHER) ||
+                (user && getRole(user) === Roles.TA)
+                  ? true
+                  : false
+              }
+            />
           </Grid>
         </Grid>
       )}
@@ -307,12 +222,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       () => getClassroomBySlug(slug)
     );
 
-    const assignment = await queryClient.fetchQuery(
-      ['assignment', { id: context.query.id }],
-      () => getAssignmentById(context.query.id as string, classroom.id)
+    const topic = await queryClient.fetchQuery(
+      ['topic', { id: context.query.id }],
+      () => getTopicById(context.query.id as string, classroom.id)
     );
 
-    if (!assignment.title) {
+    if (!topic.name) {
       return {
         notFound: true,
       };

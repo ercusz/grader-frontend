@@ -40,9 +40,13 @@ const ClassroomTabs: React.FC<IClassroomTabs> = () => {
 
   const getActiveTabIndex = Math.max(
     0,
-    tabs.findIndex(({ path }) =>
-      path.length > 0 ? pathname.includes(path) : false
-    )
+    tabs.findIndex(({ path }) => {
+      if (path === 'assignments' && pathname.includes('topics')) {
+        return true;
+      }
+
+      return path.length > 0 ? pathname.includes(path) : false;
+    })
   );
 
   return (
