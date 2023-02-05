@@ -63,6 +63,11 @@ const ClassroomAssignments: NextPageWithLayout = ({
     });
   };
 
+  const haveAnAssignment =
+    isSuccessAssignments &&
+    assignments &&
+    (assignments.length > 0 || topics.length > 0);
+
   function isAssignment(obj: any): obj is Assignment {
     return obj.point !== undefined;
   }
@@ -154,7 +159,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
                 ))}
               </List>
             )}
-            {isSuccessAssignments && assignments && assignments.length > 0 && (
+            {haveAnAssignment && (
               <List sx={{ width: '100%' }}>
                 {[...topics, ...assignments]
                   .sort((a, b) =>
@@ -186,7 +191,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
                   })}
               </List>
             )}
-            {isSuccessAssignments && assignments && assignments.length < 1 && (
+            {!haveAnAssignment && (
               <List sx={{ width: '100%' }}>
                 <Typography className="text-center mt-10" variant="h5">
                   ยังไม่มีโพสต์ในรายวิชานี้

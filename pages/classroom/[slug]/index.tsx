@@ -61,6 +61,13 @@ const Classroom: NextPageWithLayout = ({
     classroomId: classroom?.id ? classroom.id.toString() : '',
   });
 
+  const isEmptyFeed =
+    isSuccessPosts &&
+    isSuccessAssignments &&
+    posts.length < 1 &&
+    assignments.length < 1 &&
+    topics.length < 1;
+
   function isPost(obj: any): obj is Post {
     return obj.isPinned !== undefined;
   }
@@ -179,26 +186,23 @@ const Classroom: NextPageWithLayout = ({
                       );
                     }
                   })}
-              {isSuccessPosts &&
-                isSuccessAssignments &&
-                posts?.length < 1 &&
-                assignments?.length < 1 && (
-                  <List sx={{ width: '100%' }}>
-                    <Typography className="text-center mt-10" variant="h5">
-                      ยังไม่มีโพสต์ในรายวิชานี้
-                    </Typography>
-                    <Typography className="text-center">
-                      คุณต้องการ{' '}
-                      <MuiLink
-                        className="cursor-pointer"
-                        onClick={() => setOpenCreatePostDialog(true)}
-                      >
-                        เขียนอะไรสักหน่อย...
-                      </MuiLink>{' '}
-                      ไหม?
-                    </Typography>
-                  </List>
-                )}
+              {isEmptyFeed && (
+                <List sx={{ width: '100%' }}>
+                  <Typography className="text-center mt-10" variant="h5">
+                    ยังไม่มีโพสต์ในรายวิชานี้
+                  </Typography>
+                  <Typography className="text-center">
+                    คุณต้องการ{' '}
+                    <MuiLink
+                      className="cursor-pointer"
+                      onClick={() => setOpenCreatePostDialog(true)}
+                    >
+                      เขียนอะไรสักหน่อย...
+                    </MuiLink>{' '}
+                    ไหม?
+                  </Typography>
+                </List>
+              )}
             </List>
           </Grid>
         </Grid>
