@@ -53,7 +53,7 @@ const AssignmentTopicCard: React.FC<IAssignmentTopicCard> = ({
                 <Typography noWrap gutterBottom variant="subtitle2">
                   {`${topic.assignments[0].createBy.firstName} ${topic.assignments[0].createBy.lastName}`}
                   {` ได้มอบหมายงานใหม่ `}
-                  {`${topic.assignments[0].title}`}
+                  {`${topic.name}`}
                 </Typography>
               )
             }
