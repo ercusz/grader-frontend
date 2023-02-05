@@ -71,3 +71,30 @@ export const updateTopic = async (
 
   return;
 };
+
+export const deleteTopic = async (topicId: string, classroomId: string) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/topics/${topicId}`
+  );
+
+  if (err) {
+    throw new Error('delete topic failed');
+  }
+
+  return;
+};
+
+export const deleteTopicAndAssignments = async (
+  topicId: string,
+  classroomId: string
+) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/topics/${topicId}/assignments`
+  );
+
+  if (err) {
+    throw new Error('delete topic and assignments failed');
+  }
+
+  return;
+};

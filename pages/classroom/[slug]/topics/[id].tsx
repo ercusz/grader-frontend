@@ -1,5 +1,8 @@
 import SubmissionStatusCard from '@/components/cards/submission-status/SubmissionStatusCard';
 import TopicContentCard from '@/components/cards/topic-content/TopicContentCard';
+import DeleteTopicDialog, {
+  openDeleteTopicDialogAtom,
+} from '@/components/dialogs/delete-topic/DeleteTopicDialog';
 import EditTopicDialog from '@/components/dialogs/edit-topic/EditTopicDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import { Roles } from '@/constants/roles';
@@ -47,6 +50,7 @@ const ClassroomTopic: NextPageWithLayout = ({
   const { data: user } = useUser();
 
   const [, setOpenEditTopicDialog] = useAtom(openEditTopicDialogAtom);
+  const [, setOpenDeleteTopicDialog] = useAtom(openDeleteTopicDialogAtom);
 
   const {
     isLoading: isLoadingClassroom,
@@ -92,7 +96,15 @@ const ClassroomTopic: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {<EditTopicDialog classroomSlug={slug} />}
+      {
+        // Dialogs
+        topic && (
+          <>
+            <EditTopicDialog classroomSlug={slug} />
+            <DeleteTopicDialog classroomSlug={slug} topic={topic} />
+          </>
+        )
+      }
       {isSuccessClassroom && isSuccessTopic && classroom && (
         <Grid
           container
@@ -133,7 +145,7 @@ const ClassroomTopic: NextPageWithLayout = ({
                       variant="outlined"
                       size="large"
                       startIcon={<DeleteIcon />}
-                      // onClick={() => handleDeleteAssignment()}
+                      onClick={() => setOpenDeleteTopicDialog(true)}
                     >
                       ลบ
                     </Button>
