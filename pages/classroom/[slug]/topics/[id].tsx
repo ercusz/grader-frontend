@@ -1,11 +1,12 @@
 import SubmissionStatusCard from '@/components/cards/submission-status/SubmissionStatusCard';
 import TopicContentCard from '@/components/cards/topic-content/TopicContentCard';
+import EditTopicDialog from '@/components/dialogs/edit-topic/EditTopicDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useTopic } from '@/hooks/topic/useTopic';
 import { useUser } from '@/hooks/user/useUser';
-import { openEditAssignmentDialogAtom } from '@/stores/edit-assignment';
+import { openEditTopicDialogAtom } from '@/stores/edit-topic';
 import { User, UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
@@ -45,7 +46,7 @@ const ClassroomTopic: NextPageWithLayout = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const { data: user } = useUser();
 
-  const [, setOpenEditAssignmentDialog] = useAtom(openEditAssignmentDialogAtom);
+  const [, setOpenEditTopicDialog] = useAtom(openEditTopicDialogAtom);
 
   const {
     isLoading: isLoadingClassroom,
@@ -91,6 +92,7 @@ const ClassroomTopic: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
+      {<EditTopicDialog classroomSlug={slug} />}
       {isSuccessClassroom && isSuccessTopic && classroom && (
         <Grid
           container
@@ -122,7 +124,7 @@ const ClassroomTopic: NextPageWithLayout = ({
                       variant="contained"
                       size="large"
                       startIcon={<SettingsIcon />}
-                      // onClick={() => setOpenEditAssignmentDialog(true)}
+                      onClick={() => setOpenEditTopicDialog(true)}
                     >
                       จัดการหัวข้อ
                     </Button>

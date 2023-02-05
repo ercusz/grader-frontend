@@ -54,3 +54,20 @@ export const deleteAssignmentTopic = async (
 
   return;
 };
+
+export const updateTopic = async (
+  topicId: string,
+  classroomId: string,
+  body: CreateTopic & { assignments: number[] }
+) => {
+  const { err }: Response = await contentHttpClient.patch(
+    `/api/classrooms/${classroomId}/topics/${topicId}`,
+    body
+  );
+
+  if (err) {
+    throw new Error('update topic failed');
+  }
+
+  return;
+};
