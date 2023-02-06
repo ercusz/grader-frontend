@@ -47,6 +47,7 @@ const base: IAssignmentCard = {
     ).toISOString(),
     updateBy: null,
     topic: null,
+    enabledPointDeduction: false,
   },
   classroomSlug: '',
 };

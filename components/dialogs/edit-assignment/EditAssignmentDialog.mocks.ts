@@ -47,6 +47,7 @@ const base: IEditAssignmentDialog = {
     ).toISOString(),
     updateBy: null,
     topic: null,
+    enabledPointDeduction: false,
   },
 };
 

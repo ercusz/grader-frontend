@@ -35,6 +35,7 @@ const base: IAssignmentContentCard = {
       },
     },
     topic: null,
+    enabledPointDeduction: false,
   },
 };
 

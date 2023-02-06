@@ -47,6 +47,7 @@ const base: ISubtaskCard = {
     ).toISOString(),
     updateBy: null,
     topic: null,
+    enabledPointDeduction: false,
   },
   classroomSlug: '',
   isTeacherTA: false,

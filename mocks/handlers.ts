@@ -346,6 +346,7 @@ export const handlers = [
               },
             },
             topic: null,
+            enabledPointDeduction: false,
           },
           {
             id: 2,
@@ -387,6 +388,7 @@ export const handlers = [
               },
             },
             topic: null,
+            enabledPointDeduction: false,
           },
           {
             id: 3,
@@ -419,6 +421,7 @@ export const handlers = [
             ).toISOString(),
             updateBy: null,
             topic: null,
+            enabledPointDeduction: false,
           },
           {
             id: 4,
@@ -451,6 +454,7 @@ export const handlers = [
             ).toISOString(),
             updateBy: null,
             topic: null,
+            enabledPointDeduction: false,
           },
           {
             id: 5,
@@ -479,6 +483,7 @@ export const handlers = [
             updatedAt: new Date().toISOString(),
             updateBy: null,
             topic: null,
+            enabledPointDeduction: false,
           },
         ])
       );
@@ -613,6 +618,7 @@ export const handlers = [
             },
           },
           topic: null,
+          enabledPointDeduction: false,
         })
       );
     }
@@ -665,6 +671,7 @@ export const handlers = [
           ).toISOString(),
           updateBy: null,
           topic: null,
+          enabledPointDeduction: false,
         })
       );
     }
