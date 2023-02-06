@@ -1,5 +1,5 @@
+import CreateTopicDialog from '@/components/dialogs/create-topic/CreateTopicDialog';
 import { useTopics } from '@/hooks/topic/useTopic';
-import { postToAtom } from '@/stores/create-assignment';
 import { openCreateTopicDialogAtom } from '@/stores/create-topic';
 import { Classroom, PostTo } from '@/types/types';
 import AddIcon from '@mui/icons-material/Add';
@@ -18,17 +18,22 @@ import { atom, PrimitiveAtom, useAtom } from 'jotai';
 
 export interface ITopicAutoComplete {
   classroom: Classroom;
+  postToAtom: PrimitiveAtom<PostTo[]>;
 }
 
-const TopicAutoComplete: React.FC<ITopicAutoComplete> = ({ classroom }) => {
+const TopicAutoComplete: React.FC<ITopicAutoComplete> = ({
+  classroom,
+  postToAtom,
+}) => {
   const { data: topics, isLoading } = useTopics({
     classroomId: classroom?.id.toString() as string,
   });
 
-  const [, setSelectedTopic] = useAtom(postToAtom);
+  const [postTo, setSelectedTopic] = useAtom(postToAtom);
 
   return (
     <Autocomplete
+      value={postTo.find((p) => p.classroom.id === classroom.id)?.topic || null}
       loading={isLoading}
       options={topics || []}
       getOptionLabel={(topic) => topic.name}
@@ -74,31 +79,39 @@ const TopicForm: React.FC<ITopicForm> = ({ postToAtom }) => {
   const [, setClassroom] = useAtom(classroomAtom);
 
   return (
-    <FormControl
-      error={postTo.length === 0}
-      component="fieldset"
-      variant="standard"
-    >
-      {postTo.map(({ classroom }) => (
-        <Box key={classroom.id} sx={{ mb: 2 }}>
-          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
-            <FormLabel>{classroom.name}</FormLabel>
-            <Tooltip title="สร้างหัวข้อใหม่">
-              <IconButton
-                aria-label="add-topic"
-                onClick={() => {
-                  setClassroom(classroom);
-                  setOpenCreateTopicDialog(true);
-                }}
-              >
-                <AddIcon />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-          <TopicAutoComplete classroom={classroom} />
-        </Box>
-      ))}
-    </FormControl>
+    <>
+      <CreateTopicDialog />
+      <FormControl
+        error={postTo.length === 0}
+        component="fieldset"
+        variant="standard"
+      >
+        {postTo.map(({ classroom }) => (
+          <Box key={classroom.id} sx={{ mb: 2 }}>
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              sx={{ mb: 1 }}
+            >
+              <FormLabel>{classroom.name}</FormLabel>
+              <Tooltip title="สร้างหัวข้อใหม่">
+                <IconButton
+                  aria-label="add-topic"
+                  onClick={() => {
+                    setClassroom(classroom);
+                    setOpenCreateTopicDialog(true);
+                  }}
+                >
+                  <AddIcon />
+                </IconButton>
+              </Tooltip>
+            </Stack>
+            <TopicAutoComplete classroom={classroom} postToAtom={postToAtom} />
+          </Box>
+        ))}
+      </FormControl>
+    </>
   );
 };
 

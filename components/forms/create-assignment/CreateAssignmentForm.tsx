@@ -95,6 +95,9 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
     }
   };
 
+  const isRenderDeductPoint =
+    enabledPointDeduction && endDate && deductPoint && Number(minPoint) > -1;
+
   return (
     <>
       <FormContainer formContext={formContext}>
@@ -275,7 +278,7 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                   }}
                 />
               </Stack>
-              {endDate && deductPoint && minPoint && (
+              {isRenderDeductPoint && (
                 <Alert severity="info">
                   {`หากนักศึกษาส่งงานช้ากว่า ${format(endDate, 'PPPPp', {
                     locale: th,

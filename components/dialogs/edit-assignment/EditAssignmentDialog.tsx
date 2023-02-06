@@ -1,22 +1,32 @@
 import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownEditor';
 import CreateAssignmentForm, {
+  deductTypeAtom,
+  enabledPointDeductionAtom,
   postDateTypeAtom,
   problemTypeAtom,
 } from '@/components/forms/create-assignment/CreateAssignmentForm';
+import TopicForm from '@/components/forms/topic/TopicForm';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useTestcases } from '@/hooks/grader/useTestcases';
-import { openEditAssignmentDialogAtom } from '@/stores/edit-assignment';
+import {
+  openEditAssignmentDialogAtom,
+  postToAtom,
+} from '@/stores/edit-assignment';
 import { Assignment, EditAssignment } from '@/types/types';
 import { editAssignment } from '@/utils/AssignmentService';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabPanel } from '@mui/lab';
 import {
   AppBar,
   Button,
+  Chip,
   Dialog,
   DialogContent,
   IconButton,
   InputAdornment,
+  Stack,
   TextField,
   Toolbar,
   Typography,
@@ -110,23 +120,47 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
   const [problemType, setProblemType] = useAtom(problemTypeAtom);
   const { testcases, setTestcases } = useTestcases();
   const [, setPostDateType] = useAtom(postDateTypeAtom);
+  const [, setEnabledPointDeduction] = useAtom(enabledPointDeductionAtom);
+  const [, setDeductType] = useAtom(deductTypeAtom);
+  const [postTo, setPostTo] = useAtom(postToAtom);
+  const [enabledPointDeduction] = useAtom(enabledPointDeductionAtom);
+  const [deductType] = useAtom(deductTypeAtom);
 
   useEffect(() => {
     if (assignment) {
       setPostDateType('custom');
       setProblemType(assignment.type);
       setEditorValue(assignment.content);
+      setEnabledPointDeduction(assignment.enabledPointDeduction);
+      if (assignment.deductType) {
+        setDeductType(assignment.deductType);
+      }
       if (assignment.testcases) {
         setTestcases(assignment.testcases);
       }
     }
   }, [
     assignment,
+    classroom,
+    setDeductType,
     setEditorValue,
+    setEnabledPointDeduction,
     setPostDateType,
+    setPostTo,
     setProblemType,
     setTestcases,
   ]);
+
+  useEffect(() => {
+    if (openDialog && classroom) {
+      setPostTo([
+        {
+          classroom,
+          topic: assignment.topic || null,
+        },
+      ]);
+    }
+  }, [assignment.topic, classroom, openDialog, setPostTo]);
 
   const queryClient = useQueryClient();
   const mutation = useMutation(
@@ -147,8 +181,10 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
     return {
       title: assignment.title ? assignment.title : '',
       timeLimit: assignment.timeLimit ? assignment.timeLimit : null,
-      memoryLimit: assignment.memoryLimit ? assignment.memoryLimit : null,
       point: assignment.point ? assignment.point : 100,
+      memoryLimit: assignment.memoryLimit ? assignment.memoryLimit : null,
+      deductPoint: assignment.deductPoint ? assignment.deductPoint : null,
+      minPoint: assignment.minPoint ? assignment.minPoint : 0,
       startDate: assignment.startDate
         ? parseISO(assignment?.startDate)
         : undefined,
@@ -165,8 +201,16 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
   const { errors, dirtyFields } = formState;
 
   const onSubmit = () => {
-    const { title, startDate, endDate, timeLimit, memoryLimit, point } =
-      watch();
+    const {
+      title,
+      startDate,
+      endDate,
+      timeLimit,
+      memoryLimit,
+      point,
+      deductPoint,
+      minPoint,
+    } = watch();
 
     if (problemType !== 'java-src' && problemType !== 'docs') {
       alert('invalid problem type');
@@ -181,6 +225,8 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
       type: problemType,
       content: editorValue,
       point: point,
+      enabledPointDeduction: enabledPointDeduction,
+      topic: postTo[0].topic || null,
     };
 
     if (problemType === 'java-src') {
@@ -192,6 +238,12 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
         input: testcase.input,
         expectedOutput: testcase.expectedOutput,
       }));
+    }
+
+    if (enabledPointDeduction) {
+      obj.deductPoint = deductPoint;
+      obj.deductType = deductType || null;
+      obj.minPoint = minPoint;
     }
 
     mutation.mutate(obj);
@@ -301,7 +353,56 @@ const EditAssignmentDialog: React.FC<IEditAssignmentDialog> = ({
             </>
           }
         >
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="body2">หัวข้อ</Typography>
+            <Chip
+              clickable
+              variant="outlined"
+              size="small"
+              deleteIcon={<ArrowDropDownIcon />}
+              onClick={() => {
+                setTabsValue('set-topic');
+              }}
+              onDelete={() => {
+                setTabsValue('set-topic');
+              }}
+              label={
+                postTo.filter(({ topic }) => topic).length > 0
+                  ? postTo
+                      .filter(({ topic }) => topic)
+                      .map(({ topic }) => topic?.name)
+                      .join(', ')
+                  : 'ไม่มี'
+              }
+            />
+          </Stack>
           <CreateAssignmentForm formContext={createAssignmentFormContext} />
+        </CustomTabPanel>
+
+        <CustomTabPanel
+          tabValue="set-topic"
+          actionButton={
+            <>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => setTabsValue('edit-assignment')}
+                aria-label="back"
+              >
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography
+                sx={{ ml: 2, flex: 1 }}
+                variant="h6"
+                component="div"
+                noWrap
+              >
+                เลือกหัวข้องาน
+              </Typography>
+            </>
+          }
+        >
+          <TopicForm postToAtom={postToAtom} />
         </CustomTabPanel>
       </TabContext>
     </Dialog>

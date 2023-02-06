@@ -143,6 +143,11 @@ export type EditAssignment = {
     input: string;
     expectedOutput: string;
   }[];
+  enabledPointDeduction: boolean;
+  deductPoint?: number | null;
+  deductType?: 'day' | 'hour' | null;
+  minPoint?: number | null;
+  topic?: Topic | null;
 };
 
 export type Assignment = {
@@ -154,6 +159,10 @@ export type Assignment = {
   type: string;
   content: string;
   point: number;
+  enabledPointDeduction: boolean;
+  deductPoint?: number | null;
+  deductType?: 'day' | 'hour' | null;
+  minPoint?: number | null;
   timeLimit?: number | null;
   memoryLimit?: number | null;
   testcases?: {

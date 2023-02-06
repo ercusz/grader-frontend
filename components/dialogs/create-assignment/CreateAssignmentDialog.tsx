@@ -38,7 +38,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { atom, useAtom } from 'jotai';
 import React, { forwardRef, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import CreateTopicDialog from '../create-topic/CreateTopicDialog';
 
 export interface ICreateAssignmentDialog {
   classroomSlug?: string;
@@ -261,191 +260,176 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
   };
 
   return (
-    <>
-      <CreateTopicDialog />
-      <Dialog
-        fullScreen
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="create-assignment-dialog"
-        TransitionComponent={Transition}
-        sx={{
-          '& .MuiDialog-paper': {
-            bgcolor: (theme) => theme.palette.background.default,
-          },
-        }}
-      >
-        <TabContext value={tabsValue}>
-          <CustomTabPanel
-            tabValue="create-assignment"
-            actionButton={
-              <>
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  onClick={handleCloseDialog}
-                  aria-label="close"
-                >
-                  <CloseIcon />
-                </IconButton>
-                <Typography
-                  sx={{ ml: 2, flex: 1 }}
-                  variant="h6"
-                  component="div"
-                  noWrap
-                >
-                  มอบหมายงาน
+    <Dialog
+      fullScreen
+      open={openDialog}
+      onClose={handleCloseDialog}
+      aria-labelledby="create-assignment-dialog"
+      TransitionComponent={Transition}
+      sx={{
+        '& .MuiDialog-paper': {
+          bgcolor: (theme) => theme.palette.background.default,
+        },
+      }}
+    >
+      <TabContext value={tabsValue}>
+        <CustomTabPanel
+          tabValue="create-assignment"
+          actionButton={
+            <>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={handleCloseDialog}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+              <Typography
+                sx={{ ml: 2, flex: 1 }}
+                variant="h6"
+                component="div"
+                noWrap
+              >
+                มอบหมายงาน
+              </Typography>
+              {errors.point && (
+                <Typography variant="caption" color="red">
+                  {errors.point.message}
                 </Typography>
-                {errors.point && (
-                  <Typography variant="caption" color="red">
-                    {errors.point.message}
-                  </Typography>
-                )}
-                <TextField
-                  id="point"
-                  label="คะแนน"
-                  size="small"
-                  sx={{ m: 1, width: '12ch' }}
-                  autoComplete="off"
-                  error={errors.point ? true : false}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">/100</InputAdornment>
-                    ),
-                  }}
-                  {...register('point', {
-                    required: 'คุณจำเป็นต้องกรอกคะแนน',
-                    min: {
-                      value: 1,
-                      message: 'คุณจำเป็นต้องกรอกคะแนนมากกว่า 0 คะแนน',
-                    },
-                    max: {
-                      value: 100,
-                      message: 'คุณจำเป็นต้องกรอกคะแนนน้อยกว่า 100 คะแนน',
-                    },
-                  })}
-                />
-                <Button
-                  autoFocus
-                  color="primary"
-                  variant="contained"
-                  onClick={() => handleSubmit(onSubmit)()}
-                >
-                  โพสต์
-                </Button>
-              </>
-            }
-          >
-            <Stack
-              direction="row"
-              spacing={2}
-              alignItems="center"
-              sx={{ mb: 2 }}
-            >
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Typography variant="body2">โพสต์ไปยัง</Typography>
-                <Chip
-                  clickable
-                  variant="outlined"
-                  size="small"
-                  deleteIcon={<ArrowDropDownIcon />}
-                  onClick={() => {
-                    setTabsValue('set-post-to');
-                  }}
-                  onDelete={() => {
-                    setTabsValue('set-post-to');
-                  }}
-                  label={postTo
-                    .map(({ classroom }) => classroom.name)
-                    .join(', ')}
-                />
-              </Stack>
-              <Stack direction="row" spacing={1} alignItems="center">
-                <Typography variant="body2">หัวข้อ</Typography>
-                <Chip
-                  clickable
-                  variant="outlined"
-                  size="small"
-                  deleteIcon={<ArrowDropDownIcon />}
-                  onClick={() => {
-                    setTabsValue('set-topic');
-                  }}
-                  onDelete={() => {
-                    setTabsValue('set-topic');
-                  }}
-                  label={
-                    postTo.filter(({ topic }) => topic).length > 0
-                      ? postTo
-                          .filter(({ topic }) => topic)
-                          .map(({ topic }) => topic?.name)
-                          .join(', ')
-                      : 'ไม่มี'
-                  }
-                />
-              </Stack>
+              )}
+              <TextField
+                id="point"
+                label="คะแนน"
+                size="small"
+                sx={{ m: 1, width: '12ch' }}
+                autoComplete="off"
+                error={errors.point ? true : false}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">/100</InputAdornment>
+                  ),
+                }}
+                {...register('point', {
+                  required: 'คุณจำเป็นต้องกรอกคะแนน',
+                  min: {
+                    value: 1,
+                    message: 'คุณจำเป็นต้องกรอกคะแนนมากกว่า 0 คะแนน',
+                  },
+                  max: {
+                    value: 100,
+                    message: 'คุณจำเป็นต้องกรอกคะแนนน้อยกว่า 100 คะแนน',
+                  },
+                })}
+              />
+              <Button
+                autoFocus
+                color="primary"
+                variant="contained"
+                onClick={() => handleSubmit(onSubmit)()}
+              >
+                โพสต์
+              </Button>
+            </>
+          }
+        >
+          <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="body2">โพสต์ไปยัง</Typography>
+              <Chip
+                clickable
+                variant="outlined"
+                size="small"
+                deleteIcon={<ArrowDropDownIcon />}
+                onClick={() => {
+                  setTabsValue('set-post-to');
+                }}
+                onDelete={() => {
+                  setTabsValue('set-post-to');
+                }}
+                label={postTo.map(({ classroom }) => classroom.name).join(', ')}
+              />
             </Stack>
-            <CreateAssignmentForm formContext={createAssignmentFormContext} />
-          </CustomTabPanel>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="body2">หัวข้อ</Typography>
+              <Chip
+                clickable
+                variant="outlined"
+                size="small"
+                deleteIcon={<ArrowDropDownIcon />}
+                onClick={() => {
+                  setTabsValue('set-topic');
+                }}
+                onDelete={() => {
+                  setTabsValue('set-topic');
+                }}
+                label={
+                  postTo.filter(({ topic }) => topic).length > 0
+                    ? postTo
+                        .filter(({ topic }) => topic)
+                        .map(({ topic }) => topic?.name)
+                        .join(', ')
+                    : 'ไม่มี'
+                }
+              />
+            </Stack>
+          </Stack>
+          <CreateAssignmentForm formContext={createAssignmentFormContext} />
+        </CustomTabPanel>
 
-          <CustomTabPanel
-            tabValue="set-post-to"
-            actionButton={
-              <>
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  onClick={() => setTabsValue('create-assignment')}
-                  aria-label="back"
-                  disabled={postTo.length === 0}
-                >
-                  <ArrowBackIcon />
-                </IconButton>
-                <Typography
-                  sx={{ ml: 2, flex: 1 }}
-                  variant="h6"
-                  component="div"
-                >
-                  เลือกคลาสเรียนที่ต้องการโพสต์
-                </Typography>
-              </>
-            }
-          >
-            <PostToForm
-              classroomSlug={classroomSlug!}
-              courseSlug={courseSlug!}
-              postToAtom={postToAtom}
-            />
-          </CustomTabPanel>
+        <CustomTabPanel
+          tabValue="set-post-to"
+          actionButton={
+            <>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => setTabsValue('create-assignment')}
+                aria-label="back"
+                disabled={postTo.length === 0}
+              >
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+                เลือกคลาสเรียนที่ต้องการโพสต์
+              </Typography>
+            </>
+          }
+        >
+          <PostToForm
+            classroomSlug={classroomSlug!}
+            courseSlug={courseSlug!}
+            postToAtom={postToAtom}
+          />
+        </CustomTabPanel>
 
-          <CustomTabPanel
-            tabValue="set-topic"
-            actionButton={
-              <>
-                <IconButton
-                  edge="start"
-                  color="inherit"
-                  onClick={() => setTabsValue('create-assignment')}
-                  aria-label="back"
-                  disabled={postTo.length === 0}
-                >
-                  <ArrowBackIcon />
-                </IconButton>
-                <Typography
-                  sx={{ ml: 2, flex: 1 }}
-                  variant="h6"
-                  component="div"
-                  noWrap
-                >
-                  เลือกหัวข้องาน
-                </Typography>
-              </>
-            }
-          >
-            <TopicForm postToAtom={postToAtom} />
-          </CustomTabPanel>
-        </TabContext>
-      </Dialog>
-    </>
+        <CustomTabPanel
+          tabValue="set-topic"
+          actionButton={
+            <>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => setTabsValue('create-assignment')}
+                aria-label="back"
+              >
+                <ArrowBackIcon />
+              </IconButton>
+              <Typography
+                sx={{ ml: 2, flex: 1 }}
+                variant="h6"
+                component="div"
+                noWrap
+              >
+                เลือกหัวข้องาน
+              </Typography>
+            </>
+          }
+        >
+          <TopicForm postToAtom={postToAtom} />
+        </CustomTabPanel>
+      </TabContext>
+    </Dialog>
   );
 };
 
