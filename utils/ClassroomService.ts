@@ -351,3 +351,12 @@ export const inviteStudentsToClassroom = async (
     throw new Error('Invite students to classroom failed.');
   }
 };
+
+export const leaveClassroom = async (classroomId: number) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/leave`
+  );
+  if (err) {
+    throw new Error('Leave classroom failed.');
+  }
+};
