@@ -20,6 +20,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   format,
@@ -44,6 +45,7 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
   classroomSlug,
   isTeacherTA,
 }) => {
+  const theme = useTheme();
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
 
   const router = useRouter();
@@ -98,8 +100,11 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
         variant="outlined"
         key={assignment.id}
         sx={{
-          boxShadow:
-            '-4px -4px 10px rgb(255, 255, 255), 4px 4px 10px rgba(0, 0, 0, 0.219)',
+          boxShadow: `4px 4px 10px ${
+            theme.palette.mode === 'light'
+              ? 'rgba(0, 0, 0, 0.219)'
+              : 'rgba(255, 255, 255, 0.1)'
+          }`,
         }}
       >
         <Link
