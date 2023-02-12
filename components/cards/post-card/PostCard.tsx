@@ -18,6 +18,7 @@ import {
   CardActions,
   CardContent,
   CardHeader,
+  Chip,
   Divider,
   IconButton,
   Link as MuiLink,
@@ -28,7 +29,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import { alpha, SxProps, useTheme } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
@@ -141,6 +142,28 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
     );
   };
 
+  const renderRoleChip = (role: Roles) => {
+    if (role !== Roles.TEACHER && role !== Roles.TA) {
+      return null;
+    }
+
+    const sx: SxProps = {
+      height: 'auto',
+      borderRadius: 1,
+      '& .MuiChip-label': { px: 0.5 },
+    };
+
+    if (role === Roles.TEACHER) {
+      sx.bgcolor = alpha(theme.palette.secondary.main, 0.1);
+      sx.color = theme.palette.secondary.main;
+    } else if (role === Roles.TA) {
+      sx.bgcolor = alpha(theme.palette.info.main, 0.1);
+      sx.color = theme.palette.info.main;
+    }
+
+    return <Chip label={role} size="small" sx={sx} />;
+  };
+
   return (
     <>
       <EditPostDialog
@@ -160,7 +183,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           }}
           avatar={
             <Link href={`/p/@${post.createBy?.username}`} passHref>
-              <MuiLink>
+              <MuiLink underline="none">
                 <Avatar
                   alt={
                     post.createBy
@@ -196,14 +219,22 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             )
           }
           title={
-            <Link href={`/p/@${post.createBy?.username}`} passHref>
-              <MuiLink underline="hover">
-                <Typography noWrap variant="subtitle2" component="span">
-                  {post.createBy &&
-                    post.createBy.firstName + ' ' + post.createBy.lastName}
-                </Typography>
-              </MuiLink>
-            </Link>
+            <>
+              <Link href={`/p/@${post.createBy?.username}`} passHref>
+                <MuiLink underline="hover">
+                  <Typography
+                    noWrap
+                    variant="subtitle2"
+                    component="span"
+                    sx={{ mr: 0.5 }}
+                  >
+                    {post.createBy &&
+                      post.createBy.firstName + ' ' + post.createBy.lastName}
+                  </Typography>
+                </MuiLink>
+              </Link>
+              {renderRoleChip(getRole(post.createBy) as Roles)}
+            </>
           }
           subheader={
             <Stack

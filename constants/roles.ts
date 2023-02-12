@@ -1,6 +1,6 @@
 export const enum Roles {
-  TEACHER = 'TEACHER',
-  TA = 'TEACHER ASSISTANT',
-  STUDENT = 'STUDENT',
+  TEACHER = 'ผู้สอน',
+  TA = 'ผู้ช่วยสอน',
+  STUDENT = 'ผู้เรียน',
   NIC = 'NOT IN CLASS',
 }
