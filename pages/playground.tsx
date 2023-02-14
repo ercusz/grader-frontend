@@ -13,9 +13,9 @@ import { Java, PlainText } from '@/constants/languageTemplate';
 import { useAssignment } from '@/hooks/assignment/useAssignment';
 import { useIdeTabs } from '@/hooks/grader/useIdeTabs';
 import { useTestcases } from '@/hooks/grader/useTestcases';
-import { CreateSubmission, Submission } from '@/types/types';
+import { CreateJavaSrcSubmission, Submission } from '@/types/types';
 import { compressSourceCode, createSubmission } from '@/utils/GraderService';
-import { createSubmission as createStudentSubmission } from '@/utils/SubmissionService';
+import { createJavaSrcSubmission as createStudentSubmission } from '@/utils/SubmissionService';
 import { Monaco } from '@monaco-editor/react';
 import ContentCopy from '@mui/icons-material/ContentCopy';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -84,7 +84,7 @@ const Playground: NextPageWithLayout = () => {
   const [drawerContent, setDrawerContent] = useState('assignment');
 
   const createStudentSubmissionMutation = useMutation(
-    (submission: CreateSubmission) =>
+    (submission: CreateJavaSrcSubmission) =>
       createStudentSubmission(submission, classroomId, assignmentId),
     {
       onSuccess: () => {
@@ -103,7 +103,7 @@ const Playground: NextPageWithLayout = () => {
   const handleSubmit = async () => {
     if (assignment) {
       const src = await compressSourceCode(ideTabs);
-      const submission: CreateSubmission = {
+      const submission: CreateJavaSrcSubmission = {
         languageId: 89,
         additionalFiles: src,
       };

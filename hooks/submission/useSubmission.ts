@@ -1,7 +1,7 @@
-import { UserSubmissionResponse } from '@/types/types';
+import { UserJavaSrcSubmissionResponse } from '@/types/types';
 import {
-  getUserSubmissionPage,
-  getUserSubmissions,
+  getUserJavaSrcSubmissionPage,
+  getUserJavaSrcSubmissions,
 } from '@/utils/SubmissionService';
 import { useQuery } from '@tanstack/react-query';
 
@@ -14,10 +14,10 @@ export const useUserSubmissions = ({
   assignmentId?: string;
   userId?: string;
 }) =>
-  useQuery<UserSubmissionResponse, Error>(
+  useQuery<UserJavaSrcSubmissionResponse, Error>(
     ['submissions', { assignmentId: assignmentId, userId: userId }],
     () =>
-      getUserSubmissions(
+      getUserJavaSrcSubmissions(
         assignmentId ? assignmentId : '',
         classroomId ? classroomId : ''
       ),
@@ -37,10 +37,10 @@ export const useUserSubmissionPages = ({
   userId?: string;
   page: number;
 }) =>
-  useQuery<UserSubmissionResponse, Error>(
+  useQuery<UserJavaSrcSubmissionResponse, Error>(
     ['submissions', { assignmentId: assignmentId, userId: userId, page: page }],
     () =>
-      getUserSubmissionPage(
+      getUserJavaSrcSubmissionPage(
         assignmentId ? assignmentId : '',
         classroomId ? classroomId : '',
         page

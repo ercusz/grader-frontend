@@ -199,12 +199,12 @@ export type Post = {
   updatedAt: string;
 };
 
-export type CreateSubmission = {
+export type CreateJavaSrcSubmission = {
   languageId: number;
   additionalFiles: string;
 };
 
-export type UserSubmission = {
+export type UserJavaSrcSubmission = {
   id: number;
   point: number;
   passedTestcases: number;
@@ -219,8 +219,8 @@ export type UserSubmission = {
   }[];
 };
 
-export type UserSubmissionResponse = {
-  submissions: UserSubmission[];
+export type UserJavaSrcSubmissionResponse = {
+  submissions: UserJavaSrcSubmission[];
   meta: {
     total: number;
     start: number;
