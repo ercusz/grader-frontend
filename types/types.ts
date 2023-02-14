@@ -156,7 +156,7 @@ export type Assignment = {
   title: string;
   startDate: string;
   endDate: string;
-  type: string;
+  type: 'java-src' | 'docs';
   content: string;
   point: number;
   enabledPointDeduction: boolean;
@@ -252,3 +252,8 @@ export type ClassroomAssignments = {
   assignments: Assignment[];
   topics: TopicWithAssignments[];
 };
+
+export type AssignmentOverview = {
+  totalSubmitted: number;
+  totalGraded: number;
+} & Assignment;

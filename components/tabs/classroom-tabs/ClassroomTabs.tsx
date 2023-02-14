@@ -4,7 +4,9 @@ import { atom, useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-export interface IClassroomTabs {}
+export interface IClassroomTabs {
+  teacherTA?: boolean;
+}
 
 const tabsAtom = atom(0);
 
@@ -12,22 +14,31 @@ const tabs = [
   {
     name: 'ทั้งหมด',
     path: '',
+    restricted: false,
   },
   {
     name: 'โพสต์',
     path: 'posts',
+    restricted: false,
   },
   {
     name: 'งานที่ได้รับมอบหมาย',
     path: 'assignments',
+    restricted: false,
   },
   {
     name: 'เอกสารประกอบการสอน',
     path: 'materials',
+    restricted: false,
+  },
+  {
+    name: 'ติดตามความคืบหน้าของงาน',
+    path: 'feedbacks',
+    restricted: true,
   },
 ];
 
-const ClassroomTabs: React.FC<IClassroomTabs> = () => {
+const ClassroomTabs: React.FC<IClassroomTabs> = ({ teacherTA }) => {
   const router = useRouter();
   const { slug } = router.query;
   const { pathname } = router;
@@ -86,16 +97,18 @@ const ClassroomTabs: React.FC<IClassroomTabs> = () => {
         },
       }}
     >
-      {tabs.map((tab) => (
-        <Link
-          key={tab.name}
-          href={`/classroom/${slug}/${tab.path}`}
-          passHref
-          scroll={false}
-        >
-          <Tab label={tab.name} disableRipple />
-        </Link>
-      ))}
+      {tabs
+        .filter(({ restricted }) => teacherTA || !restricted)
+        .map((tab) => (
+          <Link
+            key={tab.name}
+            href={`/classroom/${slug}/${tab.path}`}
+            passHref
+            scroll={false}
+          >
+            <Tab label={tab.name} disableRipple />
+          </Link>
+        ))}
     </Tabs>
   );
 };

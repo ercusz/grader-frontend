@@ -1,8 +1,6 @@
 import { IClassroomTabs } from './ClassroomTabs';
 
-const base: IClassroomTabs = {
-  sampleTextProp: 'Hello world!',
-};
+const base: IClassroomTabs = {};
 
 export const mockClassroomTabsProps = {
   base,

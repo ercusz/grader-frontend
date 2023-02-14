@@ -1,5 +1,9 @@
 import { Assignment } from '@/types/types';
-import { getAssignmentById, getAssignments } from '@/utils/AssignmentService';
+import {
+  getAssignmentById,
+  getAssignments,
+  getAssignmentsOverview,
+} from '@/utils/AssignmentService';
 import { useQuery } from '@tanstack/react-query';
 
 export const useAssignments = ({ classroomId }: { classroomId?: string }) =>
@@ -27,5 +31,18 @@ export const useAssignment = ({
       ),
     {
       enabled: Boolean(classroomId) && Boolean(assignmentId),
+    }
+  );
+
+export const useAssignmentsOverview = ({
+  classroomId,
+}: {
+  classroomId?: string;
+}) =>
+  useQuery(
+    ['assignmentsOverview', { classroomId: classroomId }],
+    () => getAssignmentsOverview(classroomId ? classroomId : ''),
+    {
+      enabled: Boolean(classroomId),
     }
   );

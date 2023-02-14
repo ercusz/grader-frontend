@@ -1,5 +1,6 @@
 import {
   Assignment,
+  AssignmentOverview,
   ClassroomAssignments,
   CreateAssignment,
   EditAssignment,
@@ -69,4 +70,17 @@ export const getAssignmentById = async (
   }
 
   return res.data as Assignment;
+};
+
+export const getAssignmentsOverview = async (
+  classroomId: string
+): Promise<AssignmentOverview[]> => {
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/classrooms/${classroomId}/assignments/overview`
+  );
+  if (err) {
+    throw new Error('get assignment data failed');
+  }
+
+  return res.data as AssignmentOverview[];
 };

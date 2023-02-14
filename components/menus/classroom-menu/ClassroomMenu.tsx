@@ -242,7 +242,11 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
               )}
           </Stack>
           <Divider />
-          <ClassroomTabs />
+          <ClassroomTabs
+            teacherTA={
+              getRole(user) === Roles.TEACHER || getRole(user) === Roles.TA
+            }
+          />
           <Divider />
         </Box>
       )}
