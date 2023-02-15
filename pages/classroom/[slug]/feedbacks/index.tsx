@@ -4,6 +4,7 @@ import { useAssignmentsOverview } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { AssignmentOverview } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
+import { getAssignmentsOverview } from '@/utils/AssignmentService';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import CheckIcon from '@mui/icons-material/Check';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -490,7 +491,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       () => getClassroomBySlug(slug)
     );
 
-    if (!classroom) {
+    const assignments = await queryClient.fetchQuery(
+      ['assignmentsOverview', { classroomId: classroom.id }],
+      () => getAssignmentsOverview(classroom.id)
+    );
+
+    if (!assignments) {
       return {
         notFound: true,
       };
