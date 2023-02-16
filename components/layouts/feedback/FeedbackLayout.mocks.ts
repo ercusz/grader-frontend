@@ -4,8 +4,12 @@ const base: IFeedbackLayout = {
   children: '{{component}}',
   feedbackHeaderProps: {
     backButton: false,
-    downloadCurrentAssignmentButton: false
-  }
+    downloadCurrentAssignmentButton: false,
+  },
+  contentProps: {
+    subHeader: false,
+    sidebar: false,
+  },
 };
 
 export const mockFeedbackLayoutProps = {

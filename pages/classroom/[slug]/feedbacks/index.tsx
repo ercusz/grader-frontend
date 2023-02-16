@@ -463,11 +463,12 @@ export default Feedbacks;
 
 Feedbacks.getLayout = (page) => {
   const { props } = page;
-  const { slug, feedbackHeaderProps } = props;
+  const { slug, feedbackHeaderProps, contentProps } = props;
   return (
     <FeedbackLayout
       classroomSlug={slug}
       feedbackHeaderProps={feedbackHeaderProps}
+      contentProps={contentProps}
     >
       {page}
     </FeedbackLayout>
@@ -513,6 +514,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       feedbackHeaderProps: {
         backButton: false,
         downloadCurrentAssignmentButton: false,
+      },
+      contentProps: {
+        subHeader: false,
+        sidebar: false,
       },
       dehydratedState: dehydrate(queryClient),
     },

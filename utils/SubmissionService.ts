@@ -1,4 +1,5 @@
 import {
+  AssignmentSubmissions,
   CreateJavaSrcSubmission,
   UserJavaSrcSubmissionResponse,
 } from '@/types/types';
@@ -46,4 +47,18 @@ export const getUserJavaSrcSubmissionPage = async (
   }
 
   return res.data as UserJavaSrcSubmissionResponse;
+};
+
+export const getAssignmentSubmissions = async (
+  assignmentId: string,
+  classroomId: string
+): Promise<AssignmentSubmissions> => {
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/submissions`
+  );
+  if (err) {
+    throw new Error('get assignment submission data failed');
+  }
+
+  return res.data as AssignmentSubmissions;
 };

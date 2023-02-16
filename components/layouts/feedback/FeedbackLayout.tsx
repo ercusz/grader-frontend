@@ -1,9 +1,16 @@
+import StudentSubmissionsDrawer from '@/components/drawers/student-submissions/StudentSubmissionsDrawer';
+import FeedbackSubHeader from '@/components/headers/feedback-sub/FeedbackSubHeader';
 import FeedbackHeader, {
   FeedbackHeaderProps,
 } from '@/components/headers/feedback/FeedbackHeader';
-import { Container } from '@mui/material';
+import { Box, Toolbar } from '@mui/material';
 import Head from 'next/head';
 import { Suspense } from 'react';
+
+export type contentProps = {
+  subHeader: boolean;
+  sidebar: boolean;
+};
 
 export interface IFeedbackLayout extends React.ComponentPropsWithoutRef<'div'> {
   title?: string;
@@ -11,6 +18,7 @@ export interface IFeedbackLayout extends React.ComponentPropsWithoutRef<'div'> {
   classroomSlug?: string;
   backButton?: boolean;
   feedbackHeaderProps: FeedbackHeaderProps;
+  contentProps: contentProps;
 }
 
 const FeedbackLayout: React.FC<IFeedbackLayout> = ({
@@ -19,28 +27,44 @@ const FeedbackLayout: React.FC<IFeedbackLayout> = ({
   description = 'grade้r — helps you improve your coding skills.',
   classroomSlug,
   feedbackHeaderProps,
+  contentProps,
 }) => {
+  const { subHeader, sidebar } = contentProps;
+
   return (
     <>
       <Head>
         <title>{title ? title + ' - grade้r' : 'grade้r'}</title>
         <meta name="description" content={description} />
       </Head>
-      <div className={`min-h-screen flex flex-col`}>
+      <Box sx={{ display: 'flex' }}>
         <FeedbackHeader
           classroomSlug={classroomSlug}
           props={feedbackHeaderProps}
+          subHeader={subHeader ? <FeedbackSubHeader /> : null}
         />
-        <Container
-          maxWidth="lg"
+        {sidebar && <StudentSubmissionsDrawer />}
+
+        <Box
+          component="main"
           sx={{
-            px: { xs: 3, md: 4 },
-            py: 4,
+            flexGrow: 1,
+            p: 3,
+            px: 6,
+            bgcolor: 'background.paper',
+            minHeight: '100vh',
           }}
         >
+          {subHeader && (
+            <>
+              <Toolbar />
+              <Toolbar />
+            </>
+          )}
+          <Toolbar />
           <Suspense fallback={'Loading...'}>{children}</Suspense>
-        </Container>
-      </div>
+        </Box>
+      </Box>
     </>
   );
 };

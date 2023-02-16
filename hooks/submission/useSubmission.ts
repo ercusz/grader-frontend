@@ -1,5 +1,9 @@
-import { UserJavaSrcSubmissionResponse } from '@/types/types';
 import {
+  AssignmentSubmissions,
+  UserJavaSrcSubmissionResponse,
+} from '@/types/types';
+import {
+  getAssignmentSubmissions,
   getUserJavaSrcSubmissionPage,
   getUserJavaSrcSubmissions,
 } from '@/utils/SubmissionService';
@@ -48,5 +52,24 @@ export const useUserSubmissionPages = ({
     {
       enabled: Boolean(classroomId) && Boolean(assignmentId) && Boolean(userId),
       keepPreviousData: true,
+    }
+  );
+
+export const useAssignmentSubmissions = ({
+  classroomId,
+  assignmentId,
+}: {
+  classroomId?: string;
+  assignmentId?: string;
+}) =>
+  useQuery<AssignmentSubmissions, Error>(
+    ['submissions', { assignmentId: assignmentId }],
+    () =>
+      getAssignmentSubmissions(
+        assignmentId ? assignmentId : '',
+        classroomId ? classroomId : ''
+      ),
+    {
+      enabled: Boolean(classroomId) && Boolean(assignmentId),
     }
   );

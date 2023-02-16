@@ -27,11 +27,13 @@ export interface IFeedbackHeader
   extends React.ComponentPropsWithoutRef<'header'> {
   classroomSlug?: string;
   props: FeedbackHeaderProps;
+  subHeader: React.ReactNode;
 }
 
 const FeedbackHeader: React.FC<IFeedbackHeader> = ({
   classroomSlug,
   props,
+  subHeader,
 }) => {
   const { backButton, downloadCurrentAssignmentButton } = props;
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
@@ -50,17 +52,16 @@ const FeedbackHeader: React.FC<IFeedbackHeader> = ({
   return (
     <>
       <AppBar
-        position="sticky"
+        position="fixed"
         elevation={0}
         sx={{
           color: (theme) => theme.palette.text.primary,
-          backdropFilter: 'blur(6px)',
-          WebkitBackdropFilter: 'blur(6px)', // Fix on Mobile
-          backgroundColor: (theme) =>
-            alpha(theme.palette.background.default, 0.72),
-          transition: 'all 0.2s ease-in-out',
-          borderBottom: (theme) =>
-            `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
+          backgroundColor: (theme) => theme.palette.background.default,
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          '& .MuiToolbar-root': {
+            borderBottom: (theme) =>
+              `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
+          },
         }}
       >
         <Toolbar>
@@ -112,6 +113,8 @@ const FeedbackHeader: React.FC<IFeedbackHeader> = ({
             </IconButton>
           </Box>
         </Toolbar>
+
+        {subHeader}
       </AppBar>
 
       <Menu

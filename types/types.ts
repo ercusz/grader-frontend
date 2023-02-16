@@ -219,6 +219,32 @@ export type UserJavaSrcSubmission = {
   }[];
 };
 
+export type UserSubmission = {
+  id: number;
+  point: number;
+  passedTestcases: number | null;
+  sourceCode: string | null;
+  testcases:
+    | {
+        id: number;
+        time: number;
+        memory: number;
+        status: number;
+      }[]
+    | null;
+  type: 'java-src' | 'docs';
+  files:
+    | {
+        id: number;
+        name: string;
+        url: string;
+      }[]
+    | null;
+  gradedBy: string | null;
+  createdAt: string;
+  user: UserResponse;
+};
+
 export type UserJavaSrcSubmissionResponse = {
   submissions: UserJavaSrcSubmission[];
   meta: {
@@ -256,4 +282,8 @@ export type ClassroomAssignments = {
 export type AssignmentOverview = {
   totalSubmitted: number;
   totalGraded: number;
+} & Assignment;
+
+export type AssignmentSubmissions = {
+  submissions: UserSubmission[];
 } & Assignment;

@@ -48,7 +48,7 @@ import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { NextPageWithLayout } from '../../../page';
+import { NextPageWithLayout } from '../../../../page';
 
 const ClassroomAssignment: NextPageWithLayout = ({
   slug,
