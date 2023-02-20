@@ -5,6 +5,8 @@ import { UserResponse, UserSubmission } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import CheckIcon from '@mui/icons-material/Check';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import MenuIcon from '@mui/icons-material/Menu';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import SwitchLeftIcon from '@mui/icons-material/SwitchLeft';
 import {
@@ -27,6 +29,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { CSSObject, styled, Theme } from '@mui/material/styles';
 import { compareAsc, compareDesc, parseISO } from 'date-fns';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
@@ -140,6 +143,46 @@ enum SORT_BY {
   status = 'สถานะ',
 }
 
+const drawerWidth = 240;
+
+const openedMixin = (theme: Theme): CSSObject => ({
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: 'hidden',
+});
+
+const closedMixin = (theme: Theme): CSSObject => ({
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: 'hidden',
+  width: `calc(${theme.spacing(5)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(6)} + 1px)`,
+  },
+});
+
+const CustomDrawer = styled(Drawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme),
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme),
+  }),
+}));
+
 const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
   const router = useRouter();
   const { slug, assignmentId, submissionId } = router.query;
@@ -148,6 +191,8 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
     classroomId: classroom?.id.toString() as string,
     assignmentId: assignmentId?.toString() as string,
   });
+
+  const [open, setOpen] = useState(false);
 
   const [selected, setSelected] = useAtom(selectedSubmissionsAtom);
 
@@ -214,14 +259,11 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
 
   return (
     <>
-      <Drawer
+      <CustomDrawer
+        open={open}
         variant="permanent"
         sx={{
-          width: 240,
-          flexShrink: 0,
           '& .MuiDrawer-paper': {
-            width: 240,
-            boxSizing: 'border-box',
             bgcolor: (theme) => theme.palette.background.default,
           },
         }}
@@ -231,7 +273,19 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
         <Toolbar />
         <Box
           sx={{
-            overflow: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: open ? 'flex-end' : 'center',
+            mr: open ? 1 : 0,
+          }}
+        >
+          <IconButton onClick={() => setOpen(!open)}>
+            {open ? <ChevronLeftIcon /> : <MenuIcon />}
+          </IconButton>
+        </Box>
+        <Box
+          sx={{
+            display: open ? 'block' : 'none',
           }}
         >
           <List>
@@ -384,7 +438,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
               ))}
           </List>
         </Box>
-      </Drawer>
+      </CustomDrawer>
 
       <Menu
         id="sort-by-menu"

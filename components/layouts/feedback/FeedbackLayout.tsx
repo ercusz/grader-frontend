@@ -3,7 +3,7 @@ import FeedbackSubHeader from '@/components/headers/feedback-sub/FeedbackSubHead
 import FeedbackHeader, {
   FeedbackHeaderProps,
 } from '@/components/headers/feedback/FeedbackHeader';
-import { Box, Toolbar } from '@mui/material';
+import { Box, Container, Toolbar } from '@mui/material';
 import Head from 'next/head';
 import { Suspense } from 'react';
 
@@ -50,7 +50,6 @@ const FeedbackLayout: React.FC<IFeedbackLayout> = ({
           sx={{
             flexGrow: 1,
             p: 3,
-            px: 6,
             bgcolor: 'background.paper',
             minHeight: '100vh',
           }}
@@ -62,7 +61,9 @@ const FeedbackLayout: React.FC<IFeedbackLayout> = ({
             </>
           )}
           <Toolbar />
-          <Suspense fallback={'Loading...'}>{children}</Suspense>
+          <Container maxWidth="lg">
+            <Suspense fallback={'Loading...'}>{children}</Suspense>
+          </Container>
         </Box>
       </Box>
     </>
