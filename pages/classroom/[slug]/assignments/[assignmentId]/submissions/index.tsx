@@ -4,41 +4,133 @@ import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getAssignmentSubmissions } from '@/utils/SubmissionService';
-import { CircularProgress, Container, Grid, Typography } from '@mui/material';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import CachedIcon from '@mui/icons-material/Cached';
+import {
+  Box,
+  CircularProgress,
+  Container,
+  Grid,
+  IconButton,
+  Paper,
+  Stack,
+  Typography,
+} from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import '@uiw/react-markdown-preview/markdown.css';
+import { format, isAfter, isValid, parseISO } from 'date-fns';
+import { th } from 'date-fns/locale';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useMemo, useState } from 'react';
+import { VscCode } from 'react-icons/vsc';
+import {
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip as ChartTooltip,
+} from 'recharts';
 import { NextPageWithLayout } from '../../../../../page';
-
-enum SORT_BY {
-  dueDate = 'วันที่กำหนดส่งงาน',
-  name = 'ชื่องาน',
-  topic = 'หัวข้อ',
-}
-
-enum FILTER {
-  all = 'ทั้งหมด',
-  javaSrc = 'ซอร์สโค้ด',
-  docs = 'เอกสาร',
-}
 
 const AssignmentSubmissions: NextPageWithLayout = ({
   slug,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
+  const theme = useTheme();
   const { assignmentId } = router.query;
   const { data: classroom } = useClassroomSlug({ slug: slug });
   const {
     isLoading,
     isSuccess,
+    data: assignment,
     data: { submissions } = {},
+    dataUpdatedAt,
   } = useAssignmentSubmissions({
     classroomId: classroom?.id.toString() as string,
     assignmentId: assignmentId?.toString() as string,
   });
+
+  const gradingStats = useMemo(() => {
+    return {
+      graded: submissions?.filter((s) => s.gradedBy !== null).length,
+      waiting: submissions?.filter((s) => s.gradedBy === null).length,
+    };
+  }, [submissions]);
+
+  const chartData = useMemo(() => {
+    return [
+      {
+        name: 'ส่งงานตรงเวลา',
+        value:
+          submissions && assignment
+            ? submissions?.filter(
+                (s) =>
+                  !isAfter(parseISO(s.createdAt), parseISO(assignment?.endDate))
+              ).length
+            : 0,
+      },
+      {
+        name: 'ส่งงานสาย',
+        value:
+          submissions && assignment
+            ? submissions?.filter((s) =>
+                isAfter(parseISO(s.createdAt), parseISO(assignment?.endDate))
+              ).length
+            : 0,
+      },
+      {
+        name: 'ยังไม่ส่งงาน',
+        value:
+          submissions && classroom
+            ? classroom?.students.length - submissions?.length
+            : 0,
+      },
+    ];
+  }, [submissions, assignment, classroom]);
+
+  const COLORS = [
+    theme.palette.success.light,
+    theme.palette.warning.light,
+    theme.palette.text.disabled,
+  ];
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length && classroom) {
+      return (
+        <Box
+          className="text-center shadow-xl"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            backdropFilter: 'blur(10px)',
+            WebkitBackdropFilter: 'blur(10px)',
+            color: (theme) => theme.palette.background.default,
+            backgroundColor: (theme) => alpha(theme.palette.text.primary, 0.5),
+            padding: 1,
+            borderRadius: 1,
+          }}
+        >
+          <Typography className="font-bold" variant="body1">
+            {`${payload[0].value} คน`}
+          </Typography>
+          <Typography sx={{ fontSize: '0.8rem' }}>{payload[0].name}</Typography>
+          {/* <Typography sx={{ fontSize: '0.6rem' }}>
+            {`(${((payload[0].value / classroom.students.length) * 100).toFixed(
+              2
+            )}%)`}
+          </Typography> */}
+        </Box>
+      );
+    }
+
+    return null;
+  };
+
+  const [graphStyle, setGraphStyle] = useState(0);
 
   return (
     <section>
@@ -64,12 +156,303 @@ const AssignmentSubmissions: NextPageWithLayout = ({
         </Container>
       )}
 
-      {isSuccess && submissions && submissions.length > 0 && (
-        <Grid container>
-          <Grid item xs={12} sm={12} md={12}>
-            <Typography variant="h6" align="center">
-              งานที่ส่ง
+      {isSuccess && classroom && submissions && submissions.length > 0 && (
+        <Grid
+          container
+          spacing={3}
+          sx={{
+            '& .MuiPaper-root': {
+              borderBottom: (theme) =>
+                `1px double ${alpha(theme.palette.text.primary, 0.2)}`,
+            },
+          }}
+        >
+          {/* Latest update */}
+          <Grid item xs={12}>
+            <Typography variant="caption" color="text.secondary">
+              {isValid(dataUpdatedAt)
+                ? `อัปเดตล่าสุดเมื่อ ${format(dataUpdatedAt, 'PPp', {
+                    locale: th,
+                  })}`
+                : null}
             </Typography>
+          </Grid>
+          {/* Assignment name */}
+          <Grid item xs={12}>
+            <Paper
+              sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden',
+                position: 'relative',
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: 100,
+                  color: (theme) => alpha(theme.palette.primary.main, 0.1),
+                }}
+              >
+                {assignment.type === 'java-src' && (
+                  <VscCode className="absolute -top-8 -right-2 -rotate-12" />
+                )}
+                {assignment.type === 'docs' && (
+                  <AssignmentIcon
+                    className="absolute -top-2 -right-2 -rotate-12"
+                    fontSize="inherit"
+                  />
+                )}
+              </Typography>
+              <Typography component="h2" variant="h6" color="primary">
+                {assignment.title}
+              </Typography>
+              <Typography component="p" variant="caption">
+                {assignment.topic?.name}
+              </Typography>
+            </Paper>
+          </Grid>
+          {/* Graded Stats */}
+          <Grid item xs={12} md={4} lg={6}>
+            <Paper
+              sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                height: 240,
+              }}
+            >
+              <>
+                <Typography
+                  component="h2"
+                  variant="h6"
+                  color="primary"
+                  gutterBottom
+                >
+                  การตรวจ
+                </Typography>
+                <Typography component="p" variant="h4">
+                  {gradingStats.graded}
+                </Typography>
+                <Typography
+                  color="text.secondary"
+                  sx={{ flex: 1 }}
+                  gutterBottom
+                >
+                  ตรวจแล้ว
+                </Typography>
+                <Typography component="p" variant="h4" color="error">
+                  {gradingStats.waiting}
+                </Typography>
+                <Typography color="error" sx={{ flex: 1 }} gutterBottom>
+                  ยังไม่ตรวจ
+                </Typography>
+              </>
+            </Paper>
+          </Grid>
+          {/* Chart */}
+          <Grid item xs={12} md={8} lg={6}>
+            <Paper
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                height: 240,
+              }}
+            >
+              <Grid container>
+                <Grid
+                  item
+                  xs={0}
+                  md={7}
+                  sx={{
+                    p: 2,
+                    display: { xs: 'none', md: 'block' },
+                  }}
+                >
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <Typography
+                      component="h2"
+                      variant="h6"
+                      color="primary"
+                      gutterBottom
+                    >
+                      การส่งงาน
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => setGraphStyle((graphStyle + 1) % 3)}
+                    >
+                      <CachedIcon />
+                    </IconButton>
+                  </Stack>
+                  {chartData &&
+                    chartData.length > 0 &&
+                    chartData.map((data, index) => {
+                      return (
+                        <Stack
+                          key={data.name}
+                          direction="row"
+                          alignItems="center"
+                          spacing={1}
+                        >
+                          <Box
+                            component="span"
+                            sx={{
+                              width: 20,
+                              height: 4,
+                              bgcolor: COLORS[index % COLORS.length],
+                              borderRadius: 1,
+                            }}
+                          >
+                            &nbsp;
+                          </Box>
+                          <Typography variant="subtitle1">
+                            {data.name}
+                          </Typography>
+                        </Stack>
+                      );
+                    })}
+                </Grid>
+                <Grid item xs={12} md={5}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={1}
+                    sx={{
+                      p: 2,
+                      display: { xs: 'flex', md: 'none' },
+                    }}
+                  >
+                    <Typography
+                      component="h2"
+                      variant="h6"
+                      color="primary"
+                      gutterBottom
+                    >
+                      การส่งงาน
+                    </Typography>
+                    <IconButton
+                      size="small"
+                      onClick={() => setGraphStyle((graphStyle + 1) % 3)}
+                    >
+                      <CachedIcon />
+                    </IconButton>
+                  </Stack>
+
+                  <Box sx={{ height: { xs: 120, md: 240 }, width: '100%' }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <defs>
+                          <filter id="textPencil">
+                            <feTurbulence baseFrequency="0.02" />
+                            <feDisplacementMap in="SourceGraphic" scale="10" />
+                          </filter>
+                          <filter id="pencil">
+                            <feTurbulence baseFrequency="0.035" />
+                            <feDisplacementMap in="SourceGraphic" scale="10" />
+                          </filter>
+                          {chartData.map((data, index) => {
+                            return (
+                              <pattern
+                                key={`pattern${index}`}
+                                id={`pattern${index}`}
+                                width="1"
+                                height="4"
+                                patternUnits="userSpaceOnUse"
+                                patternTransform="rotate(45)"
+                              >
+                                <line
+                                  x1="0"
+                                  x2="100%"
+                                  y1="0"
+                                  y2="0"
+                                  strokeWidth="4"
+                                  stroke={COLORS[index % COLORS.length]}
+                                />
+                              </pattern>
+                            );
+                          })}
+                        </defs>
+                        <Pie
+                          data={chartData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={45}
+                          outerRadius={60}
+                          dataKey="value"
+                          labelLine={false}
+                          label={({ cx, cy }) => {
+                            const styles = [
+                              {},
+                              {
+                                filter: `drop-shadow(0 1px 1px rgb(0 0 0 / 0.5))`,
+                              },
+                              {
+                                fontFamily: 'Comic Sans MS, cursive',
+                                filter: 'url(#textPencil)',
+                              },
+                            ];
+
+                            return (
+                              <text
+                                x={cx}
+                                y={cy}
+                                dy={8}
+                                textAnchor="middle"
+                                fill={theme.palette.primary.main}
+                                style={styles[graphStyle]}
+                              >
+                                <tspan x={cx} dy="-0.2em" fontSize="2em">
+                                  {submissions.length}
+                                </tspan>
+                                <tspan x={cx} dy="1.2em">
+                                  from
+                                </tspan>
+                                <tspan x={cx} dy="1.2em">
+                                  {classroom.students.length}
+                                </tspan>
+                              </text>
+                            );
+                          }}
+                        >
+                          {chartData.map((entry, index) => {
+                            const styles = [
+                              {
+                                fill: COLORS[index % COLORS.length],
+                                stroke: 'none',
+                              },
+                              {
+                                fill: COLORS[index % COLORS.length],
+                                stroke: 'none',
+                                filter: `drop-shadow(0px 0px 2px ${
+                                  COLORS[index % COLORS.length]
+                                }`,
+                              },
+                              {
+                                fill: `url(#pattern${index})`,
+                                stroke: theme.palette.primary.main,
+                                strokeWidth: 2,
+                                filter: 'url(#pencil)',
+                              },
+                            ];
+                            return (
+                              <Cell
+                                key={`cell-${index}`}
+                                style={styles[graphStyle]}
+                              />
+                            );
+                          })}
+                        </Pie>
+                        <ChartTooltip
+                          content={<CustomTooltip />}
+                          wrapperStyle={{ outline: 'none' }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </Box>
+                </Grid>
+              </Grid>
+            </Paper>
           </Grid>
         </Grid>
       )}

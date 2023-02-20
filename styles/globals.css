@@ -80,3 +80,7 @@ body {
 [data-color-mode*='dark'] pre.language-mermaid > code > svg {
   filter: invert(1) hue-rotate(300deg);
 }
+
+.recharts-wrapper svg {
+  overflow: inherit !important;
+}
