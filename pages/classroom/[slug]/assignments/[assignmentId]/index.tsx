@@ -64,7 +64,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
   } = useClassroomSlug({ slug: slug });
 
   const router = useRouter();
-  const id = router.query.id as string;
+  const id = router.query.assignmentId as string;
 
   const {
     isLoading: isLoadingAssignment,
@@ -294,6 +294,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const { slug }: any = context.params;
   const { req } = context;
   const token = await getToken({ req });
+  const { assignmentId } = context.query;
 
   if (token && token.jwt) {
     setToken(token.jwt);
@@ -308,8 +309,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     );
 
     const assignment = await queryClient.fetchQuery(
-      ['assignment', { id: context.query.id }],
-      () => getAssignmentById(context.query.id as string, classroom.id)
+      ['assignment', { id: assignmentId }],
+      () => getAssignmentById(assignmentId as string, classroom.id)
     );
 
     if (!assignment.title) {
