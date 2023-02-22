@@ -1,5 +1,5 @@
 import GraderStatusChip from '@/components/chips/grader-status/GraderStatusChip';
-import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
+import SourceCodeSection from '@/components/sections/source-code/SourceCodeSection';
 import { useUserSubmissionPages } from '@/hooks/submission/useSubmission';
 import { useUser } from '@/hooks/user/useUser';
 import { getImagePath } from '@/utils/imagePath';
@@ -40,7 +40,6 @@ import { th } from 'date-fns/locale';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
-import { CgCodeSlash } from 'react-icons/cg';
 import { ImLab } from 'react-icons/im';
 
 export interface ISubmissionHistoryCard {
@@ -75,7 +74,6 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
     page: (page - 1) * 5,
   });
 
-  const [openSrcList, setOpenSrcList] = useState([false]);
   const [openTestcasesList, setOpenTestcasesList] = useState([false]);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -87,13 +85,6 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
 
   const handleMoreButtonClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
-  };
-
-  const handleSrcListClick = (id: number) => {
-    setOpenSrcList((prevState: boolean[]) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
   };
 
   const handleTestcasesListClick = (id: number) => {
@@ -256,34 +247,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                         </Tooltip>
                       )}
                     {submission.sourceCode && (
-                      <>
-                        <ListItemButton
-                          onClick={() => handleSrcListClick(submission.id)}
-                        >
-                          <ListItemIcon>
-                            <CgCodeSlash />
-                          </ListItemIcon>
-                          <ListItemText primary="ซอร์สโค้ด" />
-                          {openSrcList[submission.id] ? (
-                            <ExpandLess />
-                          ) : (
-                            <ExpandMore />
-                          )}
-                        </ListItemButton>
-                        <Collapse
-                          in={openSrcList[submission.id]}
-                          timeout="auto"
-                          unmountOnExit
-                        >
-                          <div data-color-mode={theme.palette.mode}>
-                            <MarkdownPreview
-                              content={
-                                '```java\n' + submission.sourceCode + '```'
-                              }
-                            />
-                          </div>
-                        </Collapse>
-                      </>
+                      <SourceCodeSection sourceCode={submission.sourceCode} />
                     )}
                     {submission.testcases.length > 0 && (
                       <>
