@@ -227,9 +227,15 @@ export type UserSubmission = {
   testcases:
     | {
         id: number;
-        time: number;
-        memory: number;
-        status: number;
+        name: string;
+        input: string;
+        expectedOutput: string;
+        submissionData: {
+          id: number;
+          time: number;
+          memory: number;
+          status: number;
+        };
       }[]
     | null;
   type: 'java-src' | 'docs';
