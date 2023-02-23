@@ -1,9 +1,8 @@
-import GraderStatusChip from '@/components/chips/grader-status/GraderStatusChip';
+import CompactSubmissionTestcasesSection from '@/components/sections/compact-submission-testcases/CompactSubmissionTestcasesSection';
 import SourceCodeSection from '@/components/sections/source-code/SourceCodeSection';
 import { useUserSubmissionPages } from '@/hooks/submission/useSubmission';
 import { useUser } from '@/hooks/user/useUser';
 import { getImagePath } from '@/utils/imagePath';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
@@ -13,34 +12,22 @@ import {
   CardContent,
   CardHeader,
   Chip,
-  Collapse,
   Divider,
   IconButton,
   Link as MuiLink,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Menu,
   MenuItem,
   Pagination,
-  Paper,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Tooltip,
   Typography,
 } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import { format, isAfter, isBefore, isValid, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
-import { ImLab } from 'react-icons/im';
 
 export interface ISubmissionHistoryCard {
   classroomId: string;
@@ -74,8 +61,6 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
     page: (page - 1) * 5,
   });
 
-  const [openTestcasesList, setOpenTestcasesList] = useState([false]);
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -85,13 +70,6 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
 
   const handleMoreButtonClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
-  };
-
-  const handleTestcasesListClick = (id: number) => {
-    setOpenTestcasesList((prevState: boolean[]) => ({
-      ...prevState,
-      [id]: !prevState[id],
-    }));
   };
 
   return (
@@ -191,13 +169,17 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                         {`ส่งครั้งที่ ${meta.total - (page - 1) * 5 - index}`}
                       </Typography>
                       {meta.total - (page - 1) * 5 - index === meta.total && (
-                        <Tooltip title="คะแนนงานของคุณจะอิงตามการส่งในครั้งนี้">
+                        <Tooltip
+                          arrow
+                          title="คะแนนงานของคุณจะอิงตามการส่งในครั้งนี้"
+                        >
                           <Chip
+                            className="cursor-pointer"
                             label={'ล่าสุด'}
                             variant="outlined"
                             color="info"
                             size="small"
-                            sx={{ ml: 2 }}
+                            sx={{ ml: 1 }}
                           />
                         </Tooltip>
                       )}
@@ -211,6 +193,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                     {isValid(parseISO(submission.createdAt)) &&
                       isValid(parseISO(submission.assignment.endDate)) && (
                         <Tooltip
+                          arrow
                           title={`วันกำหนดส่ง คือ ${format(
                             parseISO(submission.assignment.endDate),
                             'PPPPp',
@@ -221,6 +204,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                         >
                           <Typography
                             className="cursor-pointer"
+                            component="span"
                             variant="body2"
                             gutterBottom
                             color={
@@ -250,82 +234,9 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                       <SourceCodeSection sourceCode={submission.sourceCode} />
                     )}
                     {submission.testcases.length > 0 && (
-                      <>
-                        <ListItemButton
-                          onClick={() =>
-                            handleTestcasesListClick(submission.id)
-                          }
-                        >
-                          <ListItemIcon>
-                            <ImLab />
-                          </ListItemIcon>
-                          <ListItemText primary="ชุดทดสอบ" />
-                          {openTestcasesList[submission.id] ? (
-                            <ExpandLess />
-                          ) : (
-                            <ExpandMore />
-                          )}
-                        </ListItemButton>
-                        <Collapse
-                          in={openTestcasesList[submission.id]}
-                          timeout="auto"
-                          unmountOnExit
-                        >
-                          <TableContainer component={Paper}>
-                            <Table sx={{ minWidth: 650 }} size="small">
-                              <TableHead>
-                                <TableRow>
-                                  <TableCell>ชุดทดสอบ</TableCell>
-                                  <TableCell align="right">เวลา</TableCell>
-                                  <TableCell align="right">
-                                    หน่วยความจำ
-                                  </TableCell>
-                                  <TableCell align="center">ผลตรวจ</TableCell>
-                                </TableRow>
-                              </TableHead>
-                              <TableBody>
-                                {submission.testcases.map((testcase, idx) => (
-                                  <TableRow
-                                    key={testcase.id}
-                                    sx={{
-                                      backgroundColor: alpha(
-                                        testcase.status === 3
-                                          ? theme.palette.success.light
-                                          : theme.palette.error.light,
-                                        0.3
-                                      ),
-                                    }}
-                                  >
-                                    <TableCell component="th" scope="row">
-                                      {`ชุดทดสอบที่ ${idx + 1}`}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {testcase.time
-                                        ? testcase.time + ' ms'
-                                        : '-'}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                      {testcase.memory
-                                        ? testcase.memory
-                                            .toString()
-                                            .replace(
-                                              /\B(?=(\d{3})+(?!\d))/g,
-                                              ','
-                                            ) + ' KB'
-                                        : '-'}
-                                    </TableCell>
-                                    <TableCell align="center">
-                                      <GraderStatusChip
-                                        statusId={testcase.status}
-                                      />
-                                    </TableCell>
-                                  </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </TableContainer>
-                        </Collapse>
-                      </>
+                      <CompactSubmissionTestcasesSection
+                        testcases={submission.testcases}
+                      />
                     )}
                   </Box>
                 ))}
