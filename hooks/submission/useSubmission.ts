@@ -1,8 +1,10 @@
 import {
   AssignmentSubmissions,
+  StudentSubmission,
   UserJavaSrcSubmissionResponse,
 } from '@/types/types';
 import {
+  getAssignmentLatestStudentSubmission,
   getAssignmentSubmissions,
   getUserJavaSrcSubmissionPage,
   getUserJavaSrcSubmissions,
@@ -71,5 +73,28 @@ export const useAssignmentSubmissions = ({
       ),
     {
       enabled: Boolean(classroomId) && Boolean(assignmentId),
+    }
+  );
+
+export const useStudentLatestSubmission = ({
+  classroomId,
+  assignmentId,
+  studentId,
+}: {
+  classroomId?: string;
+  assignmentId?: string;
+  studentId?: string;
+}) =>
+  useQuery<StudentSubmission, Error>(
+    ['submissions', { assignmentId: assignmentId, studentId: studentId }],
+    () =>
+      getAssignmentLatestStudentSubmission(
+        assignmentId ? assignmentId : '',
+        classroomId ? classroomId : '',
+        studentId ? studentId : ''
+      ),
+    {
+      enabled:
+        Boolean(classroomId) && Boolean(assignmentId) && Boolean(studentId),
     }
   );

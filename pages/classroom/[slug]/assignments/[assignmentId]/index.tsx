@@ -218,7 +218,10 @@ const ClassroomAssignment: NextPageWithLayout = ({
                 </ListItem>
               </List>
             ) : (
-              <SubmissionStatusCard />
+              <SubmissionStatusCard
+                classroomId={classroom.id.toString() as string}
+                assignmentId={id}
+              />
             )}
           </Grid>
           <Grid item xs={12} md={8} sx={{ mb: 6 }}>

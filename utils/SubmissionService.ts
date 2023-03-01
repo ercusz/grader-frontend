@@ -1,6 +1,7 @@
 import {
   AssignmentSubmissions,
   CreateJavaSrcSubmission,
+  StudentSubmission,
   UserJavaSrcSubmissionResponse,
 } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
@@ -61,4 +62,19 @@ export const getAssignmentSubmissions = async (
   }
 
   return res.data as AssignmentSubmissions;
+};
+
+export const getAssignmentLatestStudentSubmission = async (
+  assignmentId: string,
+  classroomId: string,
+  studentId: string
+): Promise<StudentSubmission> => {
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/students/${studentId}/submissions/latest`
+  );
+  if (err) {
+    throw new Error('get assignment submission data failed');
+  }
+
+  return res.data as StudentSubmission;
 };

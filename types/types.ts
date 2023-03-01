@@ -244,6 +244,10 @@ export type UserSubmission = {
         id: number;
         name: string;
         url: string;
+        ext: string;
+        mime: string;
+        size: number;
+        createdAt: string;
       }[]
     | null;
   createdAt: string;
