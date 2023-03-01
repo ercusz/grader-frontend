@@ -2,7 +2,14 @@ import { useIdeTabs } from '@/hooks/grader/useIdeTabs';
 import Editor, { OnMount } from '@monaco-editor/react';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton, Stack, Tab, Tabs, Typography } from '@mui/material';
+import {
+  IconButton,
+  Stack,
+  Tab,
+  Tabs,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { SyntheticEvent, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -61,12 +68,20 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
     removeIdeTab(index);
   };
 
-  const handleCloseTab = (index: number) => {
-    if (index <= 0) {
-      setCurrentTabIdx(0);
-    } else {
-      setCurrentTabIdx(index - 1);
+  const handleCloseTab = (event: SyntheticEvent, index: number) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (index === currentTabIdx) {
+      if (index !== 0) {
+        setCurrentTabIdx(currentTabIdx - 1);
+      } else {
+        alert('ไม่สามารถปิดแท็บ Main.java ได้');
+        return;
+      }
+    } else if (index < currentTabIdx) {
+      setCurrentTabIdx(currentTabIdx - 1);
     }
+
     removeTab(index);
   };
 
@@ -102,36 +117,41 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
               component="div"
               key={tab.path}
               label={
-                <Stack
-                  className="text-left"
-                  direction="row"
-                  justifyContent="flex-start"
-                  alignItems="center"
+                <Tooltip
+                  title={<Typography variant="caption">{tab.path}</Typography>}
+                  arrow
                 >
-                  {language === 'java' && (
-                    <IconButton size="small" aria-label="Java File">
-                      <SiJava />
-                    </IconButton>
-                  )}
-                  <Typography
-                    variant="overline"
-                    noWrap
-                    sx={{ textTransform: 'none', mr: 1 }}
+                  <Stack
+                    className="text-left"
+                    direction="row"
+                    justifyContent="flex-start"
+                    alignItems="center"
                   >
-                    {tab.path}
-                  </Typography>
-                  {tab.path !== 'Main.java' && (
-                    <IconButton
-                      size="small"
-                      aria-label="close this tab"
-                      onClick={() => {
-                        handleCloseTab(index);
-                      }}
+                    {language === 'java' && (
+                      <IconButton size="small" aria-label="Java File">
+                        <SiJava />
+                      </IconButton>
+                    )}
+                    <Typography
+                      variant="overline"
+                      noWrap
+                      sx={{ textTransform: 'none', mr: 1 }}
                     >
-                      <CloseIcon fontSize="small" />
-                    </IconButton>
-                  )}
-                </Stack>
+                      {tab.path}
+                    </Typography>
+                    {tab.path !== 'Main.java' && (
+                      <IconButton
+                        size="small"
+                        aria-label="close this tab"
+                        onClick={(e) => {
+                          handleCloseTab(e, index);
+                        }}
+                      >
+                        <CloseIcon fontSize="small" />
+                      </IconButton>
+                    )}
+                  </Stack>
+                </Tooltip>
               }
               sx={{
                 maxWidth: '150px',
@@ -161,7 +181,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
         onMount={onMount}
         defaultValue={ideTabs[currentTabIdx]?.value}
         defaultLanguage={language}
-        path={ideTabs[currentTabIdx].path}
+        path={ideTabs[currentTabIdx]?.path}
         theme={theme.palette.mode === 'dark' ? 'vs-dark' : 'github'}
         loading={'กำลังโหลด'}
         options={{
