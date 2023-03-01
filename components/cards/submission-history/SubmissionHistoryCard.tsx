@@ -171,7 +171,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                       {meta.total - (page - 1) * 5 - index === meta.total && (
                         <Tooltip
                           arrow
-                          title="คะแนนงานของคุณจะอิงตามการส่งในครั้งนี้"
+                          title="คะแนนงานของคุณจะอิงตามการส่งงานในครั้งนี้ แต่ยังไม่ใช่คะแนนดิบที่ผ่านการคำนวณ รวมถึงหักลบคะแนนเมื่อส่งงานช้ากว่ากำหนด"
                         >
                           <Chip
                             className="cursor-pointer"
@@ -185,7 +185,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                       )}
                     </Stack>
                     <Typography variant="body2" gutterBottom>
-                      {`คะแนน ${submission.programScore}/${submission.assignment.point}`}
+                      {`คะแนน ${submission.programScore}/100`}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
                       {`ผ่านชุดทดสอบ ${submission.passedTestcases}/${submission.testcases.length} ชุด`}
