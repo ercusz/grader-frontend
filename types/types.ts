@@ -294,11 +294,11 @@ export type Score = {
   gradedAt: string;
 };
 
-export type StudentSubmissions = UserResponse & {
+export type StudentSubmission = UserResponse & {
   scoreInfo: Score | null;
   submission: UserSubmission | null;
 };
 
 export type AssignmentSubmissions = {
-  students: StudentSubmissions[];
+  students: StudentSubmission[];
 } & Assignment;

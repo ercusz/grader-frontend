@@ -1,7 +1,7 @@
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
 import { selectedSubmissionsAtom } from '@/stores/assignment-submissions';
-import { StudentSubmissions, UserResponse } from '@/types/types';
+import { StudentSubmission, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
@@ -361,7 +361,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
     setAnchorSortBy(null);
   };
 
-  const sortingFunc = (a: StudentSubmissions, b: StudentSubmissions) => {
+  const sortingFunc = (a: StudentSubmission, b: StudentSubmission) => {
     if (sortBy === 'createdAt') {
       if (descSort) {
         if (!a.submission) {
@@ -585,7 +585,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                     (Object.keys(groups).find(
                       (key) =>
                         (groups as any)[key].findIndex(
-                          (group: StudentSubmissions) => group.id === student.id
+                          (group: StudentSubmission) => group.id === student.id
                         ) !== -1
                     ) as statusType) || 'notSubmitted'
                   }
@@ -645,7 +645,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                         (Object.keys(groups).find(
                           (key) =>
                             (groups as any)[key].findIndex(
-                              (group: StudentSubmissions) =>
+                              (group: StudentSubmission) =>
                                 group.id === student.id
                             ) !== -1
                         ) as statusType) || 'notSubmitted'
