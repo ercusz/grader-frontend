@@ -19,7 +19,7 @@ import {
 import { alpha, useTheme } from '@mui/material/styles';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import '@uiw/react-markdown-preview/markdown.css';
-import { format, isAfter, isValid, parseISO } from 'date-fns';
+import { format, isAfter, isBefore, isValid, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
@@ -47,7 +47,7 @@ const AssignmentSubmissions: NextPageWithLayout = ({
     isLoading,
     isSuccess,
     data: assignment,
-    data: { submissions } = {},
+    data: { students } = {},
     dataUpdatedAt,
   } = useAssignmentSubmissions({
     classroomId: classroom?.id.toString() as string,
@@ -56,41 +56,69 @@ const AssignmentSubmissions: NextPageWithLayout = ({
 
   const gradingStats = useMemo(() => {
     return {
-      graded: submissions?.filter((s) => s.gradedBy !== null).length,
-      waiting: submissions?.filter((s) => s.gradedBy === null).length,
+      submitted: students?.filter(
+        (student) => student.submission && !student.scoreInfo
+      ).length,
+      graded: students?.filter(
+        (student) =>
+          student.submission &&
+          student.scoreInfo &&
+          !isBefore(
+            parseISO(student.scoreInfo.gradedAt),
+            parseISO(student.submission.createdAt)
+          )
+      ).length,
+      resubmitted: students?.filter(
+        (student) =>
+          student.submission &&
+          student.scoreInfo &&
+          isBefore(
+            parseISO(student.scoreInfo.gradedAt),
+            parseISO(student.submission.createdAt)
+          )
+      ).length,
     };
-  }, [submissions]);
+  }, [students]);
 
   const chartData = useMemo(() => {
     return [
       {
         name: 'ส่งงานตรงเวลา',
         value:
-          submissions && assignment
-            ? submissions?.filter(
-                (s) =>
-                  !isAfter(parseISO(s.createdAt), parseISO(assignment?.endDate))
+          students && assignment
+            ? students?.filter(({ submission }) =>
+                submission
+                  ? !isAfter(
+                      parseISO(submission.createdAt),
+                      parseISO(assignment?.endDate)
+                    )
+                  : false
               ).length
             : 0,
       },
       {
         name: 'ส่งงานสาย',
         value:
-          submissions && assignment
-            ? submissions?.filter((s) =>
-                isAfter(parseISO(s.createdAt), parseISO(assignment?.endDate))
+          students && assignment
+            ? students?.filter(({ submission }) =>
+                submission
+                  ? isAfter(
+                      parseISO(submission.createdAt),
+                      parseISO(assignment?.endDate)
+                    )
+                  : false
               ).length
             : 0,
       },
       {
         name: 'ยังไม่ส่งงาน',
         value:
-          submissions && classroom
-            ? classroom?.students.length - submissions?.length
+          students && classroom
+            ? students.filter(({ submission }) => !submission).length
             : 0,
       },
     ];
-  }, [submissions, assignment, classroom]);
+  }, [students, assignment, classroom]);
 
   const COLORS = [
     theme.palette.success.light,
@@ -156,7 +184,7 @@ const AssignmentSubmissions: NextPageWithLayout = ({
         </Container>
       )}
 
-      {isSuccess && classroom && submissions && submissions.length > 0 && (
+      {isSuccess && classroom && students && students.length > 0 && (
         <Grid
           container
           spacing={3}
@@ -222,32 +250,50 @@ const AssignmentSubmissions: NextPageWithLayout = ({
                 height: 240,
               }}
             >
-              <>
-                <Typography
-                  component="h2"
-                  variant="h6"
-                  color="primary"
-                  gutterBottom
+              <Typography
+                component="h2"
+                variant="h6"
+                color="primary"
+                gutterBottom
+              >
+                การตรวจ
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={4} md={6}>
+                  <Typography component="p" variant="h4">
+                    {gradingStats.graded}
+                  </Typography>
+                  <Typography color="text.secondary" sx={{ flex: 1 }}>
+                    ตรวจแล้ว
+                  </Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={4}
+                  md={6}
+                  sx={{
+                    color: (theme) => alpha(theme.palette.error.main, 0.8),
+                  }}
                 >
-                  การตรวจ
-                </Typography>
-                <Typography component="p" variant="h4">
-                  {gradingStats.graded}
-                </Typography>
-                <Typography
-                  color="text.secondary"
-                  sx={{ flex: 1 }}
-                  gutterBottom
+                  <Typography component="p" variant="h4">
+                    {gradingStats.submitted}
+                  </Typography>
+                  <Typography sx={{ flex: 1 }}>รอการตรวจ</Typography>
+                </Grid>
+                <Grid
+                  item
+                  xs={4}
+                  md={6}
+                  sx={{
+                    color: (theme) => alpha(theme.palette.info.main, 0.8),
+                  }}
                 >
-                  ตรวจแล้ว
-                </Typography>
-                <Typography component="p" variant="h4" color="error">
-                  {gradingStats.waiting}
-                </Typography>
-                <Typography color="error" sx={{ flex: 1 }} gutterBottom>
-                  ยังไม่ตรวจ
-                </Typography>
-              </>
+                  <Typography component="p" variant="h4">
+                    {gradingStats.resubmitted}
+                  </Typography>
+                  <Typography sx={{ flex: 1 }}>มีการแก้ไข</Typography>
+                </Grid>
+              </Grid>
             </Paper>
           </Grid>
           {/* Chart */}
@@ -403,7 +449,8 @@ const AssignmentSubmissions: NextPageWithLayout = ({
                                 style={styles[graphStyle]}
                               >
                                 <tspan x={cx} dy="-0.2em" fontSize="2em">
-                                  {submissions.length}
+                                  {(gradingStats.graded ?? 0) +
+                                    (gradingStats.submitted ?? 0)}
                                 </tspan>
                                 <tspan x={cx} dy="1.2em">
                                   from
@@ -457,7 +504,7 @@ const AssignmentSubmissions: NextPageWithLayout = ({
         </Grid>
       )}
 
-      {isSuccess && submissions && submissions.length === 0 && (
+      {isSuccess && students && students.length === 0 && (
         <Grid container>
           <Grid item xs={12} sm={12} md={12}>
             <Typography variant="h6" align="center">

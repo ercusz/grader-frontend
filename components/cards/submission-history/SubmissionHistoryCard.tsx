@@ -185,7 +185,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                       )}
                     </Stack>
                     <Typography variant="body2" gutterBottom>
-                      {`คะแนน ${submission.point}/${submission.assignment.point}`}
+                      {`คะแนน ${submission.programScore}/${submission.assignment.point}`}
                     </Typography>
                     <Typography variant="body2" gutterBottom>
                       {`ผ่านชุดทดสอบ ${submission.passedTestcases}/${submission.testcases.length} ชุด`}

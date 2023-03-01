@@ -206,7 +206,7 @@ export type CreateJavaSrcSubmission = {
 
 export type UserJavaSrcSubmission = {
   id: number;
-  point: number;
+  programScore: number;
   passedTestcases: number;
   createdAt: string;
   assignment: Assignment;
@@ -221,7 +221,7 @@ export type UserJavaSrcSubmission = {
 
 export type UserSubmission = {
   id: number;
-  point: number;
+  programScore: number;
   passedTestcases: number | null;
   sourceCode: string | null;
   testcases:
@@ -246,9 +246,7 @@ export type UserSubmission = {
         url: string;
       }[]
     | null;
-  gradedBy: string | null;
   createdAt: string;
-  user: UserResponse;
 };
 
 export type UserJavaSrcSubmissionResponse = {
@@ -290,6 +288,17 @@ export type AssignmentOverview = {
   totalGraded: number;
 } & Assignment;
 
+export type Score = {
+  score: number;
+  gradedBy: string;
+  gradedAt: string;
+};
+
+export type StudentSubmissions = UserResponse & {
+  scoreInfo: Score | null;
+  submission: UserSubmission | null;
+};
+
 export type AssignmentSubmissions = {
-  submissions: UserSubmission[];
+  students: StudentSubmissions[];
 } & Assignment;

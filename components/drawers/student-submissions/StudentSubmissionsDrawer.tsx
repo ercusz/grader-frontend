@@ -1,10 +1,10 @@
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
 import { selectedSubmissionsAtom } from '@/stores/assignment-submissions';
-import { UserResponse, UserSubmission } from '@/types/types';
+import { StudentSubmissions, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import MenuIcon from '@mui/icons-material/Menu';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -14,6 +14,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Collapse,
   Divider,
   Drawer,
   IconButton,
@@ -29,39 +30,55 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { CSSObject, styled, Theme } from '@mui/material/styles';
-import { compareAsc, compareDesc, parseISO } from 'date-fns';
+import { alpha, CSSObject, styled, Theme } from '@mui/material/styles';
+import { compareAsc, compareDesc, isBefore, parseISO } from 'date-fns';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { MouseEvent, useState } from 'react';
+import { MouseEvent, useMemo, useState } from 'react';
 
-export interface ISubmissionListItem {
+const drawerWidth = 380;
+type statusType = 'notSubmitted' | 'submitted' | 'graded' | 'resubmitted';
+const statuses: statusType[] = [
+  'submitted',
+  'resubmitted',
+  'notSubmitted',
+  'graded',
+];
+
+export interface IStudentListItem {
   active: boolean;
   checkbox: React.ReactNode;
   href: string;
   avatar: React.ReactNode;
   studentName: string;
   studentId: string | null;
-  graded: boolean;
+  status?: statusType;
   disabled?: boolean;
+  point?: number;
+  maxPoint?: number;
 }
 
-const SubmissionListItem: React.FC<ISubmissionListItem> = ({
+const StudentListItem: React.FC<IStudentListItem> = ({
   active,
   checkbox,
   href,
   avatar,
   studentName,
   studentId,
-  graded,
+  status,
   disabled,
+  point,
+  maxPoint,
 }) => {
   return (
     <ListItemButton
       selected={active}
       sx={{
         p: 0,
+        width: drawerWidth,
+        borderBottom: (theme) =>
+          `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
       }}
       disabled={disabled}
     >
@@ -82,9 +99,6 @@ const SubmissionListItem: React.FC<ISubmissionListItem> = ({
             px: 0,
             '&:hover': {
               bgcolor: 'transparent',
-              '& .MuiTypography-root': {
-                textDecoration: 'underline',
-              },
             },
           }}
         >
@@ -95,6 +109,7 @@ const SubmissionListItem: React.FC<ISubmissionListItem> = ({
             sx={{
               display: 'flex',
               overflow: 'hidden',
+              width: 200,
               '& .MuiTypography-root': {
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -107,27 +122,62 @@ const SubmissionListItem: React.FC<ISubmissionListItem> = ({
                 display: 'flex',
                 overflow: 'hidden',
                 pr: 2,
+                '&:hover': {
+                  '& .MuiTypography-root': {
+                    textDecoration: 'underline',
+                  },
+                },
               }}
             >
               <Stack direction="row" alignItems="center">
                 <Typography variant="body1" noWrap>
                   {studentName}
                 </Typography>
-                {graded && (
-                  <Tooltip title="ได้รับการตรวจแล้ว">
-                    <CheckCircleIcon
-                      color="success"
-                      fontSize="inherit"
-                      sx={{ ml: 0.5 }}
-                    />
-                  </Tooltip>
-                )}
               </Stack>
               <Typography variant="caption" noWrap>
                 {studentId}
               </Typography>
             </Stack>
           </Stack>
+
+          {status && (
+            <Box
+              sx={{
+                display: 'flex',
+                px: 2,
+                minWidth: 100,
+                borderLeft: (theme) =>
+                  `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
+                '&:hover': {
+                  '& .maxScore': {
+                    opacity: '1 !important',
+                  },
+                },
+              }}
+            >
+              <Stack direction="column">
+                <Typography variant="body2" color="primary">
+                  {point}
+                  <span
+                    className={`maxScore ${
+                      active ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    /{maxPoint}
+                  </span>
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{
+                    fontWeight: active ? 'bold' : 'normal',
+                  }}
+                >
+                  {STATUS[status]}
+                </Typography>
+              </Stack>
+            </Box>
+          )}
         </ListItemButton>
       </Link>
     </ListItemButton>
@@ -138,12 +188,17 @@ export interface IStudentSubmissionsDrawer {}
 
 enum SORT_BY {
   createdAt = 'วันที่ส่งงาน',
-  name = 'ชื่อผู้ส่ง',
+  name = 'ชื่อผู้เรียน',
   studentId = 'รหัสนักศึกษา',
   status = 'สถานะ',
 }
 
-const drawerWidth = 240;
+enum STATUS {
+  notSubmitted = 'ยังไม่ส่งงาน',
+  submitted = 'รอการตรวจ',
+  graded = 'ตรวจแล้ว',
+  resubmitted = 'มีการแก้ไข',
+}
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
@@ -183,14 +238,93 @@ const CustomDrawer = styled(Drawer, {
   }),
 }));
 
+export interface IStatusGroupListItem {
+  status: statusType;
+  children: React.ReactNode;
+  childrenSize?: number;
+}
+
+const StatusGroupListItem: React.FC<IStatusGroupListItem> = ({
+  status,
+  children,
+  childrenSize,
+}) => {
+  const [open, setOpen] = useState(false);
+  const handleOpenClick = () => {
+    setOpen(!open);
+  };
+
+  return (
+    <>
+      <ListItemButton
+        onClick={handleOpenClick}
+        selected={open}
+        sx={{
+          borderBottom: (theme) =>
+            `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
+        }}
+      >
+        <ListItemIcon>({childrenSize ?? 0})</ListItemIcon>
+        <ListItemText
+          primary={STATUS[status]}
+          sx={
+            open
+              ? {
+                  '& .MuiTypography-root': {
+                    fontWeight: 'bold',
+                  },
+                }
+              : {}
+          }
+        />
+        {open ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={open} timeout="auto" unmountOnExit>
+        {children}
+      </Collapse>
+    </>
+  );
+};
+
 const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
   const router = useRouter();
-  const { slug, assignmentId, submissionId } = router.query;
+  const { slug, assignmentId, studentId } = router.query;
   const { data: classroom } = useClassroomSlug({ slug: slug as string });
-  const { data: { submissions } = {} } = useAssignmentSubmissions({
-    classroomId: classroom?.id.toString() as string,
-    assignmentId: assignmentId?.toString() as string,
-  });
+  const { data: { students } = {}, data: assignment } =
+    useAssignmentSubmissions({
+      classroomId: classroom?.id.toString() as string,
+      assignmentId: assignmentId?.toString() as string,
+    });
+
+  const groups = useMemo(() => {
+    return {
+      notSubmitted: students?.filter((student) => !student.submission) ?? [],
+      submitted:
+        students?.filter(
+          (student) => student.submission && !student.scoreInfo
+        ) ?? [],
+      graded:
+        students?.filter(
+          (student) =>
+            student.submission &&
+            student.scoreInfo &&
+            !isBefore(
+              parseISO(student.scoreInfo.gradedAt),
+              parseISO(student.submission.createdAt)
+            )
+        ) ?? [],
+      resubmitted:
+        students?.filter(
+          (student) =>
+            student.submission &&
+            student.scoreInfo &&
+            isBefore(
+              parseISO(student.scoreInfo.gradedAt),
+              parseISO(student.submission.createdAt)
+            )
+        ) ?? [],
+    };
+  }, [students]);
 
   const [open, setOpen] = useState(false);
 
@@ -227,29 +361,42 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
     setAnchorSortBy(null);
   };
 
-  const sortingFunc = (a: UserSubmission, b: UserSubmission) => {
+  const sortingFunc = (a: StudentSubmissions, b: StudentSubmissions) => {
     if (sortBy === 'createdAt') {
       if (descSort) {
-        return compareDesc(parseISO(a.createdAt), parseISO(b.createdAt));
+        if (!a.submission) {
+          return 1;
+        }
+        if (!b.submission) {
+          return -1;
+        }
+
+        return compareDesc(
+          parseISO(a.submission.createdAt),
+          parseISO(b.submission.createdAt)
+        );
       }
 
-      return compareAsc(parseISO(a.createdAt), parseISO(b.createdAt));
+      if (!a.submission) {
+        return -1;
+      }
+      if (!b.submission) {
+        return 1;
+      }
+      return compareAsc(
+        parseISO(a.submission.createdAt),
+        parseISO(b.submission.createdAt)
+      );
     }
     if (sortBy === 'name') {
-      const x = getStudentName(a.user);
-      const y = getStudentName(b.user);
+      const x = getStudentName(a);
+      const y = getStudentName(b);
 
       return x.localeCompare(y) * (descSort ? -1 : 1);
     }
     if (sortBy === 'studentId') {
-      const x = a.user.studentId || '';
-      const y = b.user.studentId || '';
-
-      return x.localeCompare(y) * (descSort ? -1 : 1);
-    }
-    if (sortBy === 'status') {
-      const x = a.gradedBy ? a.gradedBy : '';
-      const y = b.gradedBy ? b.gradedBy : '';
+      const x = a.studentId || '';
+      const y = b.studentId || '';
 
       return x.localeCompare(y) * (descSort ? -1 : 1);
     }
@@ -309,7 +456,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                   sx={{ fontWeight: 'bold' }}
                   noWrap
                 >
-                  นักเรียนที่ส่งงาน
+                  ผู้เรียนทั้งหมด
                 </Typography>
                 <Stack direction="row" justifyContent="flex-end">
                   <Button
@@ -317,7 +464,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                     size="small"
                     disableRipple
                     onClick={handleSortByButtonClick}
-                    disabled={submissions ? submissions.length === 0 : true}
+                    disabled={students ? students.length === 0 : true}
                     sx={{
                       px: 0,
                       justifyContent: 'flex-end',
@@ -339,8 +486,11 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                       color="primary"
                       disableRipple
                       onClick={() => setDescSort(!descSort)}
-                      disabled={submissions ? submissions.length === 0 : true}
-                      sx={{ pr: 0 }}
+                      disabled={students ? students.length === 0 : true}
+                      sx={{
+                        pr: 0,
+                        visibility: sortBy === 'status' ? 'hidden' : 'visible',
+                      }}
                     >
                       <SwitchLeftIcon
                         fontSize="inherit"
@@ -357,24 +507,23 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
 
             <Divider />
 
-            <SubmissionListItem
-              active={submissionId === undefined}
+            <StudentListItem
+              active={studentId === undefined}
               checkbox={
                 <Checkbox
-                  checked={submissions?.length === selected.length}
+                  checked={students?.length === selected.length}
                   indeterminate={
-                    submissions
-                      ? selected.length > 0 &&
-                        selected.length < submissions.length
+                    students
+                      ? selected.length > 0 && selected.length < students.length
                       : false
                   }
                   onChange={() => {
-                    if (submissions?.length === selected.length) {
+                    if (students?.length === selected.length) {
                       setSelected([]);
                     } else {
-                      if (submissions) {
+                      if (students) {
                         setSelected(
-                          submissions.map((submission) => submission.id)
+                          students.map((submission) => submission.id)
                         );
                       }
                     }
@@ -389,52 +538,123 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
               }
               studentName="เลือกทั้งหมด"
               studentId={null}
-              graded={false}
-              disabled={submissions ? submissions.length === 0 : true}
+              disabled={students ? students.length === 0 : true}
             />
 
-            <Divider />
-
-            {submissions &&
-              submissions.sort(sortingFunc).map((submission) => (
-                <SubmissionListItem
-                  key={submission.id}
-                  active={Number(submissionId) === submission.id}
+            {/* if not sort by status */}
+            {sortBy !== 'status' &&
+              assignment &&
+              students &&
+              students.sort(sortingFunc).map((student) => (
+                <StudentListItem
+                  key={student.id}
+                  active={Number(studentId) === student.id}
                   checkbox={
                     <Checkbox
                       checked={
-                        selected.findIndex((id) => id === submission.id) !== -1
+                        selected.findIndex((id) => id === student.id) !== -1
                       }
                       onChange={() => {
                         if (
-                          selected.findIndex((id) => id === submission.id) !==
-                          -1
+                          selected.findIndex((id) => id === student.id) !== -1
                         ) {
                           setSelected(
-                            selected.filter((id) => id !== submission.id)
+                            selected.filter((id) => id !== student.id)
                           );
                         } else {
-                          setSelected([...selected, submission.id]);
+                          setSelected([...selected, student.id]);
                         }
                       }}
                     />
                   }
-                  href={`/classroom/${slug}/assignments/${assignmentId}/submissions/${submission.id}`}
+                  href={`/classroom/${slug}/assignments/${assignmentId}/submissions/student/${student.id}`}
                   avatar={
                     <Avatar
-                      alt={`${submission.user.username}'s profile image`}
-                      src={getImagePath(submission.user.profileImage)}
+                      alt={`${student.username}'s profile image`}
+                      src={getImagePath(student.profileImage)}
                     >
-                      {submission.user.firstName && submission.user.lastName
-                        ? submission.user.firstName?.charAt(0) +
-                          submission.user.lastName?.charAt(0)
-                        : submission.user.username?.charAt(0)}
+                      {student.firstName && student.lastName
+                        ? student.firstName?.charAt(0) +
+                          student.lastName?.charAt(0)
+                        : student.username?.charAt(0)}
                     </Avatar>
                   }
-                  studentName={getStudentName(submission.user)}
-                  studentId={submission.user.studentId || null}
-                  graded={Boolean(submission.gradedBy)}
+                  studentName={getStudentName(student)}
+                  studentId={student.studentId || null}
+                  status={
+                    (Object.keys(groups).find(
+                      (key) =>
+                        (groups as any)[key].findIndex(
+                          (group: StudentSubmissions) => group.id === student.id
+                        ) !== -1
+                    ) as statusType) || 'notSubmitted'
+                  }
+                  point={student.scoreInfo?.score ?? 0}
+                  maxPoint={assignment.point}
                 />
+              ))}
+
+            {/* if sort by status */}
+            {sortBy === 'status' &&
+              assignment &&
+              groups &&
+              statuses.map((status) => (
+                <StatusGroupListItem
+                  key={status}
+                  status={status}
+                  childrenSize={groups[status].length}
+                >
+                  {groups[status].map((student) => (
+                    <StudentListItem
+                      key={student.id}
+                      active={Number(studentId) === student.id}
+                      checkbox={
+                        <Checkbox
+                          checked={
+                            selected.findIndex((id) => id === student.id) !== -1
+                          }
+                          onChange={() => {
+                            if (
+                              selected.findIndex((id) => id === student.id) !==
+                              -1
+                            ) {
+                              setSelected(
+                                selected.filter((id) => id !== student.id)
+                              );
+                            } else {
+                              setSelected([...selected, student.id]);
+                            }
+                          }}
+                        />
+                      }
+                      href={`/classroom/${slug}/assignments/${assignmentId}/submissions/student/${student.id}`}
+                      avatar={
+                        <Avatar
+                          alt={`${student.username}'s profile image`}
+                          src={getImagePath(student.profileImage)}
+                        >
+                          {student.firstName && student.lastName
+                            ? student.firstName?.charAt(0) +
+                              student.lastName?.charAt(0)
+                            : student.username?.charAt(0)}
+                        </Avatar>
+                      }
+                      studentName={getStudentName(student)}
+                      studentId={student.studentId || null}
+                      status={
+                        (Object.keys(groups).find(
+                          (key) =>
+                            (groups as any)[key].findIndex(
+                              (group: StudentSubmissions) =>
+                                group.id === student.id
+                            ) !== -1
+                        ) as statusType) || 'notSubmitted'
+                      }
+                      point={student.scoreInfo?.score ?? 0}
+                      maxPoint={assignment.point}
+                    />
+                  ))}
+                </StatusGroupListItem>
               ))}
           </List>
         </Box>
@@ -499,7 +719,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
           disableRipple
           onClick={() => handleChooseSortByButtonClick('name')}
         >
-          <ListItemText>ชื่อผู้ส่ง</ListItemText>
+          <ListItemText>ชื่อผู้เรียน</ListItemText>
           <ListItemIcon
             sx={{
               opacity: SORT_BY[sortBy] === SORT_BY.name ? 1 : 0,
@@ -550,6 +770,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
             sx={{
               alignItems: 'center',
               display: 'flex',
+              visibility: sortBy === 'status' ? 'hidden' : 'visible',
             }}
           >
             จาก {descSort ? 'มาก -> น้อย' : 'น้อย -> มาก'}
