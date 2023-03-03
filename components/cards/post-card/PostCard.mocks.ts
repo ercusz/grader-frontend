@@ -22,6 +22,7 @@ const base: IPostCard = {
     updatedAt: new Date(
       new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
     ).toISOString(),
+    comments: [],
   },
   classroomSlug: '',
 };

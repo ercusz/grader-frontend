@@ -22,6 +22,11 @@ const CreateCommentForm: React.FC<ICreateCommentForm> = ({ onSubmit }) => {
   const { data: user } = useUser();
   const [comment, setComment] = useState<string>('');
 
+  const handleSubmit = () => {
+    onSubmit(comment);
+    setComment('');
+  };
+
   return (
     <Stack
       direction="row"
@@ -49,13 +54,14 @@ const CreateCommentForm: React.FC<ICreateCommentForm> = ({ onSubmit }) => {
         multiline
         minRows={1}
         fullWidth
+        value={comment}
         onChange={(e) => setComment(e.target.value)}
         InputProps={{
           endAdornment: (
             <Tooltip title="แสดงความคิดเห็น" arrow>
               <div style={{ cursor: 'not-allowed' }}>
                 <IconButton
-                  onClick={() => onSubmit(comment)}
+                  onClick={handleSubmit}
                   disabled={comment.length === 0}
                   sx={{
                     p: 0,

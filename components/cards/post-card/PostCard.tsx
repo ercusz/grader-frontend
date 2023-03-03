@@ -1,7 +1,8 @@
+import PostContent from '@/components/contents/post/PostContent';
 import EditPostDialog from '@/components/dialogs/edit-post/EditPostDialog';
+import PostCommentsSection from '@/components/sections/post-comments/PostCommentsSection';
 import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
-import { useIsOverflow } from '@/hooks/is-overflow/useIsOverflow';
 import { useUser } from '@/hooks/user/useUser';
 import { Post, User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
@@ -25,7 +26,6 @@ import {
   Menu,
   MenuItem,
   Stack,
-  TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -33,9 +33,8 @@ import { alpha, SxProps, useTheme } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { format, formatDistanceToNow, isAfter, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
-import Linkify from 'linkify-react';
 import Link from 'next/link';
-import { MouseEvent, useRef, useState } from 'react';
+import { MouseEvent, useState } from 'react';
 
 export interface IPostCard {
   compact?: boolean;
@@ -47,7 +46,6 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
   const theme = useTheme();
 
   const [openEditPost, setOpenEditPostDialog] = useState(false);
-  const [viewMore, setViewMore] = useState(false);
 
   const { data: user } = useUser();
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
@@ -100,9 +98,6 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
     }
   };
 
-  const ref = useRef<HTMLDivElement>(null);
-  const isOverflow = useIsOverflow(ref);
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -123,23 +118,6 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
       students: classroom?.students || ([] as UserResponse[]),
       targetUser: targetUser,
     });
-  };
-
-  const renderLink = ({
-    attributes,
-    content,
-  }: {
-    attributes: {
-      [attr: string]: any;
-    };
-    content: string;
-  }) => {
-    const { href, ...props } = attributes;
-    return (
-      <MuiLink href={href} target="_blank" {...props}>
-        {content}
-      </MuiLink>
-    );
   };
 
   const renderRoleChip = (role: Roles) => {
@@ -268,82 +246,23 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             </Stack>
           }
         />
-        <CardContent>
-          <div
-            ref={ref}
-            data-color-mode={theme.palette.mode}
-            style={
-              compact || !viewMore
-                ? {
-                    whiteSpace: 'break-spaces',
-                    display: '-webkit-box',
-                    overflow: 'hidden',
-                    WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: 3,
-                  }
-                : {
-                    whiteSpace: 'break-spaces',
-                  }
-            }
-          >
-            <Linkify
-              as="p"
-              options={{
-                render: {
-                  url: renderLink,
-                },
-              }}
-            >
-              {post.content}
-            </Linkify>
-          </div>
-          {!compact && isOverflow && (
-            <MuiLink
-              component="button"
-              variant="subtitle2"
-              underline="hover"
-              color="textSecondary"
-              onClick={() => setViewMore(true)}
-              sx={{ mt: 2 }}
-            >
-              ดูเพิ่มเติม
-            </MuiLink>
-          )}
-          {!compact && viewMore && (
-            <MuiLink
-              component="button"
-              variant="subtitle2"
-              underline="hover"
-              color="textSecondary"
-              onClick={() => setViewMore(false)}
-              sx={{ mt: 2 }}
-            >
-              ดูน้อยลง
-            </MuiLink>
-          )}
+        <CardContent sx={{ pt: 0 }}>
+          <PostContent content={post.content} viewMoreButton={!compact} />
         </CardContent>
+        <Divider />
+
         {!compact ? (
-          <CardActions sx={{ px: 3 }}>
-            <IconButton size="small" sx={{ ml: -1 }}>
-              <Avatar
-                alt={user ? `${user?.username}'s profile image` : undefined}
-                src={user?.profileImage ? user.profileImage.url : undefined}
-                sx={{ width: 24, height: 24 }}
-              >
-                {user && user.firstName && user.lastName
-                  ? user.firstName?.charAt(0) + user.lastName?.charAt(0)
-                  : user?.username?.charAt(0)}
-              </Avatar>
-            </IconButton>
-            <TextField
-              size="small"
-              placeholder="เขียนความคิดเห็น…"
-              multiline
-              sx={{ flexGrow: 1, mr: 1, '& fieldset': { border: 'none' } }}
+          <CardActions
+            sx={{
+              px: 2,
+              display: 'flex',
+              flexDirection: 'column',
+            }}
+          >
+            <PostCommentsSection
+              post={post}
+              classroomSlug={classroomSlug ?? ''}
             />
-            <Button disabled variant="text">
-              โพสต์
-            </Button>
           </CardActions>
         ) : (
           <CardActions>
@@ -355,6 +274,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           </CardActions>
         )}
       </Card>
+
       <Menu
         id={`post-menu-${post.id}`}
         anchorEl={anchorEl}

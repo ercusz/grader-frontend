@@ -197,6 +197,7 @@ export type Post = {
   createdAt: string;
   createBy: UserResponse;
   updatedAt: string;
+  comments: UserComment[];
 };
 
 export type CreateJavaSrcSubmission = {

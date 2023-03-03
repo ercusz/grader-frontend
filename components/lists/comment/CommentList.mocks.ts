@@ -2,7 +2,7 @@ import { ICommentList } from './CommentList';
 
 const base: ICommentList = {
   comments: [],
-  handleOpenMenu: function (id: number): void {
+  handleDeleteComment: function (id: string): void {
     throw new Error('Function not implemented.');
   }
 };

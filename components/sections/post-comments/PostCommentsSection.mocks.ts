@@ -1,7 +1,6 @@
-import { SetStateAction } from 'react';
-import { IEditPostDialog } from './EditPostDialog';
+import { IPostCommentsSection } from './PostCommentsSection';
 
-const base: IEditPostDialog = {
+const base: IPostCommentsSection = {
   post: {
     id: 0,
     classroomId: 0,
@@ -19,12 +18,9 @@ const base: IEditPostDialog = {
     updatedAt: '',
     comments: [],
   },
-  openDialog: false,
-  setOpenDialog: function (value: SetStateAction<boolean>): void {
-    throw new Error('Function not implemented.');
-  },
+  classroomSlug: '',
 };
 
-export const mockEditPostDialogProps = {
+export const mockPostCommentsSectionProps = {
   base,
 };

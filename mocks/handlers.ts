@@ -701,6 +701,7 @@ export const handlers = [
             updatedAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 4
             ).toISOString(),
+            comments: [],
           },
           {
             id: 2,
@@ -724,6 +725,7 @@ export const handlers = [
             updatedAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 3
             ).toISOString(),
+            comments: [],
           },
           {
             id: 3,
@@ -749,6 +751,7 @@ export const handlers = [
             updatedAt: new Date(
               new Date().valueOf() - 1000 * 60 * 60 * 24 * 2
             ).toISOString(),
+            comments: [],
           },
           {
             id: 4,
@@ -767,6 +770,7 @@ export const handlers = [
               },
             },
             updatedAt: new Date().toISOString(),
+            comments: [],
           },
         ])
       );
