@@ -306,3 +306,11 @@ export type StudentSubmission = UserResponse & {
 export type AssignmentSubmissions = {
   students: StudentSubmission[];
 } & Assignment;
+
+export type UserComment = {
+  id: number;
+  content: string;
+  createBy: UserResponse;
+  createdAt: string;
+  updatedAt: string;
+};
