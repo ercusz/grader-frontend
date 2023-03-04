@@ -14,6 +14,7 @@ specifiers:
   '@emotion/server': ^11.10.0
   '@emotion/styled': ^11.10.5
   '@fontsource/inter': ^4.5.15
+  '@formkit/auto-animate': 1.0.0-beta.6
   '@lottiefiles/lottie-player': ^1.7.0
   '@monaco-editor/react': ^4.4.6
   '@mui/icons-material': ^5.11.0
@@ -94,6 +95,7 @@ dependencies:
   '@emotion/server': 11.10.0
   '@emotion/styled': 11.10.5_wdrtobianbzdm365b35mm7f5r4
   '@fontsource/inter': 4.5.15
+  '@formkit/auto-animate': 1.0.0-beta.6
   '@lottiefiles/lottie-player': 1.7.0
   '@monaco-editor/react': 4.4.6_6vrjaj6ridxbohi43n7zt4gn7q
   '@mui/icons-material': 5.11.0_iqr2jzcdqycxtpowdo6kqtpgpq
@@ -2114,6 +2116,10 @@ packages:
 
   /@fontsource/inter/4.5.15:
     resolution: {integrity: sha512-FzleM9AxZQK2nqsTDtBiY0PMEVWvnKnuu2i09+p6DHvrHsuucoV2j0tmw+kAT3L4hvsLdAIDv6MdGehsPIdT+Q==}
+    dev: false
+
+  /@formkit/auto-animate/1.0.0-beta.6:
+    resolution: {integrity: sha512-PVDhLAlr+B4Xb7e+1wozBUWmXa6BFU8xUPR/W/E+TsQhPS1qkAdAsJ25keEnFrcePSnXHrOsh3tiFbEToOzV9w==}
     dev: false
 
   /@gar/promisify/1.1.3:

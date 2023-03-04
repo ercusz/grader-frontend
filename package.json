@@ -26,6 +26,7 @@
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.5",
     "@fontsource/inter": "^4.5.15",
+    "@formkit/auto-animate": "1.0.0-beta.6",
     "@lottiefiles/lottie-player": "^1.7.0",
     "@monaco-editor/react": "^4.4.6",
     "@mui/icons-material": "^5.11.0",
