@@ -4,7 +4,6 @@ import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { Post, UserComment } from '@/types/types';
 import { createPostComment, deletePostComment } from '@/utils/CommentService';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useMemo } from 'react';
 
 export interface IPostCommentsSection {
   post: Post;
@@ -17,25 +16,25 @@ const PostCommentsSection: React.FC<IPostCommentsSection> = ({
 }) => {
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
 
-  const comments = useMemo(() => {
-    return post.comments || ([] as UserComment[]);
-  }, [post.comments]);
+  const comments = post.comments || ([] as UserComment[]);
 
   const queryClient = useQueryClient();
+  interface ICreateCommentParams {
+    content: string;
+    onSuccessCallback?: () => void;
+  }
   const createMutation = useMutation(
-    (content: string) =>
+    (params: ICreateCommentParams) =>
       createPostComment(
         classroom?.id.toString() as string,
         post.id.toString() as string,
-        content
+        params.content
       ),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries([
-          'posts',
-          { classroomId: classroom?.id },
-        ]);
-        alert('โพสต์ความคิดเห็นสำเร็จ');
+      onSuccess: async (data, { onSuccessCallback }) => {
+        queryClient.invalidateQueries(['posts']);
+
+        onSuccessCallback?.();
       },
       onError: () => {
         alert('เกิดข้อผิดพลาดในการโพสต์ความคิดเห็น');
@@ -52,11 +51,7 @@ const PostCommentsSection: React.FC<IPostCommentsSection> = ({
       ),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([
-          'posts',
-          { classroomId: classroom?.id },
-        ]);
-        alert('ลบความคิดเห็นสำเร็จ');
+        queryClient.invalidateQueries(['posts']);
       },
       onError: () => {
         alert('เกิดข้อผิดพลาดในการลบความคิดเห็น');
@@ -64,8 +59,14 @@ const PostCommentsSection: React.FC<IPostCommentsSection> = ({
     }
   );
 
-  const handleCreateComment = (content: string) => {
-    createMutation.mutate(content);
+  const handleCreateComment = (
+    content: string,
+    onSuccessCallback?: () => void
+  ) => {
+    createMutation.mutate({
+      content: content,
+      onSuccessCallback: onSuccessCallback,
+    });
   };
 
   const handleDeleteComment = (id: string) => {

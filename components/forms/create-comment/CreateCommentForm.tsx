@@ -1,4 +1,6 @@
 import { useUser } from '@/hooks/user/useUser';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import CheckIcon from '@mui/icons-material/Check';
 import SendIcon from '@mui/icons-material/Send';
 import {
   Avatar,
@@ -10,21 +12,39 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface ICreateCommentForm {
   // eslint-disable-next-line no-unused-vars
-  onSubmit: (content: string) => void;
+  onSubmit: (content: string, onSuccessCallback?: () => void) => void;
 }
 
 const CreateCommentForm: React.FC<ICreateCommentForm> = ({ onSubmit }) => {
   const theme = useTheme();
   const { data: user } = useUser();
   const [comment, setComment] = useState<string>('');
+  const [parent] = useAutoAnimate();
+  const [showSuccess, setShowSuccess] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (showSuccess) {
+      const timeout = setTimeout(() => {
+        setShowSuccess(false);
+      }, 2000);
+
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [showSuccess]);
+
+  const onSuccess = () => {
+    setComment('');
+    setShowSuccess(true);
+  };
 
   const handleSubmit = () => {
-    onSubmit(comment);
-    setComment('');
+    onSubmit(comment, onSuccess);
   };
 
   return (
@@ -54,25 +74,42 @@ const CreateCommentForm: React.FC<ICreateCommentForm> = ({ onSubmit }) => {
         multiline
         minRows={1}
         fullWidth
-        value={comment}
+        value={showSuccess ? 'ความคิดเห็นของคุณถูกส่งแล้ว🚀' : comment}
         onChange={(e) => setComment(e.target.value)}
         InputProps={{
+          readOnly: showSuccess,
           endAdornment: (
-            <Tooltip title="แสดงความคิดเห็น" arrow>
-              <div style={{ cursor: 'not-allowed' }}>
-                <IconButton
-                  onClick={handleSubmit}
-                  disabled={comment.length === 0}
-                  sx={{
-                    p: 0,
-                  }}
-                >
-                  <SendIcon fontSize="small" />
-                </IconButton>
-              </div>
-            </Tooltip>
+            <div ref={parent}>
+              {!showSuccess ? (
+                <Tooltip title="แสดงความคิดเห็น" arrow>
+                  <div style={{ cursor: 'not-allowed' }}>
+                    <IconButton
+                      onClick={handleSubmit}
+                      disabled={comment.length === 0}
+                      sx={{
+                        p: 0,
+                      }}
+                    >
+                      <SendIcon fontSize="small" />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : (
+                <div>
+                  <IconButton
+                    disableRipple
+                    sx={{
+                      p: 0,
+                    }}
+                  >
+                    <CheckIcon fontSize="small" color="success" />
+                  </IconButton>
+                </div>
+              )}
+            </div>
           ),
           sx: {
+            color: showSuccess ? theme.palette.success.main : undefined,
             alignItems: 'flex-end',
           },
         }}
@@ -83,6 +120,9 @@ const CreateCommentForm: React.FC<ICreateCommentForm> = ({ onSubmit }) => {
             '& fieldset': {
               borderColor: theme.palette.divider,
               borderRadius: '20px',
+              boxShadow: showSuccess
+                ? `0 0 0 1px ${alpha(theme.palette.success.main, 0.25)}`
+                : 'none',
             },
             '&:hover fieldset, &.Mui-focused fieldset': {
               borderColor: theme.palette.divider,

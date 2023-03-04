@@ -6,6 +6,7 @@ import { User, UserComment, UserResponse } from '@/types/types';
 import { editComment } from '@/utils/CommentService';
 import { getImagePath } from '@/utils/imagePath';
 import { getUserRole } from '@/utils/role';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -81,11 +82,7 @@ const CommentListItem: React.FC<ICommentListItem> = ({
       editComment(params.id, params.content),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([
-          'posts',
-          { classroomId: classroom?.id },
-        ]);
-        alert('แก้ไขความคิดเห็นสำเร็จ');
+        queryClient.invalidateQueries(['posts']);
         setEditing(false);
       },
       onError: () => {
@@ -455,9 +452,11 @@ const CommentList: React.FC<ICommentList> = ({
 }) => {
   const { data: user } = useUser();
   const [currentSize, setCurrentSize] = useState<number>(previewSize || 0);
+  const [parent] = useAutoAnimate();
 
   return (
     <List
+      ref={parent}
       sx={{
         width: '100%',
       }}
