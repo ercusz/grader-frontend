@@ -1,3 +1,4 @@
+import { UserComment } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 
 export const editComment = async (
@@ -40,6 +41,69 @@ export const deletePostComment = async (
 ): Promise<void> => {
   const { err }: Response = await contentHttpClient.delete(
     `/api/classrooms/${classroomId}/posts/${postId}/comments/${commentId}`
+  );
+
+  if (err) {
+    throw new Error('delete comment failed');
+  }
+};
+
+export const getAssignmentPublicComments = async (
+  classroomId: string,
+  assignmentId: string
+): Promise<UserComment[]> => {
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/comments`
+  );
+  if (err) {
+    throw new Error('get assignment comments failed');
+  }
+
+  return res.data as UserComment[];
+};
+
+export const getAssignmentPrivateComments = async (
+  classroomId: string,
+  assignmentId: string,
+  hostId: string
+): Promise<UserComment[]> => {
+  const { res, err }: Response = await contentHttpClient.get(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/comments/hosts/${hostId}`
+  );
+  if (err) {
+    throw new Error('get assignment comments failed');
+  }
+
+  return res.data as UserComment[];
+};
+
+export const createAssignmentComment = async (
+  classroomId: string,
+  assignmentId: string,
+  content: string,
+  isPrivate: boolean,
+  hostId?: string
+): Promise<void> => {
+  const tail = isPrivate ? `hosts/${hostId}` : '';
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/comments/${tail}`,
+    {
+      content: content,
+    }
+  );
+
+  if (err) {
+    throw new Error('create comment failed');
+  }
+};
+
+export const deleteAssignmentComment = async (
+  classroomId: string,
+  assignmentId: string,
+  commentId: string
+): Promise<void> => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/comments/${commentId}`
   );
 
   if (err) {

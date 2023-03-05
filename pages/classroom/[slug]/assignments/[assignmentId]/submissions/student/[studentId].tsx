@@ -1,4 +1,5 @@
 import FeedbackLayout from '@/components/layouts/feedback/FeedbackLayout';
+import AssignmentCommentsSection from '@/components/sections/assignment-comments/AssignmentCommentsSection';
 import SourceCodeSection from '@/components/sections/source-code/SourceCodeSection';
 import SubmissionTestcasesSection from '@/components/sections/submission-testcases/SubmissionTestcasesSection';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
@@ -8,19 +9,12 @@ import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
 import { getAssignmentSubmissions } from '@/utils/SubmissionService';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import ChatIcon from '@mui/icons-material/Chat';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
   Avatar,
-  Box,
   CircularProgress,
-  Collapse,
   Container,
   Grid,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
   Paper,
   Stack,
   Tooltip,
@@ -340,25 +334,12 @@ const AssignmentSubmission: NextPageWithLayout = ({
                 flexDirection: 'column',
               }}
             >
-              <ListItemButton onClick={handleOpenCommentsSection}>
-                <ListItemIcon>
-                  <ChatIcon fontSize="small" />
-                </ListItemIcon>
-                <ListItemText primary="ความคิดเห็น" />
-                {openCommentsSection ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={openCommentsSection} timeout="auto" unmountOnExit>
-                <Box sx={{ margin: 6 }}>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                    component="div"
-                    align="center"
-                  >
-                    ความคิดเห็น
-                  </Typography>
-                </Box>
-              </Collapse>
+              <AssignmentCommentsSection
+                assignment={assignment}
+                classroomSlug={classroom?.slug ?? ''}
+                defaultPrivate
+                hostId={student.id.toString() as string}
+              />
             </Paper>
           </Grid>
         </Grid>

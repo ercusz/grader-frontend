@@ -2,6 +2,7 @@ import AssignmentContentCard from '@/components/cards/assignment-content/Assignm
 import SubmissionStatusCard from '@/components/cards/submission-status/SubmissionStatusCard';
 import EditAssignmentDialog from '@/components/dialogs/edit-assignment/EditAssignmentDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
+import AssignmentCommentsSection from '@/components/sections/assignment-comments/AssignmentCommentsSection';
 import { Roles } from '@/constants/roles';
 import { useAssignment } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
@@ -32,6 +33,7 @@ import {
   Link as MuiLink,
   List,
   ListItem,
+  Paper,
   Stack,
   Typography,
 } from '@mui/material';
@@ -223,6 +225,25 @@ const ClassroomAssignment: NextPageWithLayout = ({
                 assignmentId={id}
               />
             )}
+            <Paper
+              sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <AssignmentCommentsSection
+                assignment={assignment}
+                classroomSlug={classroom.slug}
+                hostId={
+                  user
+                    ? getRole(user) === Roles.STUDENT
+                      ? (user.id.toString() as string)
+                      : undefined
+                    : undefined
+                }
+              />
+            </Paper>
           </Grid>
           <Grid item xs={12} md={8} sx={{ mb: 6 }}>
             <Card className="shadow-md" variant="outlined" sx={{ mb: 2 }}>

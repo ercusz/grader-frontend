@@ -83,6 +83,7 @@ const CommentListItem: React.FC<ICommentListItem> = ({
     {
       onSuccess: () => {
         queryClient.invalidateQueries(['posts']);
+        queryClient.invalidateQueries(['assignment-comments']);
         setEditing(false);
       },
       onError: () => {
@@ -464,10 +465,10 @@ const CommentList: React.FC<ICommentList> = ({
       {comments
         .sort((a, b) => {
           if (sort === 'newest') {
-            return compareDesc(parseISO(a.updatedAt), parseISO(b.updatedAt));
+            return compareDesc(parseISO(a.createdAt), parseISO(b.createdAt));
           }
 
-          return compareAsc(parseISO(a.updatedAt), parseISO(b.updatedAt));
+          return compareAsc(parseISO(a.createdAt), parseISO(b.createdAt));
         })
         .filter((_, idx) => (currentSize ? idx < currentSize : true))
         .map((comment) => (
