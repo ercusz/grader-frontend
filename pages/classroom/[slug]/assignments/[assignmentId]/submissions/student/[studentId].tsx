@@ -36,7 +36,7 @@ import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { NextPageWithLayout } from '../../../../../../page';
 
 const AssignmentSubmission: NextPageWithLayout = ({
@@ -67,12 +67,6 @@ const AssignmentSubmission: NextPageWithLayout = ({
     }
 
     return student.username;
-  };
-
-  const [openCommentsSection, setOpenCommentsSection] = useState(false);
-
-  const handleOpenCommentsSection = () => {
-    setOpenCommentsSection(!openCommentsSection);
   };
 
   return (

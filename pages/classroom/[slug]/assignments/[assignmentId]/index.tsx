@@ -13,6 +13,7 @@ import { setToken } from '@/utils/APIHelper';
 import { deleteAssignment, getAssignmentById } from '@/utils/AssignmentService';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getUserRole } from '@/utils/role';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -24,17 +25,15 @@ import OutboxIcon from '@mui/icons-material/Outbox';
 import {
   Backdrop,
   Breadcrumbs,
-  Button,
   Card,
   CardContent,
   CircularProgress,
   Fab,
   Grid,
+  IconButton,
   Link as MuiLink,
-  List,
-  ListItem,
-  Paper,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import {
@@ -176,7 +175,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
           <Grid item xs={12} md={4}>
             {(user && getRole(user) === Roles.TEACHER) ||
             (user && getRole(user) === Roles.TA) ? (
-              <List>
+              <>
                 {assignment && (
                   <EditAssignmentDialog
                     classroomSlug={slug}
@@ -184,53 +183,68 @@ const ClassroomAssignment: NextPageWithLayout = ({
                   />
                 )}
 
-                <ListItem
-                  disableGutters
+                <Card
+                  className="shadow-md w-full"
+                  variant="outlined"
                   sx={{
+                    p: 1,
                     alignItems: 'center',
                     justifyContent: 'center',
+                    '& .MuiCardContent-root': {
+                      p: 0,
+                    },
                   }}
                 >
-                  <Stack
-                    direction="row"
-                    spacing={2}
-                    justifyContent="space-around"
-                    alignItems="center"
-                  >
-                    <Button
-                      className="w-full"
-                      color="primary"
-                      variant="contained"
-                      size="large"
-                      startIcon={<EditIcon />}
-                      onClick={() => setOpenEditAssignmentDialog(true)}
+                  <CardContent>
+                    <Stack
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
                     >
-                      แก้ไข
-                    </Button>
-                    <Button
-                      color="error"
-                      variant="outlined"
-                      size="large"
-                      startIcon={<DeleteIcon />}
-                      onClick={() => handleDeleteAssignment()}
-                    >
-                      ลบ
-                    </Button>
-                  </Stack>
-                </ListItem>
-              </List>
+                      <Link
+                        passHref
+                        href={`/classroom/${slug}/assignments/${assignment.id}/submissions`}
+                      >
+                        <MuiLink underline="none">
+                          <Tooltip title="ดูภาพรวมการส่งงาน" arrow>
+                            <IconButton color="info">
+                              <AssessmentIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </MuiLink>
+                      </Link>
+
+                      <Tooltip title="แก้ไขงาน" arrow>
+                        <IconButton
+                          color="primary"
+                          onClick={() => setOpenEditAssignmentDialog(true)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+
+                      <Tooltip title="ลบงาน" arrow>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDeleteAssignment()}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </>
             ) : (
               <SubmissionStatusCard
                 classroomId={classroom.id.toString() as string}
                 assignmentId={id}
               />
             )}
-            <Paper
-              sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-              }}
+            <Card
+              className="shadow-xl w-full"
+              variant="outlined"
+              sx={{ p: 2, mt: 2 }}
             >
               <AssignmentCommentsSection
                 assignment={assignment}
@@ -243,7 +257,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
                     : undefined
                 }
               />
-            </Paper>
+            </Card>
           </Grid>
           <Grid item xs={12} md={8} sx={{ mb: 6 }}>
             <Card className="shadow-md" variant="outlined" sx={{ mb: 2 }}>
