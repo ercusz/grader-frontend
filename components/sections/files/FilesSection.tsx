@@ -1,6 +1,7 @@
-import { UserSubmission } from '@/types/types';
+import { FileResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import {
   Card,
@@ -9,28 +10,50 @@ import {
   CardMedia,
   Collapse,
   Grid,
+  IconButton,
   ListItemButton,
   ListItemIcon,
   ListItemText,
   Paper,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { CgCodeSlash } from 'react-icons/cg';
 
 export interface IFilesSection {
-  files: UserSubmission['files'];
+  files: FileResponse[];
+  deletable?: boolean;
+  // eslint-disable-next-line no-unused-vars
+  onDelete?: (id: number) => void;
+  defaultOpen?: boolean;
 }
 
-const FilesSection: React.FC<IFilesSection> = ({ files }) => {
+const FilesSection: React.FC<IFilesSection> = ({
+  files,
+  deletable,
+  onDelete,
+  defaultOpen = false,
+}) => {
   const theme = useTheme();
-  const [openFilesSection, setOpenFilesSection] = useState(false);
+  const [openFilesSection, setOpenFilesSection] = useState(defaultOpen);
   const [select, setSelect] = useState<number | null>(null);
 
   const handleOpenFilesSection = () => {
     setOpenFilesSection(!openFilesSection);
+  };
+
+  const handleDeleteFile = (e: MouseEvent<HTMLElement>, id: number) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (onDelete) {
+      onDelete(id);
+    }
+
+    setSelect(null);
   };
 
   return (
@@ -53,18 +76,18 @@ const FilesSection: React.FC<IFilesSection> = ({ files }) => {
         >
           <Grid container spacing={2}>
             {files &&
-              files.map((file, idx) => (
+              files.map((file) => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={file.id}>
                   <Card
                     variant="outlined"
-                    onClick={() => setSelect(idx)}
+                    onClick={() => setSelect(file.id)}
                     sx={{
                       borderColor: theme.palette.divider,
                       borderStyle: 'solid',
-                      borderWidth: select === idx ? 0 : 1,
+                      borderWidth: select === file.id ? 0 : 1,
                       height: '100%',
                       boxShadow:
-                        select === idx
+                        select === file.id
                           ? `0 0 0 2px ${alpha(
                               theme.palette.primary.main,
                               0.24
@@ -125,6 +148,28 @@ const FilesSection: React.FC<IFilesSection> = ({ files }) => {
                               : `${Math.ceil(file.size)} KB`}
                           </Typography>
                         </Stack>
+                        {deletable && select == file.id && (
+                          <Tooltip arrow title="ลบไฟล์นี้">
+                            <IconButton
+                              onClick={(e) => handleDeleteFile(e, file.id)}
+                              sx={{
+                                position: 'absolute',
+                                right: 0,
+                                top: 0,
+                                my: 1,
+                                mx: 1,
+                                bgcolor: (theme) =>
+                                  alpha(theme.palette.background.paper, 0.24),
+                                '&:hover': {
+                                  bgcolor: (theme) =>
+                                    alpha(theme.palette.error.main, 0.32),
+                                },
+                              }}
+                            >
+                              <DeleteIcon color="error" />
+                            </IconButton>
+                          </Tooltip>
+                        )}
                       </CardContent>
                     </CardActionArea>
                   </Card>

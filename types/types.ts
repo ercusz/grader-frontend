@@ -220,6 +220,16 @@ export type UserJavaSrcSubmission = {
   }[];
 };
 
+export type FileResponse = {
+  id: number;
+  name: string;
+  url: string;
+  ext: string;
+  mime: string;
+  size: number;
+  createdAt: string;
+};
+
 export type UserSubmission = {
   id: number;
   programScore: number;
@@ -240,17 +250,7 @@ export type UserSubmission = {
       }[]
     | null;
   type: 'java-src' | 'docs';
-  files:
-    | {
-        id: number;
-        name: string;
-        url: string;
-        ext: string;
-        mime: string;
-        size: number;
-        createdAt: string;
-      }[]
-    | null;
+  files: FileResponse[] | null;
   createdAt: string;
 };
 

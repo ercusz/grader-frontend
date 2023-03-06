@@ -1,27 +1,46 @@
 import { contentHttpClient, Response } from './APIHelper';
 
-const imageExtensions = ['png', 'jpeg', 'jpg'];
+export const imageExtensions = ['png', 'jpeg', 'jpg'];
+export const studentSubmissionExtensions = [
+  ...imageExtensions,
+  'pdf',
+  'doc',
+  'docx',
+  'ppt',
+  'pptx',
+  'xls',
+  'xlsx',
+  'zip',
+  'rar',
+  '7z',
+];
 
 const isValidFileUploaded = (file: File, exts: string[]) => {
   const fileExtension = file.type.split('/')[1];
   return exts.includes(fileExtension);
 };
 
-export const uploadImage = async (file: File) => {
-  if (!file) throw new Error('File not found');
+export const uploadFiles = async (files: File[], exts: string[]) => {
+  if (files.length === 0) throw new Error('Cannot upload empty file');
 
-  if (!isValidFileUploaded(file, imageExtensions))
-    throw new Error('Invalid file type');
+  const someFileInvalidType = files.some((file) => {
+    return !isValidFileUploaded(file, exts);
+  });
+  if (someFileInvalidType) throw new Error('Invalid file type');
 
   const formData = new FormData();
-  formData.append('files', file);
+  for (const file of files) {
+    formData.append('files', file);
+  }
+
   const { res, err }: Response = await contentHttpClient.post(
     '/api/upload',
     formData
   );
+
   if (err) {
-    throw new Error('Upload image failed.');
+    throw new Error('Upload file failed.');
   }
 
-  return res.data.find(Boolean); // use .find(Boolean) for get first element of an array
+  return res.data;
 };

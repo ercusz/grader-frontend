@@ -1,5 +1,8 @@
 import AssignmentContentCard from '@/components/cards/assignment-content/AssignmentContentCard';
 import SubmissionStatusCard from '@/components/cards/submission-status/SubmissionStatusCard';
+import CreateSubmissionDialog, {
+  openCreateSubmissionDialogAtom,
+} from '@/components/dialogs/create-submission/CreateSubmissionDialog';
 import EditAssignmentDialog from '@/components/dialogs/edit-assignment/EditAssignmentDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import AssignmentCommentsSection from '@/components/sections/assignment-comments/AssignmentCommentsSection';
@@ -57,6 +60,9 @@ const ClassroomAssignment: NextPageWithLayout = ({
   const { data: user } = useUser();
 
   const [, setOpenEditAssignmentDialog] = useAtom(openEditAssignmentDialogAtom);
+  const [, setOpenCreateSubmissionDialog] = useAtom(
+    openCreateSubmissionDialogAtom
+  );
 
   const {
     isLoading: isLoadingClassroom,
@@ -149,18 +155,26 @@ const ClassroomAssignment: NextPageWithLayout = ({
             </Link>
           )}
           {assignment?.type === 'docs' && (
-            <Fab
-              variant="extended"
-              color="primary"
-              sx={{
-                position: 'fixed',
-                bottom: 24,
-                right: 24,
-              }}
-            >
-              <OutboxIcon sx={{ mr: 1 }} />
-              ส่งงาน
-            </Fab>
+            <>
+              <CreateSubmissionDialog
+                assignmentId={assignment.id.toString() as string}
+                classroomId={classroom?.id.toString() as string}
+              />
+
+              <Fab
+                variant="extended"
+                color="primary"
+                onClick={() => setOpenCreateSubmissionDialog(true)}
+                sx={{
+                  position: 'fixed',
+                  bottom: 24,
+                  right: 24,
+                }}
+              >
+                <OutboxIcon sx={{ mr: 1 }} />
+                ส่งงาน
+              </Fab>
+            </>
           )}
         </>
       )}

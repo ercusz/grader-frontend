@@ -18,7 +18,6 @@ import {
   Chip,
   Dialog,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Divider,
   IconButton,
@@ -111,145 +110,139 @@ const SubmissionDetailDialog: React.FC<ISubmissionDetailDialog> = ({
       </DialogTitle>
       {studentSubmission.submission && (
         <DialogContent>
-          <DialogContentText id="student-latest-submission-dialog-content">
-            {/* Submission Details */}
-            <Paper
+          {/* Submission Details */}
+          <Paper
+            sx={{
+              p: 2,
+              display: 'flex',
+              flexDirection: 'column',
+              overflow: 'hidden',
+              position: 'relative',
+              mb: 1,
+            }}
+          >
+            <Typography
               sx={{
-                p: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'hidden',
-                position: 'relative',
-                mb: 1,
+                fontSize: 140,
+                color: (theme) => alpha(theme.palette.primary.main, 0.1),
               }}
             >
-              <Typography
-                sx={{
-                  fontSize: 140,
-                  color: (theme) => alpha(theme.palette.primary.main, 0.1),
-                }}
+              {assignment.type === 'java-src' && (
+                <VscCode className="absolute -top-8 -right-2 -rotate-12" />
+              )}
+              {assignment.type === 'docs' && (
+                <AssignmentIcon
+                  className="absolute -top-2 -right-2 -rotate-12"
+                  fontSize="inherit"
+                />
+              )}
+            </Typography>
+            <Stack direction="row" alignItems="center">
+              <Avatar
+                alt={`${studentSubmission.username}'s profile image`}
+                src={getImagePath(studentSubmission.profileImage)}
+                sx={{ mr: 2 }}
               >
-                {assignment.type === 'java-src' && (
-                  <VscCode className="absolute -top-8 -right-2 -rotate-12" />
-                )}
-                {assignment.type === 'docs' && (
-                  <AssignmentIcon
-                    className="absolute -top-2 -right-2 -rotate-12"
-                    fontSize="inherit"
-                  />
-                )}
-              </Typography>
-              <Stack direction="row" alignItems="center">
-                <Avatar
-                  alt={`${studentSubmission.username}'s profile image`}
-                  src={getImagePath(studentSubmission.profileImage)}
-                  sx={{ mr: 2 }}
-                >
-                  {studentSubmission.firstName && studentSubmission.lastName
-                    ? studentSubmission.firstName?.charAt(0) +
-                      studentSubmission.lastName?.charAt(0)
-                    : studentSubmission.username?.charAt(0)}
-                </Avatar>
-                <Stack direction="column">
-                  <Typography
-                    component="h2"
-                    variant="h6"
-                    color="primary"
-                    noWrap
-                  >
-                    {getStudentName(studentSubmission)}
-                  </Typography>
-                  {isValid(
-                    parseISO(studentSubmission.submission.createdAt)
-                  ) && (
-                    <>
-                      <Typography variant="body2" noWrap>
-                        ส่งเมื่อ{' '}
-                        {format(
+                {studentSubmission.firstName && studentSubmission.lastName
+                  ? studentSubmission.firstName?.charAt(0) +
+                    studentSubmission.lastName?.charAt(0)
+                  : studentSubmission.username?.charAt(0)}
+              </Avatar>
+              <Stack direction="column">
+                <Typography variant="h6" color="primary" noWrap>
+                  {getStudentName(studentSubmission)}
+                </Typography>
+                {isValid(parseISO(studentSubmission.submission.createdAt)) && (
+                  <>
+                    <Typography variant="body2" noWrap>
+                      ส่งเมื่อ{' '}
+                      {format(
+                        parseISO(studentSubmission.submission.createdAt),
+                        'PPp',
+                        {
+                          locale: th,
+                        }
+                      )}
+                    </Typography>
+                    {isAfter(
+                      parseISO(studentSubmission.submission.createdAt),
+                      parseISO(assignment.endDate)
+                    ) && (
+                      <Typography variant="caption" color="error" noWrap>
+                        ส่งช้า{' '}
+                        {formatDistance(
                           parseISO(studentSubmission.submission.createdAt),
-                          'PPp',
+                          parseISO(assignment.endDate),
                           {
                             locale: th,
                           }
                         )}
                       </Typography>
-                      {isAfter(
-                        parseISO(studentSubmission.submission.createdAt),
-                        parseISO(assignment.endDate)
-                      ) && (
-                        <Typography variant="caption" color="error" noWrap>
-                          ส่งช้า{' '}
-                          {formatDistance(
-                            parseISO(studentSubmission.submission.createdAt),
-                            parseISO(assignment.endDate),
-                            {
-                              locale: th,
-                            }
-                          )}
-                        </Typography>
-                      )}
-                    </>
-                  )}
-                  {studentSubmission.submission?.type === 'java-src' && (
-                    <Typography variant="body2" noWrap>
-                      ผ่านชุดทดสอบ {passedTestcases}/{testcases.length} ชุด
-                    </Typography>
-                  )}
-                </Stack>
-              </Stack>
-            </Paper>
-
-            {/* Java Src Submission */}
-            {studentSubmission.submission?.type === 'java-src' && (
-              <Stack direction="column" spacing={1}>
-                {/* Source Code Section */}
-                {studentSubmission.submission.sourceCode && (
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <SourceCodeSection
-                      sourceCode={studentSubmission.submission.sourceCode}
-                    />
-                  </Paper>
+                    )}
+                  </>
                 )}
-
-                {/* Testcases Section */}
-                {studentSubmission.submission?.testcases && (
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <CompactSubmissionTestcasesSection testcases={testcases} />
-                  </Paper>
+                {studentSubmission.submission?.type === 'java-src' && (
+                  <Typography variant="body2" noWrap>
+                    ผ่านชุดทดสอบ {passedTestcases}/{testcases.length} ชุด
+                  </Typography>
                 )}
               </Stack>
-            )}
+            </Stack>
+          </Paper>
 
-            {/* Docs Submission */}
-            {studentSubmission.submission?.type === 'docs' && (
-              <Stack direction="column" spacing={1}>
-                {/* Files Section */}
-                {studentSubmission.submission.files && (
-                  <Paper
-                    sx={{
-                      p: 2,
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <FilesSection files={studentSubmission.submission.files} />
-                  </Paper>
-                )}
-              </Stack>
-            )}
-          </DialogContentText>
+          {/* Java Src Submission */}
+          {studentSubmission.submission?.type === 'java-src' && (
+            <Stack direction="column" spacing={1}>
+              {/* Source Code Section */}
+              {studentSubmission.submission.sourceCode && (
+                <Paper
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <SourceCodeSection
+                    sourceCode={studentSubmission.submission.sourceCode}
+                  />
+                </Paper>
+              )}
+
+              {/* Testcases Section */}
+              {studentSubmission.submission?.testcases && (
+                <Paper
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <CompactSubmissionTestcasesSection testcases={testcases} />
+                </Paper>
+              )}
+            </Stack>
+          )}
+
+          {/* Docs Submission */}
+          {studentSubmission.submission?.type === 'docs' && (
+            <Stack direction="column" spacing={1}>
+              {/* Files Section */}
+              {studentSubmission.submission.files &&
+              studentSubmission.submission.files.length > 0 ? (
+                <Paper
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <FilesSection files={studentSubmission.submission.files} />
+                </Paper>
+              ) : (
+                <Alert severity="warning">ไม่พบไฟล์งานของคุณ</Alert>
+              )}
+            </Stack>
+          )}
         </DialogContent>
       )}
     </Dialog>

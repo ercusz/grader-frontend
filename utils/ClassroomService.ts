@@ -6,7 +6,7 @@ import {
   UserResponse,
 } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
-import { uploadImage } from './UploadService';
+import { imageExtensions, uploadFiles } from './UploadService';
 
 export const getClassrooms = async (): Promise<MyClassroomsResponse> => {
   const { res, err }: Response = await contentHttpClient.get(
@@ -141,7 +141,12 @@ export const updateCourseInfo = async (data: CreateCourseReq, id: number) => {
 
 export const updateCourseCoverImage = async (file: File, id: number) => {
   try {
-    const coverImage = await uploadImage(file);
+    const files = [file];
+    const [coverImage] = await uploadFiles(files, imageExtensions); // get the first uploaded file from response
+    if (!coverImage) {
+      throw new Error('Cannot upload image to server.');
+    }
+
     const { err }: Response = await contentHttpClient.patch(
       `/api/courses/${id}`,
       {

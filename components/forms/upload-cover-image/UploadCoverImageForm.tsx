@@ -72,7 +72,7 @@ const UploadCoverImageForm: React.FC<IUploadCoverImageForm> = ({
     }
   );
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-    accept: { 'image/*': [] },
+    accept: { 'image/jpeg': [], 'image/png': [] },
     maxFiles: 1,
   });
   const [, setUnsavedChanges] = useAtom(unsavedChangesAtom);

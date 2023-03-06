@@ -5,6 +5,7 @@ import {
   UserJavaSrcSubmissionResponse,
 } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
+import { studentSubmissionExtensions, uploadFiles } from './UploadService';
 
 export const createJavaSrcSubmission = async (
   body: CreateJavaSrcSubmission,
@@ -12,7 +13,7 @@ export const createJavaSrcSubmission = async (
   assignmentId: string
 ) => {
   const { err }: Response = await contentHttpClient.post(
-    `api/classrooms/${classroomId}/assignments/${assignmentId}/submissions/java-src`,
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/submissions/java-src`,
     body
   );
 
@@ -77,4 +78,40 @@ export const getAssignmentLatestStudentSubmission = async (
   }
 
   return res.data as StudentSubmission;
+};
+
+export const submitStudentSubmission = async (
+  assignmentId: string,
+  classroomId: string,
+  files: File[]
+) => {
+  try {
+    let reqBody = {
+      files: [],
+    };
+
+    if (files.length > 0) {
+      const uploadedFiles = await uploadFiles(
+        files,
+        studentSubmissionExtensions
+      );
+
+      if (!uploadedFiles || uploadedFiles.length === 0) {
+        throw new Error('Cannot upload files to server');
+      }
+
+      reqBody['files'] = uploadedFiles;
+    }
+
+    const { err }: Response = await contentHttpClient.post(
+      `/api/classrooms/${classroomId}/assignments/${assignmentId}/submissions/docs`,
+      reqBody
+    );
+
+    if (err) {
+      throw new Error('Create student submission failed');
+    }
+  } catch (err) {
+    throw new Error('Create student submission failed');
+  }
 };

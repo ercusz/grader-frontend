@@ -1,5 +1,6 @@
 import FeedbackLayout from '@/components/layouts/feedback/FeedbackLayout';
 import AssignmentCommentsSection from '@/components/sections/assignment-comments/AssignmentCommentsSection';
+import FilesSection from '@/components/sections/files/FilesSection';
 import SourceCodeSection from '@/components/sections/source-code/SourceCodeSection';
 import SubmissionTestcasesSection from '@/components/sections/submission-testcases/SubmissionTestcasesSection';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
@@ -11,6 +12,7 @@ import { getImagePath } from '@/utils/imagePath';
 import { getAssignmentSubmissions } from '@/utils/SubmissionService';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import {
+  Alert,
   Avatar,
   CircularProgress,
   Container,
@@ -313,7 +315,32 @@ const AssignmentSubmission: NextPageWithLayout = ({
                     flexDirection: 'column',
                   }}
                 >
-                  Files
+                  {student.submission.files &&
+                  student.submission.files.length > 0 ? (
+                    <FilesSection files={student.submission.files ?? []} />
+                  ) : (
+                    <Tooltip
+                      arrow
+                      title={
+                        <Typography variant="body2">
+                          อาจเกิดจากการที่นักศึกษาส่งงานโดยที่ไม่แนบไฟล์เข้ามา
+                          โดยการคลิกที่ปุ่ม &quot;ทำเครื่องหมายว่าส่งแล้ว&quot;
+                          ก็เป็นได้
+                        </Typography>
+                      }
+                    >
+                      <Alert
+                        severity="warning"
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        ไม่พบไฟล์งานที่นักศึกษาส่งเข้ามา
+                      </Alert>
+                    </Tooltip>
+                  )}
                 </Paper>
               </Grid>
             </>

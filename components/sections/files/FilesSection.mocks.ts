@@ -1,7 +1,7 @@
 import { IFilesSection } from './FilesSection';
 
 const base: IFilesSection = {
-  files: null,
+  files: [],
 };
 
 export const mockFilesSectionProps = {
