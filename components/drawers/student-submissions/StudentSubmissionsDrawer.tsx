@@ -36,6 +36,7 @@ import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, useMemo, useState } from 'react';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const drawerWidth = 380;
 type statusType = 'notSubmitted' | 'submitted' | 'graded' | 'resubmitted';
@@ -288,6 +289,7 @@ const StatusGroupListItem: React.FC<IStatusGroupListItem> = ({
 
 const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
   const router = useRouter();
+  const [parent] = useAutoAnimate();
   const { slug, assignmentId, studentId } = router.query;
   const { data: classroom } = useClassroomSlug({ slug: slug as string });
   const { data: { students } = {}, data: assignment } =
@@ -435,7 +437,9 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
             display: open ? 'block' : 'none',
           }}
         >
-          <List>
+          <List
+            ref={parent}
+          >
             <ListItem>
               <Stack
                 direction="column"

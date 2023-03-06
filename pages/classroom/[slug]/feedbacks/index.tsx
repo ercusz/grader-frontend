@@ -6,6 +6,7 @@ import { AssignmentOverview } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getAssignmentsOverview } from '@/utils/AssignmentService';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import CheckIcon from '@mui/icons-material/Check';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import SwitchLeftIcon from '@mui/icons-material/SwitchLeft';
@@ -69,6 +70,7 @@ const Feedbacks: NextPageWithLayout = ({
   const [anchorFilter, setAnchorFilter] = useState<null | HTMLElement>(null);
   const openSortByMenu = Boolean(anchorSortBy);
   const openFilterMenu = Boolean(anchorFilter);
+  const [parent] = useAutoAnimate();
 
   const handleSortByButtonClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorSortBy(e.currentTarget);
@@ -227,6 +229,7 @@ const Feedbacks: NextPageWithLayout = ({
               </Box>
             </Stack>
             <Box
+              ref={parent}
               sx={{
                 maxHeight: '60vh',
                 overflow: 'auto',
