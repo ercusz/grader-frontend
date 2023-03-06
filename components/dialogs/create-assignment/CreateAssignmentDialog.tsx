@@ -193,7 +193,12 @@ const CreateAssignmentDialog: React.FC<ICreateAssignmentDialog> = ({
     } = watch();
 
     if (problemType !== 'java-src' && problemType !== 'docs') {
-      alert('invalid problem type');
+      alert('กรุณาเลือกประเภทของงาน');
+      return;
+    }
+
+    if (problemType === 'java-src' && testcases.length === 0) {
+      alert('กรุณาเพิ่ม testcases อย่างน้อย 1 ชุด');
       return;
     }
 
