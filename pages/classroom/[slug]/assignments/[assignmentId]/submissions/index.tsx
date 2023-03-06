@@ -56,17 +56,21 @@ const AssignmentSubmissions: NextPageWithLayout = ({
 
   const gradingStats = useMemo(() => {
     return {
+      notSubmitted: students?.filter(
+        (student) => !student.submission && !student.scoreInfo
+      ).length,
       submitted: students?.filter(
         (student) => student.submission && !student.scoreInfo
       ).length,
       graded: students?.filter(
         (student) =>
-          student.submission &&
           student.scoreInfo &&
-          !isBefore(
-            parseISO(student.scoreInfo.gradedAt),
-            parseISO(student.submission.createdAt)
-          )
+          (!student.submission ||
+            (student.submission &&
+              !isBefore(
+                parseISO(student.scoreInfo.gradedAt),
+                parseISO(student.submission.createdAt)
+              )))
       ).length,
       resubmitted: students?.filter(
         (student) =>
@@ -241,7 +245,7 @@ const AssignmentSubmissions: NextPageWithLayout = ({
             </Paper>
           </Grid>
           {/* Graded Stats */}
-          <Grid item xs={12} md={4} lg={6}>
+          <Grid item xs={12} md={12} lg={6}>
             <Paper
               sx={{
                 p: 2,
@@ -259,26 +263,31 @@ const AssignmentSubmissions: NextPageWithLayout = ({
                 การตรวจ
               </Typography>
               <Grid container spacing={3}>
-                <Grid item xs={4} md={6}>
+                <Grid
+                  item
+                  xs={4}
+                  md={6}
+                  sx={{
+                    color: (theme) => alpha(theme.palette.success.main, 0.8),
+                  }}
+                >
                   <Typography component="p" variant="h4">
                     {gradingStats.graded}
                   </Typography>
-                  <Typography color="text.secondary" sx={{ flex: 1 }}>
-                    ตรวจแล้ว
-                  </Typography>
+                  <Typography sx={{ flex: 1 }}>ตรวจแล้ว</Typography>
                 </Grid>
                 <Grid
                   item
                   xs={4}
                   md={6}
                   sx={{
-                    color: (theme) => alpha(theme.palette.error.main, 0.8),
+                    color: (theme) => alpha(theme.palette.warning.main, 0.8),
                   }}
                 >
                   <Typography component="p" variant="h4">
                     {gradingStats.submitted}
                   </Typography>
-                  <Typography sx={{ flex: 1 }}>รอการตรวจ</Typography>
+                  <Typography sx={{ flex: 1 }}>รอการตรวจ(ส่งแล้ว)</Typography>
                 </Grid>
                 <Grid
                   item
@@ -293,11 +302,26 @@ const AssignmentSubmissions: NextPageWithLayout = ({
                   </Typography>
                   <Typography sx={{ flex: 1 }}>มีการแก้ไข</Typography>
                 </Grid>
+                <Grid
+                  item
+                  xs={4}
+                  md={6}
+                  sx={{
+                    color: (theme) => alpha(theme.palette.error.main, 0.8),
+                  }}
+                >
+                  <Typography component="p" variant="h4">
+                    {gradingStats.notSubmitted}
+                  </Typography>
+                  <Typography sx={{ flex: 1 }}>
+                    ยังไม่ตรวจ(ยังไม่ส่ง)
+                  </Typography>
+                </Grid>
               </Grid>
             </Paper>
           </Grid>
           {/* Chart */}
-          <Grid item xs={12} md={8} lg={6}>
+          <Grid item xs={12} md={12} lg={6}>
             <Paper
               sx={{
                 display: 'flex',

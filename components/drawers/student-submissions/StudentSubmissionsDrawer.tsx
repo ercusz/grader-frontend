@@ -3,7 +3,6 @@ import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
 import { selectedSubmissionsAtom } from '@/stores/assignment-submissions';
 import { StudentSubmission, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -31,7 +30,13 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { alpha, CSSObject, styled, Theme } from '@mui/material/styles';
+import {
+  alpha,
+  CSSObject,
+  styled,
+  Theme,
+  useTheme,
+} from '@mui/material/styles';
 import { compareAsc, compareDesc, isBefore, parseISO } from 'date-fns';
 import { useAtom } from 'jotai';
 import Link from 'next/link';
@@ -169,7 +174,7 @@ const StudentListItem: React.FC<IStudentListItem> = ({
                 </Typography>
                 <Typography
                   variant="caption"
-                  color="text.secondary"
+                  color={COLOR[status]}
                   sx={{
                     fontWeight: active ? 'bold' : 'normal',
                   }}
@@ -199,6 +204,13 @@ enum STATUS {
   submitted = 'รอการตรวจ',
   graded = 'ตรวจแล้ว',
   resubmitted = 'มีการแก้ไข',
+}
+
+enum COLOR {
+  notSubmitted = 'error.main',
+  submitted = 'warning.main',
+  graded = 'success.main',
+  resubmitted = 'info.main',
 }
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -239,35 +251,74 @@ const CustomDrawer = styled(Drawer, {
   }),
 }));
 
+const getColor = (theme: Theme, status: statusType): string => {
+  let obj: any = theme.palette;
+
+  const colorArr = COLOR[status].split('.');
+  colorArr.forEach((s) => {
+    obj = obj[s];
+  });
+
+  return obj as string;
+};
+
 export interface IStatusGroupListItem {
   status: statusType;
   children: React.ReactNode;
   childrenSize?: number;
+  checkbox: React.ReactNode;
 }
 
 const StatusGroupListItem: React.FC<IStatusGroupListItem> = ({
   status,
   children,
   childrenSize,
+  checkbox,
 }) => {
+  const theme = useTheme();
   const [open, setOpen] = useState(false);
   const handleOpenClick = () => {
     setOpen(!open);
   };
+
+  const color = getColor(theme, status);
 
   return (
     <>
       <ListItemButton
         onClick={handleOpenClick}
         selected={open}
+        disableRipple
         sx={{
-          borderBottom: (theme) =>
-            `1px solid ${alpha(theme.palette.text.primary, 0.2)}`,
+          pl: 0,
+          pr: 1,
+          py: 0.5,
+          bgcolor: alpha(color, 0.1),
+          // active
+          '&.Mui-selected': {
+            bgcolor: alpha(color, 0.2),
+          },
+          // hover
+          '&:hover': {
+            bgcolor: alpha(color, 0.1),
+          },
+          // active hover
+          '&.Mui-selected:hover': {
+            bgcolor: alpha(color, 0.2),
+          },
+          borderBottom: `1px solid ${alpha(color, 0.8)}`,
         }}
       >
-        <ListItemIcon>({childrenSize ?? 0})</ListItemIcon>
+        <ListItemIcon
+          sx={{
+            px: 0,
+            justifyContent: 'center',
+          }}
+        >
+          {checkbox}
+        </ListItemIcon>
         <ListItemText
-          primary={STATUS[status]}
+          primary={`(${childrenSize ?? 0}) ${STATUS[status]}`}
           sx={
             open
               ? {
@@ -289,7 +340,7 @@ const StatusGroupListItem: React.FC<IStatusGroupListItem> = ({
 
 const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
   const router = useRouter();
-  const [parent] = useAutoAnimate();
+
   const { slug, assignmentId, studentId } = router.query;
   const { data: classroom } = useClassroomSlug({ slug: slug as string });
   const { data: { students } = {}, data: assignment } =
@@ -300,7 +351,10 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
 
   const groups = useMemo(() => {
     return {
-      notSubmitted: students?.filter((student) => !student.submission) ?? [],
+      notSubmitted:
+        students?.filter(
+          (student) => !student.submission && !student.scoreInfo
+        ) ?? [],
       submitted:
         students?.filter(
           (student) => student.submission && !student.scoreInfo
@@ -308,12 +362,13 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
       graded:
         students?.filter(
           (student) =>
-            student.submission &&
             student.scoreInfo &&
-            !isBefore(
-              parseISO(student.scoreInfo.gradedAt),
-              parseISO(student.submission.createdAt)
-            )
+            (!student.submission ||
+              (student.submission &&
+                !isBefore(
+                  parseISO(student.scoreInfo.gradedAt),
+                  parseISO(student.submission.createdAt)
+                )))
         ) ?? [],
       resubmitted:
         students?.filter(
@@ -437,7 +492,8 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
             display: open ? 'block' : 'none',
           }}
         >
-          <List ref={parent}>
+          <List>
+            {/* List Header */}
             <ListItem>
               <Stack
                 direction="column"
@@ -509,6 +565,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
 
             <Divider />
 
+            {/* Select All Button */}
             <StudentListItem
               active={studentId === undefined}
               checkbox={
@@ -605,6 +662,54 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                   key={status}
                   status={status}
                   childrenSize={groups[status].length}
+                  checkbox={
+                    <Checkbox
+                      checked={groups[status].every((student) =>
+                        selected.includes(student.id)
+                      )}
+                      indeterminate={
+                        groups[status].some((student) =>
+                          selected.includes(student.id)
+                        ) &&
+                        !groups[status].every((student) =>
+                          selected.includes(student.id)
+                        )
+                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+
+                        if (
+                          groups[status].every((student) =>
+                            selected.includes(student.id)
+                          )
+                        ) {
+                          setSelected(
+                            selected.filter(
+                              (id) =>
+                                groups[status].findIndex(
+                                  (student) => student.id === id
+                                ) === -1
+                            )
+                          );
+                        } else {
+                          setSelected([
+                            ...selected,
+                            ...groups[status].map((student) => student.id),
+                          ]);
+                        }
+                      }}
+                      sx={{
+                        color: (theme) => getColor(theme, status),
+                        '&.Mui-checked': {
+                          color: (theme) => getColor(theme, status),
+                        },
+                        '&.MuiCheckbox-indeterminate': {
+                          color: (theme) => getColor(theme, status),
+                        },
+                      }}
+                    />
+                  }
                 >
                   {groups[status].map((student) => (
                     <StudentListItem
