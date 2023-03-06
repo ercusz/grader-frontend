@@ -189,16 +189,16 @@ const Feedbacks: NextPageWithLayout = ({
                       จัดเรียงตาม <strong>{SORT_BY[sortBy]}</strong>
                     </Typography>
                   </Button>
-                  <Tooltip
-                    title={descSort ? 'มาก -> น้อย' : 'น้อย -> มาก'}
-                    arrow
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    disableRipple
+                    onClick={() => setDescSort(!descSort)}
+                    disabled={assignments ? assignments.length === 0 : true}
                   >
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      disableRipple
-                      onClick={() => setDescSort(!descSort)}
-                      disabled={assignments ? assignments.length === 0 : true}
+                    <Tooltip
+                      title={descSort ? 'มาก -> น้อย' : 'น้อย -> มาก'}
+                      arrow
                     >
                       <SwitchLeftIcon
                         sx={{
@@ -206,8 +206,8 @@ const Feedbacks: NextPageWithLayout = ({
                           transition: 'all 0.3s fade-out',
                         }}
                       />
-                    </IconButton>
-                  </Tooltip>
+                    </Tooltip>
+                  </IconButton>
                 </Stack>
               </Box>
               <Box>

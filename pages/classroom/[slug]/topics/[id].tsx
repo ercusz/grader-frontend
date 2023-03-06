@@ -113,45 +113,45 @@ const ClassroomTopic: NextPageWithLayout = ({
           alignItems="flex-start"
         >
           <Grid item xs={12} md={4}>
-            {(user && getRole(user) === Roles.TEACHER) ||
-              (user && getRole(user) === Roles.TA && (
-                <List>
-                  <ListItem
-                    disableGutters
-                    sx={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
+            {((user && getRole(user) === Roles.TEACHER) ||
+              (user && getRole(user) === Roles.TA)) && (
+              <List>
+                <ListItem
+                  disableGutters
+                  sx={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    justifyContent="space-around"
+                    alignItems="center"
                   >
-                    <Stack
-                      direction="row"
-                      spacing={2}
-                      justifyContent="space-around"
-                      alignItems="center"
+                    <Button
+                      className="w-full"
+                      color="primary"
+                      variant="contained"
+                      size="large"
+                      startIcon={<SettingsIcon />}
+                      onClick={() => setOpenEditTopicDialog(true)}
                     >
-                      <Button
-                        className="w-full"
-                        color="primary"
-                        variant="contained"
-                        size="large"
-                        startIcon={<SettingsIcon />}
-                        onClick={() => setOpenEditTopicDialog(true)}
-                      >
-                        จัดการหัวข้อ
-                      </Button>
-                      <Button
-                        color="error"
-                        variant="outlined"
-                        size="large"
-                        startIcon={<DeleteIcon />}
-                        onClick={() => setOpenDeleteTopicDialog(true)}
-                      >
-                        ลบ
-                      </Button>
-                    </Stack>
-                  </ListItem>
-                </List>
-              ))}
+                      จัดการหัวข้อ
+                    </Button>
+                    <Button
+                      color="error"
+                      variant="outlined"
+                      size="large"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => setOpenDeleteTopicDialog(true)}
+                    >
+                      ลบ
+                    </Button>
+                  </Stack>
+                </ListItem>
+              </List>
+            )}
           </Grid>
           <Grid item xs={12} md={8} sx={{ mb: 6 }}>
             <Card className="shadow-md" variant="outlined" sx={{ mb: 2 }}>

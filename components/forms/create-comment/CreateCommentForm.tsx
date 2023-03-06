@@ -81,19 +81,19 @@ const CreateCommentForm: React.FC<ICreateCommentForm> = ({ onSubmit }) => {
           endAdornment: (
             <div ref={parent}>
               {!showSuccess ? (
-                <Tooltip title="แสดงความคิดเห็น" arrow>
-                  <div style={{ cursor: 'not-allowed' }}>
-                    <IconButton
-                      onClick={handleSubmit}
-                      disabled={comment.length === 0}
-                      sx={{
-                        p: 0,
-                      }}
-                    >
+                <div style={{ cursor: 'not-allowed' }}>
+                  <IconButton
+                    onClick={handleSubmit}
+                    disabled={comment.length === 0}
+                    sx={{
+                      p: 0,
+                    }}
+                  >
+                    <Tooltip title="แสดงความคิดเห็น" arrow>
                       <SendIcon fontSize="small" />
-                    </IconButton>
-                  </div>
-                </Tooltip>
+                    </Tooltip>
+                  </IconButton>
+                </div>
               ) : (
                 <div>
                   <IconButton

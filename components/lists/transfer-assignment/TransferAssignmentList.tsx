@@ -145,32 +145,32 @@ const TransferAssignmentList: React.FC<ITransferAssignmentList> = () => {
       </Grid>
       <Grid item xs={2} md={2}>
         <Stack direction="column" alignItems="center">
-          <Tooltip title="เพิ่มไปยังหัวข้อ" arrow placement="top">
-            <Button
-              sx={{ my: 0.5 }}
-              variant="outlined"
-              size="small"
-              onClick={handleCheckedRight}
-              disabled={leftChecked.length === 0}
-              aria-label="เพิ่มไปยังหัวข้อ"
-              color="success"
-            >
+          <Button
+            sx={{ my: 0.5 }}
+            variant="outlined"
+            size="small"
+            onClick={handleCheckedRight}
+            disabled={leftChecked.length === 0}
+            aria-label="เพิ่มไปยังหัวข้อ"
+            color="success"
+          >
+            <Tooltip title="เพิ่มไปยังหัวข้อ" arrow placement="top">
               <ChevronRightIcon fontSize="large" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="นำออกจากหัวข้อ" arrow placement="bottom">
-            <Button
-              sx={{ my: 0.5 }}
-              variant="outlined"
-              size="small"
-              onClick={handleCheckedLeft}
-              disabled={rightChecked.length === 0}
-              aria-label="นำออกจากหัวข้อ"
-              color="error"
-            >
+            </Tooltip>
+          </Button>
+          <Button
+            sx={{ my: 0.5 }}
+            variant="outlined"
+            size="small"
+            onClick={handleCheckedLeft}
+            disabled={rightChecked.length === 0}
+            aria-label="นำออกจากหัวข้อ"
+            color="error"
+          >
+            <Tooltip title="นำออกจากหัวข้อ" arrow placement="bottom">
               <ChevronLeftIcon fontSize="large" />
-            </Button>
-          </Tooltip>
+            </Tooltip>
+          </Button>
         </Stack>
       </Grid>
       <Grid item xs={5} md={5}>

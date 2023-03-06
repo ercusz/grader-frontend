@@ -3,6 +3,7 @@ import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
 import { selectedSubmissionsAtom } from '@/stores/assignment-submissions';
 import { StudentSubmission, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -36,7 +37,6 @@ import { useAtom } from 'jotai';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, useMemo, useState } from 'react';
-import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const drawerWidth = 380;
 type statusType = 'notSubmitted' | 'submitted' | 'graded' | 'resubmitted';
@@ -437,9 +437,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
             display: open ? 'block' : 'none',
           }}
         >
-          <List
-            ref={parent}
-          >
+          <List ref={parent}>
             <ListItem>
               <Stack
                 direction="column"
@@ -481,20 +479,20 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                       {SORT_BY[sortBy]}
                     </Typography>
                   </Button>
-                  <Tooltip
-                    title={descSort ? 'มาก -> น้อย' : 'น้อย -> มาก'}
-                    arrow
+                  <IconButton
+                    size="small"
+                    color="primary"
+                    disableRipple
+                    onClick={() => setDescSort(!descSort)}
+                    disabled={students ? students.length === 0 : true}
+                    sx={{
+                      pr: 0,
+                      visibility: sortBy === 'status' ? 'hidden' : 'visible',
+                    }}
                   >
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      disableRipple
-                      onClick={() => setDescSort(!descSort)}
-                      disabled={students ? students.length === 0 : true}
-                      sx={{
-                        pr: 0,
-                        visibility: sortBy === 'status' ? 'hidden' : 'visible',
-                      }}
+                    <Tooltip
+                      title={descSort ? 'มาก -> น้อย' : 'น้อย -> มาก'}
+                      arrow
                     >
                       <SwitchLeftIcon
                         fontSize="inherit"
@@ -503,8 +501,8 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                           transition: 'all 0.3s fade-out',
                         }}
                       />
-                    </IconButton>
-                  </Tooltip>
+                    </Tooltip>
+                  </IconButton>
                 </Stack>
               </Stack>
             </ListItem>
