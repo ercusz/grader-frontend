@@ -11,6 +11,7 @@ import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
 import { getAssignmentSubmissions } from '@/utils/SubmissionService';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HistoryIcon from '@mui/icons-material/History';
 import {
   Alert,
   Avatar,
@@ -178,6 +179,12 @@ const AssignmentSubmission: NextPageWithLayout = ({
                         )}
                       </>
                     )}
+
+                  {!student.submission && (
+                    <Typography variant="caption" color="error" noWrap>
+                      ยังไม่ส่งงาน
+                    </Typography>
+                  )}
                 </Stack>
                 <Stack direction="column" alignItems="flex-end">
                   <Stack direction="row" alignItems="flex-end">
@@ -192,33 +199,50 @@ const AssignmentSubmission: NextPageWithLayout = ({
                       /{assignment.point}
                     </Typography>
                   </Stack>
-                  {student.submission ? (
-                    student.scoreInfo ? (
-                      !isBefore(
-                        parseISO(student.scoreInfo.gradedAt),
-                        parseISO(student.submission.createdAt)
-                      ) ? (
-                        <Stack direction="column" alignItems="flex-end">
+
+                  {!student.scoreInfo && (
+                    <Typography variant="caption" color="error" noWrap>
+                      ยังไม่ได้ตรวจ
+                    </Typography>
+                  )}
+
+                  {student.scoreInfo &&
+                    (!student.submission ||
+                      (student.submission &&
+                        !isBefore(
+                          parseISO(student.scoreInfo.gradedAt),
+                          parseISO(student.submission.createdAt)
+                        ))) && (
+                      <Stack direction="column" alignItems="flex-end">
+                        <Typography variant="caption" noWrap>
+                          ตรวจเมื่อ{' '}
+                          {format(parseISO(student.scoreInfo.gradedAt), 'PPp', {
+                            locale: th,
+                          })}
+                        </Typography>
+                        <Stack direction="row" alignItems="center">
                           <Typography variant="caption" noWrap>
-                            ตรวจเมื่อ{' '}
-                            {format(
-                              parseISO(student.scoreInfo.gradedAt),
-                              'PPp',
-                              { locale: th }
-                            )}
+                            โดย {student.scoreInfo?.gradedBy}
                           </Typography>
-                          <Stack direction="row" alignItems="center">
-                            <Typography variant="caption" noWrap>
-                              โดย {student.scoreInfo?.gradedBy}
-                            </Typography>
-                            <CheckCircleIcon
-                              color="success"
-                              fontSize="inherit"
-                              sx={{ ml: 0.5 }}
-                            />
-                          </Stack>
+                          <CheckCircleIcon
+                            color="success"
+                            fontSize="inherit"
+                            sx={{ ml: 0.5 }}
+                          />
                         </Stack>
-                      ) : (
+                      </Stack>
+                    )}
+
+                  {student.submission &&
+                    student.scoreInfo &&
+                    isBefore(
+                      parseISO(student.scoreInfo.gradedAt),
+                      parseISO(student.submission.createdAt)
+                    ) && (
+                      <Stack direction="row" alignItems="center">
+                        <Typography variant="caption" noWrap>
+                          มีการแก้ไข
+                        </Typography>
                         <Tooltip
                           arrow
                           title={
@@ -241,25 +265,14 @@ const AssignmentSubmission: NextPageWithLayout = ({
                             </>
                           }
                         >
-                          <Typography
-                            className="cursor-pointer"
-                            variant="caption"
-                            noWrap
-                          >
-                            มีการแก้ไข
-                          </Typography>
+                          <HistoryIcon
+                            color="info"
+                            fontSize="inherit"
+                            sx={{ ml: 0.5, cursor: 'pointer' }}
+                          />
                         </Tooltip>
-                      )
-                    ) : (
-                      <Typography variant="caption" noWrap>
-                        รอการตรวจ
-                      </Typography>
-                    )
-                  ) : (
-                    <Typography variant="caption" color="error" noWrap>
-                      ยังไม่ส่งงาน
-                    </Typography>
-                  )}
+                      </Stack>
+                    )}
                 </Stack>
               </Stack>
             </Paper>
