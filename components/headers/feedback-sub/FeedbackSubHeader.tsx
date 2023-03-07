@@ -1,9 +1,13 @@
+import StudentGradedScoreDialog, {
+  openStudentGradedScoreDialogAtom,
+} from '@/components/dialogs/student-graded-score/StudentGradedScoreDialog';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
 import {
   enabledPointDeductionAtom,
   selectedSubmissionsAtom,
 } from '@/stores/assignment-submissions';
+import { calculateDeductPoint } from '@/utils/SubmissionService';
 import InfoIcon from '@mui/icons-material/Info';
 import {
   Box,
@@ -22,12 +26,6 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import {
-  differenceInDays,
-  differenceInHours,
-  isAfter,
-  parseISO,
-} from 'date-fns';
 import { useAtom } from 'jotai';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
@@ -50,6 +48,10 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
     enabledPointDeductionAtom
   );
 
+  const [, openStudentGradedScoreDialog] = useAtom(
+    openStudentGradedScoreDialogAtom
+  );
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const handleClickPointDeductInfo = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -65,7 +67,7 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
     },
   });
 
-  const { handleSubmit, watch, formState, reset, register } =
+  const { handleSubmit, watch, formState, register } =
     createAssignmentFormContext;
   const { errors, dirtyFields } = formState;
   const point = watch('point');
@@ -107,45 +109,8 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
     }
   }, [canDeductPoint, setEnabledPointDeduction]);
 
-  const onSubmit = () => {
-    alert(point);
-    alert(JSON.stringify(selected));
-    alert(JSON.stringify(enabledPointDeduction));
-  };
-
-  const calculateDeductPoint = ({
-    point,
-    minPoint,
-    dueDate,
-    submittedDate,
-    deductPoint,
-    deductType,
-  }: {
-    point: number;
-    minPoint: number;
-    submittedDate: string;
-    dueDate: string;
-    deductPoint: number;
-    deductType: 'hour' | 'day';
-  }) => {
-    let deduct = 0;
-    let diff = 0;
-
-    if (isAfter(parseISO(submittedDate), parseISO(dueDate))) {
-      if (deductType === 'hour') {
-        diff = differenceInHours(parseISO(submittedDate), parseISO(dueDate));
-
-        deduct = deductPoint * diff;
-        point = Math.max(point - deduct, minPoint);
-      } else if (deductType === 'day') {
-        diff = differenceInDays(parseISO(submittedDate), parseISO(dueDate));
-
-        deduct = deductPoint * diff;
-        point = Math.max(point - deduct, minPoint);
-      }
-    }
-
-    return { diff, deduct, point };
+  const handleSubmitScore = () => {
+    openStudentGradedScoreDialog(true);
   };
 
   const renderDeductPointInfo = () => {
@@ -185,7 +150,7 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
                     deductType === 'hour' ? 'ชั่วโมง' : 'วัน'
                   }
               ส่งงานช้า ${diff} ${deductType === 'hour' ? 'ชั่วโมง' : 'วัน'}
-            จะต้องหักคะแนน ${Number(deducted).toFixed(2)} คะแนน
+            จะต้องหักคะแนน ${deducted} คะแนน
             แต่คะแนนสุทธิต้องไม่ต่ำกว่า ${minPoint} คะแนน`}
                 </Typography>
               ) : (
@@ -200,15 +165,13 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
                 </Typography>
               )}
               <Typography variant="body2" sx={{ mb: 1 }}>
-                {`ดังนั้นคะแนนสุทธิที่ได้คือ ${Number(totalScore).toFixed(
-                  2
-                )} คะแนน`}
+                {`ดังนั้นคะแนนสุทธิที่ได้คือ ${totalScore} คะแนน`}
               </Typography>
             </Stack>
           }
         >
           <Typography variant="body2" sx={{ cursor: 'pointer' }}>
-            {`เหลือ: ${Number(totalScore).toFixed(2)}`}
+            {`เหลือ: ${totalScore}`}
           </Typography>
         </Tooltip>
       );
@@ -273,6 +236,11 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
           </Typography>
         </Paper>
       </Popper>
+
+      {/* Student Graded Score Dialog */}
+      {point && selected.length > 0 && (
+        <StudentGradedScoreDialog point={point} />
+      )}
 
       <Toolbar>
         <Box sx={{ flexGrow: 1 }}>
@@ -377,7 +345,7 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => handleSubmit(onSubmit)()}
+                onClick={() => handleSubmit(handleSubmitScore)()}
                 disabled={
                   Object.keys(dirtyFields).length > 0 && selected.length > 0
                     ? errors.point

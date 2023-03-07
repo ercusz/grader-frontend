@@ -4,6 +4,12 @@ import {
   StudentSubmission,
   UserJavaSrcSubmissionResponse,
 } from '@/types/types';
+import {
+  differenceInDays,
+  differenceInHours,
+  isAfter,
+  parseISO,
+} from 'date-fns';
 import { contentHttpClient, Response } from './APIHelper';
 import { studentSubmissionExtensions, uploadFiles } from './UploadService';
 
@@ -114,4 +120,62 @@ export const submitStudentSubmission = async (
   } catch (err) {
     throw new Error('Create student submission failed');
   }
+};
+
+export const gradingStudentScore = async (
+  assignmentId: string,
+  classroomId: string,
+  students: {
+    id: number;
+    score: number;
+  }[]
+) => {
+  const { err }: Response = await contentHttpClient.post(
+    `/api/classrooms/${classroomId}/assignments/${assignmentId}/students/grading`,
+    {
+      students,
+    }
+  );
+
+  if (err) {
+    throw new Error('Graded student score failed');
+  }
+};
+
+export const calculateDeductPoint = ({
+  point,
+  minPoint,
+  dueDate,
+  submittedDate,
+  deductPoint,
+  deductType,
+}: {
+  point: number;
+  minPoint: number;
+  submittedDate: string;
+  dueDate: string;
+  deductPoint: number;
+  deductType: 'hour' | 'day';
+}) => {
+  let deduct = 0;
+  let diff = 0;
+
+  if (isAfter(parseISO(submittedDate), parseISO(dueDate))) {
+    if (deductType === 'hour') {
+      diff = differenceInHours(parseISO(submittedDate), parseISO(dueDate));
+
+      deduct = deductPoint * diff;
+      point = Math.max(point - deduct, minPoint);
+    } else if (deductType === 'day') {
+      diff = differenceInDays(parseISO(submittedDate), parseISO(dueDate));
+
+      deduct = deductPoint * diff;
+      point = Math.max(point - deduct, minPoint);
+    }
+  }
+
+  point = Math.trunc(point * 100) / 100;
+  deduct = Math.trunc(deduct * 100) / 100;
+
+  return { diff, deduct, point };
 };
