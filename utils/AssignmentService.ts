@@ -6,6 +6,7 @@ import {
   EditAssignment,
 } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
+import { exportSpreadsheet } from './ExportService';
 
 export const addAssignments = async (assignment: CreateAssignment) => {
   const { err }: Response = await contentHttpClient.post(
@@ -83,4 +84,44 @@ export const getAssignmentsOverview = async (
   }
 
   return res.data as AssignmentOverview[];
+};
+
+export const exportAssignmentOverview = async (
+  classroomId: string,
+  assignmentId: string
+) => {
+  try {
+    const { res, err }: Response = await contentHttpClient.get(
+      `/api/classrooms/${classroomId}/assignments/${assignmentId}/overview/export`
+    );
+
+    if (err) {
+      throw new Error('Export assignment overview failed');
+    }
+
+    if (res.data) {
+      await exportSpreadsheet(res.data);
+    }
+  } catch (err) {
+    throw new Error('Export assignment overview failed');
+  }
+};
+
+export const exportAllAssignmentOverview = async (classroomId: string) => {
+  try {
+    const { res, err }: Response = await contentHttpClient.get(
+      `/api/classrooms/${classroomId}/assignments/overview/export`
+    );
+
+    if (err) {
+      throw new Error('Export assignment overview failed');
+    }
+
+    if (res.data) {
+      await exportSpreadsheet(res.data);
+    }
+  } catch (err) {
+    alert('เกิดข้อผิดพลาดในการสร้างไฟล์');
+    throw new Error('Export assignment overview failed');
+  }
 };

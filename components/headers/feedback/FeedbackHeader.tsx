@@ -1,4 +1,8 @@
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import {
+  exportAllAssignmentOverview,
+  exportAssignmentOverview,
+} from '@/utils/AssignmentService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadIcon from '@mui/icons-material/Download';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -16,6 +20,7 @@ import {
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
 
 export type FeedbackHeaderProps = {
@@ -35,6 +40,8 @@ const FeedbackHeader: React.FC<IFeedbackHeader> = ({
   props,
   subHeader,
 }) => {
+  const router = useRouter();
+  const { assignmentId } = router.query;
   const { backButton, downloadCurrentAssignmentButton } = props;
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
 
@@ -146,14 +153,29 @@ const FeedbackHeader: React.FC<IFeedbackHeader> = ({
             }}
           >
             <DownloadIcon fontSize="inherit" sx={{ mr: 0.2 }} />
-            ดาวน์โหลดไฟล์สรุปคะแนน (.CSV)
+            ดาวน์โหลดไฟล์สรุปคะแนน (.xlsx)
           </Typography>
         </MenuItem>
-        <MenuItem sx={{ justifyContent: 'center' }}>
+        <MenuItem
+          sx={{ justifyContent: 'center' }}
+          onClick={() =>
+            exportAllAssignmentOverview(classroom?.id.toString() as string)
+          }
+        >
           งานทั้งหมดในคลาสเรียน
         </MenuItem>
-        {downloadCurrentAssignmentButton && (
-          <MenuItem sx={{ justifyContent: 'center' }}>เฉพาะงานนี้</MenuItem>
+        {downloadCurrentAssignmentButton && assignmentId && (
+          <MenuItem
+            sx={{ justifyContent: 'center' }}
+            onClick={() =>
+              exportAssignmentOverview(
+                classroom?.id.toString() as string,
+                assignmentId as string
+              )
+            }
+          >
+            เฉพาะงานนี้
+          </MenuItem>
         )}
       </Menu>
     </>
