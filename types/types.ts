@@ -315,3 +315,5 @@ export type UserComment = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type UploadedFile = (FileResponse & { fileObj: File });

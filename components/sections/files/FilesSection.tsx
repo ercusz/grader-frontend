@@ -10,7 +10,6 @@ import {
   CardMedia,
   Collapse,
   Grid,
-  IconButton,
   ListItemButton,
   ListItemIcon,
   ListItemText,
@@ -45,7 +44,7 @@ const FilesSection: React.FC<IFilesSection> = ({
     setOpenFilesSection(!openFilesSection);
   };
 
-  const handleDeleteFile = (e: MouseEvent<HTMLElement>, id: number) => {
+  const handleDeleteFile = (e: MouseEvent<SVGSVGElement>, id: number) => {
     e.stopPropagation();
     e.preventDefault();
 
@@ -80,7 +79,9 @@ const FilesSection: React.FC<IFilesSection> = ({
                 <Grid item xs={12} sm={6} md={4} lg={3} key={file.id}>
                   <Card
                     variant="outlined"
-                    onClick={() => setSelect(file.id)}
+                    onClick={() => {
+                      select === file.id ? setSelect(null) : setSelect(file.id);
+                    }}
                     sx={{
                       borderColor: theme.palette.divider,
                       borderStyle: 'solid',
@@ -150,7 +151,8 @@ const FilesSection: React.FC<IFilesSection> = ({
                         </Stack>
                         {deletable && select == file.id && (
                           <Tooltip arrow title="ลบไฟล์นี้">
-                            <IconButton
+                            <DeleteIcon
+                              color="error"
                               onClick={(e) => handleDeleteFile(e, file.id)}
                               sx={{
                                 position: 'absolute',
@@ -158,6 +160,11 @@ const FilesSection: React.FC<IFilesSection> = ({
                                 top: 0,
                                 my: 1,
                                 mx: 1,
+                                cursor: 'pointer',
+                                borderRadius: '50%',
+                                width: 32,
+                                height: 32,
+                                p: 0.5,
                                 bgcolor: (theme) =>
                                   alpha(theme.palette.background.paper, 0.24),
                                 '&:hover': {
@@ -165,9 +172,7 @@ const FilesSection: React.FC<IFilesSection> = ({
                                     alpha(theme.palette.error.main, 0.32),
                                 },
                               }}
-                            >
-                              <DeleteIcon color="error" />
-                            </IconButton>
+                            />
                           </Tooltip>
                         )}
                       </CardContent>
