@@ -1,7 +1,8 @@
 import MaterialCard from '@/components/cards/material-card/MaterialCard';
+import CreateMaterialDialog from '@/components/dialogs/create-material/CreateMaterialDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
-import LessonFiltersList from '@/components/lists/lessonfilters-list/LessonFiltersList';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { openCreateMaterialDialogAtom } from '@/stores/create-material';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import AddIcon from '@mui/icons-material/Add';
@@ -15,6 +16,7 @@ import {
   ListItem,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
@@ -28,6 +30,8 @@ const ClassroomMaterials: NextPageWithLayout = ({
     isSuccess,
     data: classroom,
   } = useClassroomSlug({ slug: slug });
+
+  const [, setOpenCreateMaterialDialog] = useAtom(openCreateMaterialDialogAtom);
 
   return (
     <section>
@@ -47,10 +51,15 @@ const ClassroomMaterials: NextPageWithLayout = ({
           bottom: 24,
           right: 24,
         }}
+        onClick={() => setOpenCreateMaterialDialog(true)}
       >
         <AddIcon sx={{ mr: 1 }} />
         เอกสาร
       </Fab>
+      <CreateMaterialDialog
+        classroomSlug={slug}
+        courseSlug={classroom?.course.slug}
+      />
       {isLoading && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -86,12 +95,13 @@ const ClassroomMaterials: NextPageWithLayout = ({
                   sx={{
                     borderRadius: 20,
                   }}
+                  onClick={() => setOpenCreateMaterialDialog(true)}
                 >
                   เพิ่มเอกสารประกอบการสอน
                 </Button>
               </ListItem>
             </List>
-            <LessonFiltersList />
+            {/* <LessonFiltersList /> */}
           </Grid>
           <Grid item xs={12} md={8} minHeight="40vh">
             <List sx={{ width: '100%' }}>

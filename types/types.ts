@@ -283,9 +283,18 @@ export type TopicWithAssignments = {
   assignments: Assignment[];
 } & Topic;
 
+export type TopicWithMaterials = {
+  materials: Assignment[];
+} & Topic;
+
 export type ClassroomAssignments = {
   assignments: Assignment[];
   topics: TopicWithAssignments[];
+};
+
+export type ClassroomMaterials = {
+  materials: Assignment[];
+  topics: TopicWithMaterials[];
 };
 
 export type AssignmentOverview = {
@@ -317,3 +326,27 @@ export type UserComment = {
 };
 
 export type UploadedFile = (FileResponse & { fileObj: File });
+
+export type CreateMaterial = {
+  postTo: {
+    classroomId: number;
+    topicId: number | null;
+  }[];
+  title: string;
+  publishedDate: string;
+  content: string;
+};
+
+export type Material = {
+  id: number;
+  classroomId: number;
+  title: string;
+  publishedDate: string;
+  content: string;
+  createdAt: string;
+  createBy: UserResponse;
+  updatedAt: string;
+  updateBy: UserResponse | null;
+  topic: Topic | null;
+  files: FileResponse[];
+};

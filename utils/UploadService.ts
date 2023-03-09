@@ -1,7 +1,8 @@
+import mime from 'mime-types';
 import { contentHttpClient, Response } from './APIHelper';
 
 export const imageExtensions = ['png', 'jpeg', 'jpg'];
-export const studentSubmissionExtensions = [
+export const docsExtensions = [
   ...imageExtensions,
   'pdf',
   'doc',
@@ -16,8 +17,9 @@ export const studentSubmissionExtensions = [
 ];
 
 const isValidFileUploaded = (file: File, exts: string[]) => {
-  const fileExtension = file.type.split('/')[1];
-  return exts.includes(fileExtension);
+  const mimeType = file.type;
+  const fileExtension = mime.extension(mimeType);
+  return exts.includes(fileExtension as string);
 };
 
 export const uploadFiles = async (files: File[], exts: string[]) => {

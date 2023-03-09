@@ -11,7 +11,7 @@ import {
   parseISO,
 } from 'date-fns';
 import { contentHttpClient, Response } from './APIHelper';
-import { studentSubmissionExtensions, uploadFiles } from './UploadService';
+import { docsExtensions, uploadFiles } from './UploadService';
 
 export const createJavaSrcSubmission = async (
   body: CreateJavaSrcSubmission,
@@ -97,10 +97,7 @@ export const submitStudentSubmission = async (
     };
 
     if (files.length > 0) {
-      const uploadedFiles = await uploadFiles(
-        files,
-        studentSubmissionExtensions
-      );
+      const uploadedFiles = await uploadFiles(files, docsExtensions);
 
       if (!uploadedFiles || uploadedFiles.length === 0) {
         throw new Error('Cannot upload files to server');
@@ -117,8 +114,8 @@ export const submitStudentSubmission = async (
     if (err) {
       throw new Error('Create student submission failed');
     }
-  } catch (err) {
-    throw new Error('Create student submission failed');
+  } catch (err: any) {
+    throw new Error(err);
   }
 };
 
