@@ -1,4 +1,4 @@
-import { TopicWithAssignments } from '@/types/types';
+import { Topic } from '@/types/types';
 import {
   Box,
   Card,
@@ -11,7 +11,7 @@ import {
 import SubtaskCard from '../subtask/SubtaskCard';
 
 export interface ITopicContentCard {
-  topic: TopicWithAssignments;
+  topic: Topic;
   classroomSlug?: string;
   isTeacherTA?: boolean;
 }

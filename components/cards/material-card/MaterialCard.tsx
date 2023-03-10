@@ -1,5 +1,6 @@
+import { Material } from '@/types/types';
 import BookIcon from '@mui/icons-material/Book';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import {
   Avatar,
   Card,
@@ -7,25 +8,25 @@ import {
   CardActions,
   CardHeader,
   Chip,
-  IconButton,
+  Tooltip,
   Typography,
 } from '@mui/material';
+import { format, isFuture, parseISO } from 'date-fns';
+import { th } from 'date-fns/locale';
 import Link from 'next/link';
-import { MouseEvent } from 'react';
 
 export interface IMaterialCard {
-  idx: number;
+  material: Material;
+  classroomSlug: string;
 }
 
-const MaterialCard: React.FC<IMaterialCard> = ({ idx }) => {
-  const handleMoreButtonClick = (e: MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
+const MaterialCard: React.FC<IMaterialCard> = ({ material, classroomSlug }) => {
   return (
     <Card className="shadow-md w-full" variant="outlined">
-      <Link href="#">
+      <Link
+        href={`/classroom/${classroomSlug}/materials/${material.id}`}
+        passHref
+      >
         <CardActionArea component="a">
           <CardHeader
             sx={{
@@ -40,31 +41,35 @@ const MaterialCard: React.FC<IMaterialCard> = ({ idx }) => {
                 <BookIcon />
               </Avatar>
             }
-            action={
-              <IconButton
-                onTouchStart={(event) => event.stopPropagation()}
-                onMouseDown={(event) => event.stopPropagation()}
-                onClick={(e) => {
-                  handleMoreButtonClick(e);
-                }}
-                aria-label="more"
-              >
-                <MoreVertIcon />
-              </IconButton>
-            }
             title={
               <Typography noWrap gutterBottom variant="subtitle2">
-                {`${'John Doe'} ได้เผยแพร่เอกสาร ${`Lesson ${idx} - Lorem ipsum dolor sit amet, consectetur adipisicing elit. A nobis dolorem nostrum soluta. Doloribus quaerat, eius voluptatibus assumenda eaque illo illum, labore at itaque ex, nemo repellat cupiditate praesentium explicabo!`}`}
+                {`${material.createBy.firstName} ${material.createBy.lastName}`}
+                {` ได้โพสต์เอกสารใหม่ `}
+                {`${material.title}`}
               </Typography>
             }
-            subheader="September 14, 2016"
+            action={
+              isFuture(parseISO(material.publishedDate)) && (
+                <Tooltip
+                  title={
+                    'โพสต์นี้จะไม่ปรากฏให้นักศึกษาในคลาสเรียนเห็นจนกว่าจะถึงวันเวลาที่เริ่มการส่งงาน'
+                  }
+                >
+                  <Chip
+                    size="small"
+                    color="warning"
+                    icon={<InsertDriveFileIcon />}
+                    label="DRAFT"
+                    variant="outlined"
+                  />
+                </Tooltip>
+              )
+            }
+            subheader={format(parseISO(material.createdAt), 'PPp', {
+              locale: th,
+            })}
           />
-          <CardActions sx={{ justifyContent: 'flex-end' }}>
-            <Typography variant="caption" sx={{ pr: 1 }}>
-              แท็ก
-            </Typography>
-            <Chip label={'บทที่ 1'} size="small" />
-          </CardActions>
+          <CardActions sx={{ justifyContent: 'flex-end' }}></CardActions>
         </CardActionArea>
       </Link>
     </Card>

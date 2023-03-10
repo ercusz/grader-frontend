@@ -1,15 +1,13 @@
 import { markdownEditorValueAtom } from '@/components/editors/markdown/MarkdownEditor';
-import CreateMaterialForm from '@/components/forms/create-material/CreateMaterialForm';
-import PostToForm from '@/components/forms/post-to/PostToForm';
+import CreateMaterialForm, {
+  postDateTypeAtom,
+} from '@/components/forms/create-material/CreateMaterialForm';
 import TopicForm from '@/components/forms/topic/TopicForm';
-import { useCourseSlug } from '@/hooks/courses/useCourses';
-import {
-  filesAtom,
-  openCreateMaterialDialogAtom,
-  postToAtom,
-} from '@/stores/create-material';
-import { CreateMaterial } from '@/types/types';
-import { createMaterial } from '@/utils/MaterialService';
+import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { filesAtom } from '@/stores/create-material';
+import { openEditMaterialDialogAtom, postToAtom } from '@/stores/edit-material';
+import { EditMaterial, Material, UploadedFile } from '@/types/types';
+import { editMaterial } from '@/utils/MaterialService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
@@ -29,13 +27,15 @@ import {
 import { alpha } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { parseISO } from 'date-fns';
 import { atom, useAtom } from 'jotai';
-import React, { forwardRef, useEffect } from 'react';
+import React, { forwardRef, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { CreateMaterialFormValues } from '../create-material/CreateMaterialDialog';
 
-export interface ICreateMaterialDialog {
+export interface IEditMaterialDialog {
   classroomSlug?: string;
-  courseSlug?: string;
+  material: Material;
 }
 
 const Transition = forwardRef(function Transition(
@@ -54,7 +54,7 @@ const Transition = forwardRef(function Transition(
   );
 });
 
-const tabsValueAtom = atom('create-material');
+const tabsValueAtom = atom('edit-material');
 
 const CustomTabPanel = ({
   tabValue,
@@ -101,75 +101,98 @@ const CustomTabPanel = ({
   );
 };
 
-export type CreateMaterialFormValues = {
-  title: string;
-  publishedDate: Date;
-};
-
-const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
+const EditMaterialDialog: React.FC<IEditMaterialDialog> = ({
   classroomSlug,
-  courseSlug,
+  material,
 }) => {
-  const [openDialog, setOpenDialog] = useAtom(openCreateMaterialDialogAtom);
+  const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
+  const [openDialog, setOpenDialog] = useAtom(openEditMaterialDialogAtom);
   const [tabsValue, setTabsValue] = useAtom(tabsValueAtom);
-  const [postTo, setPostTo] = useAtom(postToAtom);
   const [editorValue, setEditorValue] = useAtom(markdownEditorValueAtom);
+  const [, setPostDateType] = useAtom(postDateTypeAtom);
+  const [postTo, setPostTo] = useAtom(postToAtom);
   const [files, setFiles] = useAtom(filesAtom);
-  const { data: course } = useCourseSlug({ slug: courseSlug });
+
+  useEffect(() => {
+    if (openDialog && material) {
+      setPostDateType('custom');
+      setEditorValue(material.content);
+      if (material.files) {
+        setFiles(material.files as UploadedFile[]);
+      }
+    }
+  }, [material, openDialog, setEditorValue, setFiles, setPostDateType]);
+
+  useEffect(() => {
+    if (openDialog && classroom) {
+      setPostTo([
+        {
+          classroom,
+          topic: material.topic || null,
+        },
+      ]);
+    }
+  }, [material.topic, classroom, openDialog, setPostTo]);
+
   const queryClient = useQueryClient();
   const mutation = useMutation(
-    (body: CreateMaterial) =>
-      createMaterial(body, files?.map(({ fileObj }) => fileObj) || []),
+    (obj: EditMaterial) =>
+      editMaterial(
+        material?.id.toString() as string,
+        classroom?.id.toString() as string,
+        obj
+      ),
     {
       onSuccess: () => {
-        queryClient.invalidateQueries(['materials']);
-        alert('เพิ่มเอกสารใหม่สำเร็จ');
-        reset();
-        setEditorValue('');
-        setFiles([]);
+        queryClient.invalidateQueries(['material', { id: material.id }]);
+        alert('แก้ไขงานสำเร็จ');
       },
       onError: () => {
-        alert('เกิดข้อผิดพลาดในการเพิ่มเอกสารใหม่');
+        alert('เกิดข้อผิดพลาดในการแก้ไขงาน');
       },
     }
   );
 
-  useEffect(() => {
-    if (openDialog && course) {
-      let classroom = course.classrooms.find(
-        (classroom) => classroom.slug === classroomSlug
-      );
-      if (classroom) {
-        setPostTo([
-          {
-            classroom,
-            topic: null,
-          },
-        ]);
-      }
-    }
-  }, [classroomSlug, course, openDialog, setPostTo]);
+  const defaultValues = useMemo(() => {
+    return {
+      title: material.title ? material.title : '',
+      publishedDate: material.publishedDate
+        ? parseISO(material.publishedDate)
+        : undefined,
+    };
+  }, [material.publishedDate, material.title]);
 
   const createMaterialFormContext = useForm<CreateMaterialFormValues>({
-    defaultValues: {
-      title: '',
-    },
+    defaultValues: defaultValues,
   });
 
-  const { handleSubmit, watch, formState, reset } =
-    createMaterialFormContext;
+  const { handleSubmit, watch, formState, reset } = createMaterialFormContext;
   const { dirtyFields } = formState;
 
   const onSubmit = () => {
     const { title, publishedDate } = watch();
 
-    const obj = {
+    let newFiles: File[] = [];
+    let currentFiles: number[] = [];
+    if (files) {
+      files.forEach((file) => {
+        if (file.fileObj) {
+          newFiles.push(file.fileObj);
+        } else {
+          currentFiles.push(file.id);
+        }
+      });
+    }
+
+    let obj = {
       postTo: postTo.map(({ classroom, topic }) => {
         return { classroomId: classroom.id, topicId: topic ? topic.id : null };
       }),
       title: title,
       publishedDate: publishedDate.toISOString(),
       content: editorValue,
+      files: currentFiles,
+      newFiles: newFiles,
     };
 
     mutation.mutate(obj);
@@ -179,8 +202,7 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
 
   const openUnsavedChangesDialog = (callback: () => void) => {
     if (
-      editorValue ||
-      (files && files.length > 0) ||
+      editorValue !== material.content ||
       Object.keys(dirtyFields).length > 0
     ) {
       if (
@@ -198,10 +220,10 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
   const handleCloseDialog = () => {
     openUnsavedChangesDialog(() => {
       setOpenDialog(false);
-      setTabsValue('create-material');
+      setTabsValue('edit-material');
       reset();
       setEditorValue('');
-      setFiles(null);
+      setFiles([]);
     });
   };
 
@@ -210,7 +232,7 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
       fullScreen
       open={openDialog}
       onClose={handleCloseDialog}
-      aria-labelledby="create-material-dialog"
+      aria-labelledby="edit-material-dialog"
       TransitionComponent={Transition}
       sx={{
         '& .MuiDialog-paper': {
@@ -220,7 +242,7 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
     >
       <TabContext value={tabsValue}>
         <CustomTabPanel
-          tabValue="create-material"
+          tabValue="edit-material"
           actionButton={
             <>
               <IconButton
@@ -237,7 +259,7 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
                 component="div"
                 noWrap
               >
-                เพิ่มเอกสารประกอบการสอน
+                แก้ไขเอกสาร
               </Typography>
               <Button
                 autoFocus
@@ -250,74 +272,30 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
             </>
           }
         >
-          <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="body2">โพสต์ไปยัง</Typography>
-              <Chip
-                clickable
-                variant="outlined"
-                size="small"
-                deleteIcon={<ArrowDropDownIcon />}
-                onClick={() => {
-                  setTabsValue('set-post-to');
-                }}
-                onDelete={() => {
-                  setTabsValue('set-post-to');
-                }}
-                label={postTo.map(({ classroom }) => classroom.name).join(', ')}
-              />
-            </Stack>
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="body2">หัวข้อ</Typography>
-              <Chip
-                clickable
-                variant="outlined"
-                size="small"
-                deleteIcon={<ArrowDropDownIcon />}
-                onClick={() => {
-                  setTabsValue('set-topic');
-                }}
-                onDelete={() => {
-                  setTabsValue('set-topic');
-                }}
-                label={
-                  postTo.filter(({ topic }) => topic).length > 0
-                    ? postTo
-                        .filter(({ topic }) => topic)
-                        .map(({ topic }) => topic?.name)
-                        .join(', ')
-                    : 'ไม่มี'
-                }
-              />
-            </Stack>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <Typography variant="body2">หัวข้อ</Typography>
+            <Chip
+              clickable
+              variant="outlined"
+              size="small"
+              deleteIcon={<ArrowDropDownIcon />}
+              onClick={() => {
+                setTabsValue('set-topic');
+              }}
+              onDelete={() => {
+                setTabsValue('set-topic');
+              }}
+              label={
+                postTo.filter(({ topic }) => topic).length > 0
+                  ? postTo
+                      .filter(({ topic }) => topic)
+                      .map(({ topic }) => topic?.name)
+                      .join(', ')
+                  : 'ไม่มี'
+              }
+            />
           </Stack>
           <CreateMaterialForm formContext={createMaterialFormContext} />
-        </CustomTabPanel>
-
-        <CustomTabPanel
-          tabValue="set-post-to"
-          actionButton={
-            <>
-              <IconButton
-                edge="start"
-                color="inherit"
-                onClick={() => setTabsValue('create-material')}
-                aria-label="back"
-                disabled={postTo.length === 0}
-              >
-                <ArrowBackIcon />
-              </IconButton>
-              <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
-                เลือกคลาสเรียนที่ต้องการโพสต์
-              </Typography>
-            </>
-          }
-        >
-          <PostToForm
-            classroomSlug={classroomSlug!}
-            courseSlug={courseSlug!}
-            postToAtom={postToAtom}
-          />
         </CustomTabPanel>
 
         <CustomTabPanel
@@ -327,7 +305,7 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
               <IconButton
                 edge="start"
                 color="inherit"
-                onClick={() => setTabsValue('create-material')}
+                onClick={() => setTabsValue('edit-material')}
                 aria-label="back"
               >
                 <ArrowBackIcon />
@@ -338,7 +316,7 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
                 component="div"
                 noWrap
               >
-                เลือกหัวข้อของเอกสาร
+                เลือกหัวข้องาน
               </Typography>
             </>
           }
@@ -350,4 +328,4 @@ const CreateMaterialDialog: React.FC<ICreateMaterialDialog> = ({
   );
 };
 
-export default CreateMaterialDialog;
+export default EditMaterialDialog;

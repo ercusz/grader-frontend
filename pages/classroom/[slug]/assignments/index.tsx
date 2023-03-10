@@ -1,6 +1,6 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
 import AssignmentCardSkeleton from '@/components/cards/assignment-skeleton/AssignmentCardSkeleton';
-import AssignmentTopicCard from '@/components/cards/assignment-topic/AssignmentTopicCard';
+import TopicCard from '@/components/cards/topic/TopicCard';
 import CreateAssignmentDialog from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import { Roles } from '@/constants/roles';
@@ -181,10 +181,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
                     if (isTopic(obj)) {
                       return (
                         <ListItem disableGutters key={obj.id}>
-                          <AssignmentTopicCard
-                            classroomSlug={slug}
-                            topic={obj}
-                          />
+                          <TopicCard classroomSlug={slug} topic={obj} />
                         </ListItem>
                       );
                     }

@@ -1,19 +1,28 @@
 import AssignmentCard from '@/components/cards/assignment-card/AssignmentCard';
 import AssignmentCardSkeleton from '@/components/cards/assignment-skeleton/AssignmentCardSkeleton';
-import AssignmentTopicCard from '@/components/cards/assignment-topic/AssignmentTopicCard';
 import CreatePostCard from '@/components/cards/create-post/CreatePostCard';
+import MaterialCard from '@/components/cards/material-card/MaterialCard';
 import PostCard from '@/components/cards/post-card/PostCard';
 import PostCardSkeleton from '@/components/cards/post-skeleton/PostCardSkeleton';
+import TopicCard from '@/components/cards/topic/TopicCard';
 import CreateAssignmentDialog from '@/components/dialogs/create-assignment/CreateAssignmentDialog';
 import CreatePostDialog from '@/components/dialogs/create-post/CreatePostDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
 import { useAssignments } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useMaterials } from '@/hooks/material/useMaterial';
 import { usePosts } from '@/hooks/post/usePost';
 import { useUser } from '@/hooks/user/useUser';
 import { openCreatePostDialogAtom } from '@/stores/create-post';
-import { Assignment, Post, Topic, User, UserResponse } from '@/types/types';
+import {
+  Assignment,
+  Material,
+  Post,
+  Topic,
+  User,
+  UserResponse,
+} from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getUserRole } from '@/utils/role';
@@ -32,6 +41,7 @@ import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
 import Head from 'next/head';
+import { useMemo } from 'react';
 import { NextPageWithLayout } from '../../page';
 
 const Classroom: NextPageWithLayout = ({
@@ -56,17 +66,61 @@ const Classroom: NextPageWithLayout = ({
   const {
     isLoading: isLoadingAssignments,
     isSuccess: isSuccessAssignments,
-    data: { assignments, topics } = { assignments: [], topics: [] },
+    data: { assignments, topics: topicWithAssignment } = {
+      assignments: [],
+      topicWithAssignment: [],
+    },
   } = useAssignments({
     classroomId: classroom?.id ? classroom.id.toString() : '',
   });
 
+  const {
+    isLoading: isLoadingMaterials,
+    isSuccess: isSuccessMaterials,
+    data: { materials, topics: topicWithMaterial } = {
+      materials: [],
+      topicWithMaterial: [],
+    },
+  } = useMaterials({
+    classroomId: classroom?.id ? classroom.id.toString() : '',
+  });
+
+  const topics = useMemo(() => {
+    const topics: Topic[] = topicWithAssignment || [];
+
+    topicWithMaterial?.forEach((topic) => {
+      const index = topics.findIndex((t) => t.id === topic.id);
+
+      if (index === -1) {
+        topics.push(topic);
+      } else {
+        topics[index] = {
+          ...topics[index],
+          materials: topic.materials,
+        };
+      }
+    });
+
+    return topics;
+  }, [topicWithAssignment, topicWithMaterial]);
+
   const isEmptyFeed =
     isSuccessPosts &&
     isSuccessAssignments &&
+    isSuccessMaterials &&
     posts.length < 1 &&
     assignments.length < 1 &&
+    materials.length < 1 &&
     topics.length < 1;
+
+  const isAllSucceed =
+    isSuccessPosts &&
+    posts &&
+    isSuccessAssignments &&
+    assignments &&
+    isSuccessMaterials &&
+    materials &&
+    topics;
 
   function isPost(obj: any): obj is Post {
     return obj.isPinned !== undefined;
@@ -74,6 +128,10 @@ const Classroom: NextPageWithLayout = ({
 
   function isAssignment(obj: any): obj is Assignment {
     return obj.point !== undefined;
+  }
+
+  function isMaterial(obj: any): obj is Material {
+    return obj.publishedDate !== undefined;
   }
 
   function isTopic(obj: any): obj is Topic {
@@ -135,7 +193,7 @@ const Classroom: NextPageWithLayout = ({
           </Grid>
           <Grid item xs={12} md={8} minHeight="40vh">
             <List sx={{ width: '100%' }}>
-              {(isLoadingPosts || isLoadingAssignments) &&
+              {(isLoadingPosts || isLoadingAssignments || isLoadingMaterials) &&
                 [...Array(2)].map((_, index) => (
                   <div key={index}>
                     <ListItem disableGutters>
@@ -146,12 +204,8 @@ const Classroom: NextPageWithLayout = ({
                     </ListItem>
                   </div>
                 ))}
-              {isSuccessPosts &&
-                posts &&
-                isSuccessAssignments &&
-                assignments &&
-                topics &&
-                [...posts, ...assignments, ...topics]
+              {isAllSucceed &&
+                [...posts, ...assignments, ...materials, ...topics]
                   .sort((a, b) =>
                     isBefore(parseISO(a.updatedAt), parseISO(b.updatedAt))
                       ? 1
@@ -175,13 +229,16 @@ const Classroom: NextPageWithLayout = ({
                           />
                         </ListItem>
                       );
+                    } else if (isMaterial(obj)) {
+                      return (
+                        <ListItem key={`material-${obj.id}`} disableGutters>
+                          <MaterialCard classroomSlug={slug} material={obj} />
+                        </ListItem>
+                      );
                     } else if (isTopic(obj)) {
                       return (
                         <ListItem key={`topic-${obj.id}`} disableGutters>
-                          <AssignmentTopicCard
-                            classroomSlug={slug}
-                            topic={obj}
-                          />
+                          <TopicCard classroomSlug={slug} topic={obj} />
                         </ListItem>
                       );
                     }

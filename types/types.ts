@@ -277,24 +277,18 @@ export type Topic = {
   name: string;
   createdAt: string;
   updatedAt: string;
+  assignments?: Assignment[];
+  materials?: Assignment[];
 };
-
-export type TopicWithAssignments = {
-  assignments: Assignment[];
-} & Topic;
-
-export type TopicWithMaterials = {
-  materials: Assignment[];
-} & Topic;
 
 export type ClassroomAssignments = {
   assignments: Assignment[];
-  topics: TopicWithAssignments[];
+  topics: Topic[];
 };
 
 export type ClassroomMaterials = {
-  materials: Assignment[];
-  topics: TopicWithMaterials[];
+  materials: Material[];
+  topics: Topic[];
 };
 
 export type AssignmentOverview = {
@@ -325,7 +319,7 @@ export type UserComment = {
   updatedAt: string;
 };
 
-export type UploadedFile = (FileResponse & { fileObj: File });
+export type UploadedFile = FileResponse & { fileObj: File };
 
 export type CreateMaterial = {
   postTo: {
@@ -349,4 +343,13 @@ export type Material = {
   updateBy: UserResponse | null;
   topic: Topic | null;
   files: FileResponse[];
+};
+
+export type EditMaterial = {
+  title: string;
+  publishedDate: string;
+  content: string;
+  topic?: Topic | null;
+  files?: number[];
+  newFiles?: File[];
 };

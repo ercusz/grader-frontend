@@ -7,7 +7,7 @@ import {
   defaultRightAtom,
   openEditTopicDialogAtom,
 } from '@/stores/edit-topic';
-import { CreateTopic } from '@/types/types';
+import { Assignment, CreateTopic } from '@/types/types';
 import { updateTopic } from '@/utils/TopicServices';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabPanel } from '@mui/lab';
@@ -139,7 +139,7 @@ const EditTopicDialog: React.FC<IEditTopicDialog> = ({ classroomSlug }) => {
     }
 
     if (currentAssignments) {
-      setRight(currentAssignments);
+      setRight(currentAssignments as Assignment[]);
     }
   }, [assignments, currentAssignments, setLeft, setRight]);
 

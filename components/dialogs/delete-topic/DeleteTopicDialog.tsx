@@ -1,5 +1,5 @@
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
-import { TopicWithAssignments } from '@/types/types';
+import { Topic } from '@/types/types';
 import { deleteTopic, deleteTopicAndAssignments } from '@/utils/TopicServices';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {
@@ -25,7 +25,7 @@ import React, { useEffect, useState } from 'react';
 
 export interface IDeleteTopicDialog {
   classroomSlug: string;
-  topic: TopicWithAssignments;
+  topic: Topic;
 }
 
 export const openDeleteTopicDialogAtom = atom(false);

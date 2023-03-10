@@ -1,10 +1,17 @@
+import AssignmentCardSkeleton from '@/components/cards/assignment-skeleton/AssignmentCardSkeleton';
 import MaterialCard from '@/components/cards/material-card/MaterialCard';
+import TopicCard from '@/components/cards/topic/TopicCard';
 import CreateMaterialDialog from '@/components/dialogs/create-material/CreateMaterialDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
+import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useMaterials } from '@/hooks/material/useMaterial';
+import { useUser } from '@/hooks/user/useUser';
 import { openCreateMaterialDialogAtom } from '@/stores/create-material';
+import { Material, Topic, User, UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
+import { getUserRole } from '@/utils/role';
 import AddIcon from '@mui/icons-material/Add';
 import {
   Backdrop,
@@ -16,6 +23,7 @@ import {
   ListItem,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { isBefore, parseISO } from 'date-fns';
 import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
@@ -25,13 +33,44 @@ import { NextPageWithLayout } from '../../../page';
 const ClassroomMaterials: NextPageWithLayout = ({
   slug,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const { data: user } = useUser();
   const {
-    isLoading,
-    isSuccess,
+    isLoading: isLoadingClassroom,
+    isSuccess: isSuccessClassroom,
     data: classroom,
   } = useClassroomSlug({ slug: slug });
 
+  const {
+    isLoading: isLoadingMaterials,
+    isSuccess: isSuccessMaterials,
+    data: { materials, topics } = { materials: [], topics: [] },
+  } = useMaterials({
+    classroomId: classroom?.id ? classroom.id.toString() : '',
+  });
+
   const [, setOpenCreateMaterialDialog] = useAtom(openCreateMaterialDialogAtom);
+
+  const getRole = (targetUser: UserResponse | User) => {
+    return getUserRole({
+      teachers: classroom?.course.teachers || ([] as UserResponse[]),
+      teacherAssistants: classroom?.teacherAssistants || ([] as UserResponse[]),
+      students: classroom?.students || ([] as UserResponse[]),
+      targetUser: targetUser,
+    });
+  };
+
+  const haveAMaterial =
+    isSuccessMaterials &&
+    materials &&
+    (materials.length > 0 || topics.length > 0);
+
+  function isMaterial(obj: any): obj is Material {
+    return obj.publishedDate !== undefined;
+  }
+
+  function isTopic(obj: any): obj is Topic {
+    return obj.name !== undefined;
+  }
 
   return (
     <section>
@@ -60,7 +99,7 @@ const ClassroomMaterials: NextPageWithLayout = ({
         classroomSlug={slug}
         courseSlug={classroom?.course.slug}
       />
-      {isLoading && (
+      {isLoadingClassroom && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={true}
@@ -68,7 +107,7 @@ const ClassroomMaterials: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {isSuccess && classroom && (
+      {isSuccessClassroom && classroom && (
         <Grid
           container
           spacing={2}
@@ -77,40 +116,71 @@ const ClassroomMaterials: NextPageWithLayout = ({
           alignItems="flex-start"
         >
           <Grid item xs={12} md={4}>
-            <List>
-              <ListItem
-                disableGutters
-                alignItems="center"
-                sx={{
-                  display: { xs: 'none', md: 'flex' },
-                  p: 4,
-                  justifyContent: 'center',
-                }}
-              >
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="large"
-                  startIcon={<AddIcon />}
+            {((user && getRole(user) === Roles.TEACHER) ||
+              (user && getRole(user) === Roles.TA)) && (
+              <List>
+                <ListItem
+                  disableGutters
+                  alignItems="center"
                   sx={{
-                    borderRadius: 20,
+                    display: { xs: 'none', md: 'flex' },
+                    p: 4,
+                    justifyContent: 'center',
                   }}
-                  onClick={() => setOpenCreateMaterialDialog(true)}
                 >
-                  เพิ่มเอกสารประกอบการสอน
-                </Button>
-              </ListItem>
-            </List>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="large"
+                    startIcon={<AddIcon />}
+                    sx={{
+                      borderRadius: 20,
+                    }}
+                    onClick={() => setOpenCreateMaterialDialog(true)}
+                  >
+                    เพิ่มเอกสารประกอบการสอน
+                  </Button>
+                </ListItem>
+              </List>
+            )}
             {/* <LessonFiltersList /> */}
           </Grid>
           <Grid item xs={12} md={8} minHeight="40vh">
-            <List sx={{ width: '100%' }}>
-              {[...Array(15)].map((_, idx) => (
-                <ListItem key={idx} disableGutters>
-                  <MaterialCard idx={idx} />
-                </ListItem>
-              ))}
-            </List>
+            {isLoadingMaterials && (
+              <List sx={{ width: '100%' }}>
+                {[...Array(4)].map((_, index) => (
+                  <ListItem disableGutters key={index}>
+                    <AssignmentCardSkeleton />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+            {haveAMaterial && (
+              <List sx={{ width: '100%' }}>
+                {[...topics, ...materials]
+                  .sort((a, b) =>
+                    isBefore(parseISO(a.createdAt), parseISO(b.createdAt))
+                      ? 1
+                      : -1
+                  )
+                  .map((obj) => {
+                    if (isMaterial(obj)) {
+                      return (
+                        <ListItem key={obj.id} disableGutters>
+                          <MaterialCard classroomSlug={slug} material={obj} />
+                        </ListItem>
+                      );
+                    }
+                    if (isTopic(obj)) {
+                      return (
+                        <ListItem disableGutters key={obj.id}>
+                          <TopicCard classroomSlug={slug} topic={obj} />
+                        </ListItem>
+                      );
+                    }
+                  })}
+              </List>
+            )}
           </Grid>
         </Grid>
       )}

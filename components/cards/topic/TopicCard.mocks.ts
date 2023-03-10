@@ -1,6 +1,6 @@
-import { IAssignmentTopicCard } from './AssignmentTopicCard';
+import { ITopicCard } from './TopicCard';
 
-const base: IAssignmentTopicCard = {
+const base: ITopicCard = {
   topic: {
     id: 1,
     name: 'Topic 1',
@@ -11,6 +11,6 @@ const base: IAssignmentTopicCard = {
   classroomSlug: '',
 };
 
-export const mockAssignmentTopicCardProps = {
+export const mockTopicCardProps = {
   base,
 };

@@ -46,7 +46,7 @@ export interface IAuthorDetail {
   date: Date;
 }
 
-const AuthorDetails: React.FC<IAuthorDetail> = ({ author, date }) => {
+export const AuthorDetails: React.FC<IAuthorDetail> = ({ author, date }) => {
   return (
     author &&
     date && (

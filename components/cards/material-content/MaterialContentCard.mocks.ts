@@ -1,6 +1,6 @@
-import { IMaterialCard } from './MaterialCard';
+import { IMaterialContentCard } from './MaterialContentCard';
 
-const base: IMaterialCard = {
+const base: IMaterialContentCard = {
   material: {
     id: 0,
     classroomId: 0,
@@ -21,9 +21,8 @@ const base: IMaterialCard = {
     topic: null,
     files: [],
   },
-  classroomSlug: '',
 };
 
-export const mockMaterialCardProps = {
+export const mockMaterialContentCardProps = {
   base,
 };
