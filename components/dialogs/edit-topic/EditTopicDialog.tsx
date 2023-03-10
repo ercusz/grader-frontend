@@ -1,13 +1,16 @@
 import EditTopicForm from '@/components/forms/edit-topic/EditTopicForm';
 import { useAssignments } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
+import { useMaterials } from '@/hooks/material/useMaterial';
 import { useTopic } from '@/hooks/topic/useTopic';
 import {
-  defaultLeftAtom,
-  defaultRightAtom,
+  defaultLeftAssignmentAtom,
+  defaultLeftMaterialAtom,
+  defaultRightAssignmentAtom,
+  defaultRightMaterialAtom,
   openEditTopicDialogAtom,
 } from '@/stores/edit-topic';
-import { Assignment, CreateTopic } from '@/types/types';
+import { Assignment, CreateTopic, Material } from '@/types/types';
 import { updateTopic } from '@/utils/TopicServices';
 import CloseIcon from '@mui/icons-material/Close';
 import { TabContext, TabPanel } from '@mui/lab';
@@ -119,29 +122,64 @@ const EditTopicDialog: React.FC<IEditTopicDialog> = ({ classroomSlug }) => {
 
   const [openDialog, setOpenDialog] = useAtom(openEditTopicDialogAtom);
   const [tabsValue, setTabsValue] = useAtom(tabsValueAtom);
-  const [, setLeft] = useAtom(defaultLeftAtom);
-  const [right, setRight] = useAtom(defaultRightAtom);
+  const [, setLeftAssignment] = useAtom(defaultLeftAssignmentAtom);
+  const [rightAssignment, setRightAssignment] = useAtom(
+    defaultRightAssignmentAtom
+  );
+  const [, setLeftMaterial] = useAtom(defaultLeftMaterialAtom);
+  const [rightMaterial, setRightMaterial] = useAtom(defaultRightMaterialAtom);
 
-  const { data: { assignments, topics } = { assignments: [], topics: [] } } =
-    useAssignments({
-      classroomId: classroom?.id ? classroom.id.toString() : '',
-    });
+  const {
+    data: { assignments, topics: topicsWithAssignment } = {
+      assignments: [],
+      topics: [],
+    },
+  } = useAssignments({
+    classroomId: classroom?.id ? classroom.id.toString() : '',
+  });
+
+  const {
+    data: { materials, topics: topicsWithMaterial } = {
+      materials: [],
+      topics: [],
+    },
+  } = useMaterials({
+    classroomId: classroom?.id ? classroom.id.toString() : '',
+  });
 
   const currentAssignments = useMemo(() => {
-    return topics
+    return topicsWithAssignment
       .filter((topic) => topic.id === Number(id) && Boolean(topic.assignments))
       .flatMap(({ assignments }) => assignments);
-  }, [id, topics]);
+  }, [id, topicsWithAssignment]);
 
+  const currentMaterials = useMemo(() => {
+    return topicsWithMaterial
+      .filter((topic) => topic.id === Number(id) && Boolean(topic.materials))
+      .flatMap(({ materials }) => materials);
+  }, [id, topicsWithMaterial]);
+
+  // Set default value for left and right assignment
   useEffect(() => {
     if (assignments) {
-      setLeft(assignments);
+      setLeftAssignment(assignments);
     }
 
     if (currentAssignments) {
-      setRight(currentAssignments as Assignment[]);
+      setRightAssignment(currentAssignments as Assignment[]);
     }
-  }, [assignments, currentAssignments, setLeft, setRight]);
+  }, [assignments, currentAssignments, setLeftAssignment, setRightAssignment]);
+
+  // Set default value for left and right material
+  useEffect(() => {
+    if (materials) {
+      setLeftMaterial(materials);
+    }
+
+    if (currentMaterials) {
+      setRightMaterial(currentMaterials as Material[]);
+    }
+  }, [currentMaterials, materials, setLeftMaterial, setRightMaterial]);
 
   const defaultValues = useMemo(() => {
     return {
@@ -155,7 +193,7 @@ const EditTopicDialog: React.FC<IEditTopicDialog> = ({ classroomSlug }) => {
 
   const queryClient = useQueryClient();
   const updateMutation = useMutation(
-    (body: CreateTopic & { assignments: number[] }) =>
+    (body: CreateTopic & { assignments: number[]; materials: number[] }) =>
       updateTopic(id, classroom?.id.toString() as string, body),
     {
       onSuccess: () => {
@@ -175,7 +213,8 @@ const EditTopicDialog: React.FC<IEditTopicDialog> = ({ classroomSlug }) => {
     const name = editTopicFormContext.getValues('name');
     const req = {
       name: name,
-      assignments: right.map((assignment) => assignment.id),
+      assignments: rightAssignment.map((assignment: any) => assignment.id),
+      materials: rightMaterial.map((material: any) => material.id),
     };
 
     updateMutation.mutate(req);
@@ -250,9 +289,13 @@ const EditTopicDialog: React.FC<IEditTopicDialog> = ({ classroomSlug }) => {
             </>
           }
         >
-          {classroom && assignments && topics && (
-            <EditTopicForm formContext={editTopicFormContext} />
-          )}
+          {classroom &&
+            assignments &&
+            materials &&
+            topicsWithAssignment &&
+            topicsWithMaterial && (
+              <EditTopicForm formContext={editTopicFormContext} />
+            )}
         </CustomTabPanel>
       </TabContext>
     </Dialog>

@@ -1,5 +1,3 @@
-import { defaultLeftAtom, defaultRightAtom } from '@/stores/edit-topic';
-import { Assignment } from '@/types/types';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
@@ -16,32 +14,38 @@ import {
   Stack,
   Tooltip,
 } from '@mui/material';
-import { useAtom } from 'jotai';
+import { PrimitiveAtom, useAtom } from 'jotai';
 import { useState } from 'react';
 
-function not(a: Assignment[], b: Assignment[]) {
+function not(a: Object[], b: Object[]) {
   return a.filter((value) => b.indexOf(value) === -1);
 }
 
-function intersection(a: Assignment[], b: Assignment[]) {
+function intersection(a: Object[], b: Object[]) {
   return a.filter((value) => b.indexOf(value) !== -1);
 }
 
-function union(a: Assignment[], b: Assignment[]) {
+function union(a: Object[], b: Object[]) {
   return [...a, ...not(b, a)];
 }
 
-export interface ITransferAssignmentList {}
+export interface ITransferList {
+  defaultLeftAtom: PrimitiveAtom<Object[]>;
+  defaultRightAtom: PrimitiveAtom<Object[]>;
+}
 
-const TransferAssignmentList: React.FC<ITransferAssignmentList> = () => {
-  const [checked, setChecked] = useState<Assignment[]>([]);
+const TransferList: React.FC<ITransferList> = ({
+  defaultLeftAtom,
+  defaultRightAtom,
+}) => {
+  const [checked, setChecked] = useState<Object[]>([]);
   const [left, setLeft] = useAtom(defaultLeftAtom);
   const [right, setRight] = useAtom(defaultRightAtom);
 
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
 
-  const handleToggle = (value: Assignment) => () => {
+  const handleToggle = (value: Object) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -54,10 +58,10 @@ const TransferAssignmentList: React.FC<ITransferAssignmentList> = () => {
     setChecked(newChecked);
   };
 
-  const numberOfChecked = (items: Assignment[]) =>
+  const numberOfChecked = (items: Object[]) =>
     intersection(checked, items).length;
 
-  const handleToggleAll = (items: Assignment[]) => () => {
+  const handleToggleAll = (items: Object[]) => () => {
     if (numberOfChecked(items) === items.length) {
       setChecked(not(checked, items));
     } else {
@@ -77,7 +81,7 @@ const TransferAssignmentList: React.FC<ITransferAssignmentList> = () => {
     setChecked(not(checked, rightChecked));
   };
 
-  const customList = (title: React.ReactNode, items: Assignment[]) => (
+  const customList = (title: React.ReactNode, items: Object[]) => (
     <Card variant="outlined">
       <CardHeader
         sx={{ px: 2, py: 1 }}
@@ -111,7 +115,7 @@ const TransferAssignmentList: React.FC<ITransferAssignmentList> = () => {
         component="div"
         role="list"
       >
-        {items.map((value: Assignment) => {
+        {items.map((value: any) => {
           return (
             value && (
               <ListItemButton
@@ -180,4 +184,4 @@ const TransferAssignmentList: React.FC<ITransferAssignmentList> = () => {
   );
 };
 
-export default TransferAssignmentList;
+export default TransferList;

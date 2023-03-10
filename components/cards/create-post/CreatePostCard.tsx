@@ -1,6 +1,7 @@
 import { Roles } from '@/constants/roles';
 import { useUser } from '@/hooks/user/useUser';
 import { openCreateAssignmentDialogAtom } from '@/stores/create-assignment';
+import { openCreateMaterialDialogAtom } from '@/stores/create-material';
 import { openCreatePostDialogAtom } from '@/stores/create-post';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import BookIcon from '@mui/icons-material/Book';
@@ -23,6 +24,7 @@ const CreatePostCard: React.FC<ICreatePostCard> = ({ userRole }) => {
   const [, setOpenCreateAssignmentDialog] = useAtom(
     openCreateAssignmentDialogAtom
   );
+  const [, setOpenCreateMaterialDialog] = useAtom(openCreateMaterialDialogAtom);
   const { data: user } = useUser();
 
   return (
@@ -74,6 +76,7 @@ const CreatePostCard: React.FC<ICreatePostCard> = ({ userRole }) => {
                 variant="text"
                 fullWidth
                 startIcon={<BookIcon color="success" />}
+                onClick={() => setOpenCreateMaterialDialog(true)}
               >
                 เพิ่มเอกสาร
               </Button>

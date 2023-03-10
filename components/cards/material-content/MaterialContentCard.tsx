@@ -19,13 +19,9 @@ import { AuthorDetails } from '../assignment-content/AssignmentContentCard';
 
 export interface IMaterialContentCard {
   material: Material;
-  classroomSlug?: string;
 }
 
-const MaterialContentCard: React.FC<IMaterialContentCard> = ({
-  material,
-  classroomSlug,
-}) => {
+const MaterialContentCard: React.FC<IMaterialContentCard> = ({ material }) => {
   const theme = useTheme();
 
   return (

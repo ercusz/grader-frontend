@@ -1,4 +1,10 @@
-import TransferAssignmentList from '@/components/lists/transfer-assignment/TransferAssignmentList';
+import TransferList from '@/components/lists/transfer/TransferList';
+import {
+  defaultLeftAssignmentAtom,
+  defaultLeftMaterialAtom,
+  defaultRightAssignmentAtom,
+  defaultRightMaterialAtom,
+} from '@/stores/edit-topic';
 import { Stack, Typography } from '@mui/material';
 import { UseFormReturn } from 'react-hook-form';
 import { FormContainer, TextFieldElement } from 'react-hook-form-mui';
@@ -29,10 +35,22 @@ const EditTopicForm: React.FC<IEditTopicForm> = ({ formContext }) => {
               },
             }}
           />
+
           <Typography variant="h6" component="div" noWrap sx={{ pt: 2 }}>
             จัดการงานในหัวข้อนี้
           </Typography>
-          <TransferAssignmentList />
+          <TransferList
+            defaultLeftAtom={defaultLeftAssignmentAtom}
+            defaultRightAtom={defaultRightAssignmentAtom}
+          />
+
+          <Typography variant="h6" component="div" noWrap sx={{ pt: 2 }}>
+            จัดการเอกสารในหัวข้อนี้
+          </Typography>
+          <TransferList
+            defaultLeftAtom={defaultLeftMaterialAtom}
+            defaultRightAtom={defaultRightMaterialAtom}
+          />
         </Stack>
       </FormContainer>
     </>

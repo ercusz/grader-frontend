@@ -19,8 +19,10 @@ import {
   CircularProgress,
   Fab,
   Grid,
+  Link as MuiLink,
   List,
   ListItem,
+  Typography,
 } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { isBefore, parseISO } from 'date-fns';
@@ -143,7 +145,6 @@ const ClassroomMaterials: NextPageWithLayout = ({
                 </ListItem>
               </List>
             )}
-            {/* <LessonFiltersList /> */}
           </Grid>
           <Grid item xs={12} md={8} minHeight="40vh">
             {isLoadingMaterials && (
@@ -179,6 +180,26 @@ const ClassroomMaterials: NextPageWithLayout = ({
                       );
                     }
                   })}
+              </List>
+            )}
+            {!haveAMaterial && (
+              <List sx={{ width: '100%' }}>
+                <Typography className="text-center mt-10" variant="h5">
+                  ยังไม่มีเอกสารประกอบการสอนในรายวิชานี้
+                </Typography>
+                {((user && getRole(user) === Roles.TEACHER) ||
+                  (user && getRole(user) === Roles.TA)) && (
+                  <Typography className="text-center">
+                    คุณต้องการ{' '}
+                    <MuiLink
+                      className="cursor-pointer"
+                      onClick={() => setOpenCreateMaterialDialog(true)}
+                    >
+                      เพิ่มเอกสารใหม่
+                    </MuiLink>{' '}
+                    ไหม?
+                  </Typography>
+                )}
               </List>
             )}
           </Grid>

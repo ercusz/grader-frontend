@@ -278,7 +278,7 @@ export type Topic = {
   createdAt: string;
   updatedAt: string;
   assignments?: Assignment[];
-  materials?: Assignment[];
+  materials?: Material[];
 };
 
 export type ClassroomAssignments = {

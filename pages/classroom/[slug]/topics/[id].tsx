@@ -172,15 +172,12 @@ const ClassroomTopic: NextPageWithLayout = ({
                       {classroom?.name}
                     </MuiLink>
                   </Link>
-                  <Link href={`/classroom/${slug}/assignments`} passHref>
-                    <MuiLink
-                      underline="hover"
-                      sx={{ display: 'flex', alignItems: 'center' }}
-                      color="inherit"
-                    >
-                      งานที่ได้รับมอบหมาย
-                    </MuiLink>
-                  </Link>
+                  <Typography
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                    color="inherit"
+                  >
+                    หัวข้อ
+                  </Typography>
                   <Typography
                     sx={{ display: 'flex', alignItems: 'center' }}
                     color="text.primary"

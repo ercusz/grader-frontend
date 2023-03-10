@@ -1,6 +1,6 @@
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { Topic } from '@/types/types';
-import { deleteTopic, deleteTopicAndAssignments } from '@/utils/TopicServices';
+import { deleteTopic, deleteTopicAndAllContents } from '@/utils/TopicServices';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import {
   Alert,
@@ -59,9 +59,9 @@ const DeleteTopicDialog: React.FC<IDeleteTopicDialog> = ({
     }
   );
 
-  const deleteTopicAndAssignmentMutation = useMutation(
+  const deleteTopicAndAllContentMutation = useMutation(
     () =>
-      deleteTopicAndAssignments(
+      deleteTopicAndAllContents(
         topic.id.toString() as string,
         classroom?.id.toString() as string
       ),
@@ -69,11 +69,11 @@ const DeleteTopicDialog: React.FC<IDeleteTopicDialog> = ({
       onSuccess: () => {
         queryClient.invalidateQueries(['topics']);
         queryClient.invalidateQueries(['assignments']);
-        alert('ลบหัวข้อและงานในหัวข้อสำเร็จ');
+        alert('ลบหัวข้อรวมถึงงานและเอกสารในหัวข้อสำเร็จ');
         router.push(`/classroom/${classroomSlug}`);
       },
       onError: () => {
-        alert('เกิดข้อผิดพลาดในการลบหัวข้อและงานในหัวข้อ');
+        alert('เกิดข้อผิดพลาดในการลบหัวข้อรวมถึงงานและเอกสารในหัวข้อ');
       },
     }
   );
@@ -88,7 +88,7 @@ const DeleteTopicDialog: React.FC<IDeleteTopicDialog> = ({
     }
 
     if (value === 'all') {
-      deleteTopicAndAssignmentMutation.mutate();
+      deleteTopicAndAllContentMutation.mutate();
     }
 
     setOpenDialog(false);
@@ -96,16 +96,16 @@ const DeleteTopicDialog: React.FC<IDeleteTopicDialog> = ({
 
   useEffect(() => {
     if (value === 'onlyTopic') {
-      setHelperText('แต่งานทั้งหมดในหัวข้อนี้จะไม่ถูกลบ');
+      setHelperText('แต่งานและเอกสารทั้งหมดในหัวข้อนี้จะไม่ถูกลบ');
     }
 
     if (value === 'all') {
-      setHelperText('และงานทั้งหมดในหัวข้อนี้จะถูกลบเช่นเดียวกัน');
+      setHelperText('งานและเอกสารทั้งหมดในหัวข้อนี้ก็จะถูกลบเช่นเดียวกัน');
     }
   }, [value]);
 
   return (
-    <Dialog open={openDialog} maxWidth="xs" fullWidth>
+    <Dialog open={openDialog} maxWidth="sm" fullWidth>
       <DialogTitle>
         <Stack direction="row" alignItems="center">
           <DeleteForeverIcon fontSize="large" />

@@ -147,7 +147,6 @@ const ClassroomAssignments: NextPageWithLayout = ({
                 </ListItem>
               </List>
             )}
-            {/* <LessonFiltersList /> */}
           </Grid>
           <Grid item xs={12} md={8} minHeight="40vh">
             {isLoadingAssignments && (
@@ -191,7 +190,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
             {!haveAnAssignment && (
               <List sx={{ width: '100%' }}>
                 <Typography className="text-center mt-10" variant="h5">
-                  ยังไม่มีโพสต์ในรายวิชานี้
+                  ยังไม่มีงานในรายวิชานี้
                 </Typography>
                 {((user && getRole(user) === Roles.TEACHER) ||
                   (user && getRole(user) === Roles.TA)) && (

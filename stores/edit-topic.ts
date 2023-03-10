@@ -1,6 +1,7 @@
-import { Assignment } from '@/types/types';
 import { atom } from 'jotai';
 
 export const openEditTopicDialogAtom = atom(false);
-export const defaultLeftAtom = atom<Assignment[]>([]);
-export const defaultRightAtom = atom<Assignment[]>([]);
+export const defaultLeftAssignmentAtom = atom<Object[]>([]);
+export const defaultRightAssignmentAtom = atom<Object[]>([]);
+export const defaultLeftMaterialAtom = atom<Object[]>([]);
+export const defaultRightMaterialAtom = atom<Object[]>([]);

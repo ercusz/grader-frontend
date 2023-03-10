@@ -55,10 +55,26 @@ export const deleteAssignmentTopic = async (
   return;
 };
 
+export const deleteMaterialTopic = async (
+  topicId: string,
+  classroomId: string,
+  materialId: string
+) => {
+  const { err }: Response = await contentHttpClient.delete(
+    `/api/classrooms/${classroomId}/topics/${topicId}/materials/${materialId}`
+  );
+
+  if (err) {
+    throw new Error('delete material topic failed');
+  }
+
+  return;
+};
+
 export const updateTopic = async (
   topicId: string,
   classroomId: string,
-  body: CreateTopic & { assignments: number[] }
+  body: CreateTopic & { assignments: number[]; materials: number[] }
 ) => {
   const { err }: Response = await contentHttpClient.patch(
     `/api/classrooms/${classroomId}/topics/${topicId}`,
@@ -84,16 +100,16 @@ export const deleteTopic = async (topicId: string, classroomId: string) => {
   return;
 };
 
-export const deleteTopicAndAssignments = async (
+export const deleteTopicAndAllContents = async (
   topicId: string,
   classroomId: string
 ) => {
   const { err }: Response = await contentHttpClient.delete(
-    `/api/classrooms/${classroomId}/topics/${topicId}/assignments`
+    `/api/classrooms/${classroomId}/topics/${topicId}/all-contents`
   );
 
   if (err) {
-    throw new Error('delete topic and assignments failed');
+    throw new Error('delete topic and all topic contents failed');
   }
 
   return;
