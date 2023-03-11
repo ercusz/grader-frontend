@@ -84,6 +84,7 @@ const CommentListItem: React.FC<ICommentListItem> = ({
       onSuccess: () => {
         queryClient.invalidateQueries(['posts']);
         queryClient.invalidateQueries(['assignment-comments']);
+        queryClient.invalidateQueries(['material-comments']);
         setEditing(false);
       },
       onError: () => {

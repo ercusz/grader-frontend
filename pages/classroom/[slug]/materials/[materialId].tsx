@@ -1,6 +1,7 @@
 import MaterialContentCard from '@/components/cards/material-content/MaterialContentCard';
 import EditMaterialDialog from '@/components/dialogs/edit-material/EditMaterialDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
+import MaterialCommentsSection from '@/components/sections/material-comments/MaterialCommentsSection';
 import { Roles } from '@/constants/roles';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useMaterial } from '@/hooks/material/useMaterial';
@@ -180,22 +181,11 @@ const ClassroomMaterial: NextPageWithLayout = ({
                 </Card>
               </>
             )}
-            <Card
-              className="shadow-xl w-full"
-              variant="outlined"
-              sx={{ p: 2, mt: 2 }}
-            >
-              {/* <MaterialCommentsSection
+            <Card className="shadow-xl w-full" variant="outlined" sx={{ p: 2 }}>
+              <MaterialCommentsSection
                 material={material}
                 classroomSlug={classroom.slug}
-                hostId={
-                  user
-                    ? getRole(user) === Roles.STUDENT
-                      ? (user.id.toString() as string)
-                      : undefined
-                    : undefined
-                }
-              /> */}
+              />
             </Card>
           </Grid>
           <Grid item xs={12} md={8} sx={{ mb: 6 }}>

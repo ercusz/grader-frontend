@@ -2,6 +2,7 @@ import { UserComment } from '@/types/types';
 import {
   getAssignmentPrivateComments,
   getAssignmentPublicComments,
+  getMaterialComments,
 } from '@/utils/CommentService';
 import { useQuery } from '@tanstack/react-query';
 
@@ -39,5 +40,20 @@ export const useAssignmentPrivateComments = ({
       ),
     {
       enabled: Boolean(classroomId) && Boolean(assignmentId) && Boolean(hostId),
+    }
+  );
+
+export const useMaterialComments = ({
+  classroomId,
+  materialId,
+}: {
+  classroomId?: string;
+  materialId?: string;
+}) =>
+  useQuery<UserComment[], Error>(
+    ['material-comments', { materialId: materialId }],
+    () => getMaterialComments(classroomId ?? '', materialId ?? ''),
+    {
+      enabled: Boolean(classroomId) && Boolean(materialId),
     }
   );
