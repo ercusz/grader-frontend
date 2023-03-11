@@ -21,7 +21,7 @@ const ClassroomLayout: React.FC<IClassroomLayout> = ({
   return (
     <>
       <Head>
-        <title>{title ? title + ' - grade้r' : 'grade้r'}</title>
+        <title>{title ? title + ' | grade้r' : 'grade้r'}</title>
         <meta name="description" content={description} />
       </Head>
       <div className={`min-h-screen flex flex-col`}>

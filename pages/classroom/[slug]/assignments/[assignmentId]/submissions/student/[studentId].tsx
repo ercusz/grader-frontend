@@ -37,7 +37,6 @@ import {
 import { th } from 'date-fns/locale';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
 import { NextPageWithLayout } from '../../../../../../page';
@@ -74,13 +73,6 @@ const AssignmentSubmission: NextPageWithLayout = ({
 
   return (
     <section>
-      <Head>
-        <title>
-          {classroom
-            ? `${classroom.course.name} - ${classroom.name}`
-            : 'ไม่พบรายวิชา'}
-        </title>
-      </Head>
       {isLoading && (
         <Container
           sx={{
@@ -396,12 +388,13 @@ export default AssignmentSubmission;
 
 AssignmentSubmission.getLayout = (page) => {
   const { props } = page;
-  const { slug, feedbackHeaderProps, contentProps } = props;
+  const { slug, feedbackHeaderProps, contentProps, title } = props;
   return (
     <FeedbackLayout
       classroomSlug={slug}
       feedbackHeaderProps={feedbackHeaderProps}
       contentProps={contentProps}
+      title={title}
     >
       {page}
     </FeedbackLayout>
@@ -409,7 +402,7 @@ AssignmentSubmission.getLayout = (page) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { slug, assignmentId }: any = context.params;
+  const { slug, assignmentId, studentId }: any = context.params;
   const { req } = context;
   const token = await getToken({ req });
 
@@ -418,6 +411,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const queryClient = new QueryClient();
+  let title = 'ไม่พบหน้า';
 
   try {
     const classroom = await queryClient.fetchQuery(
@@ -425,16 +419,33 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       () => getClassroomBySlug(slug)
     );
 
-    const AssignmentSubmission = await queryClient.fetchQuery(
+    const assignmentSubmissions = await queryClient.fetchQuery(
       ['submissions', { assignmentId: assignmentId }],
       () => getAssignmentSubmissions(assignmentId, classroom.id.toString())
     );
 
-    if (!AssignmentSubmission) {
+    if (!assignmentSubmissions) {
       return {
         notFound: true,
       };
     }
+
+    const assignmentName =
+      assignmentSubmissions.title.length > 20
+        ? (title = assignmentSubmissions.title.slice(0, 20) + '...')
+        : assignmentSubmissions.title;
+
+    const student = assignmentSubmissions.students.find(
+      (student) => student.id.toString() === studentId
+    );
+
+    const studentName = student
+      ? student.firstName && student.lastName
+        ? `${student.firstName} ${student.lastName}`
+        : student.username
+      : '';
+
+    title = `งานของ ${studentName} | ${assignmentName} | ${classroom.name} - ${classroom.course?.name}`;
   } catch (error) {
     return {
       notFound: true,
@@ -444,6 +455,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       slug: slug,
+      title: title,
       feedbackHeaderProps: {
         backButton: true,
         downloadCurrentAssignmentButton: true,

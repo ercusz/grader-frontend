@@ -6,7 +6,6 @@ import {
   CardHeader,
   Divider,
   Grid,
-  Stack,
   Typography,
 } from '@mui/material';
 import SubMaterialCard from '../sub-material/SubMaterialCard';
@@ -78,9 +77,11 @@ const TopicContentCard: React.FC<ITopicContentCard> = ({
             )}
 
           {classroomSlug && topic.materials && topic.materials.length > 0 && (
-            <Box sx={{
-              mt: 4,
-            }}>
+            <Box
+              sx={{
+                mt: 4,
+              }}
+            >
               <Typography
                 className="font-extrabold text-center"
                 component="h1"
@@ -109,7 +110,6 @@ const TopicContentCard: React.FC<ITopicContentCard> = ({
               </Grid>
             </Box>
           )}
-
         </CardContent>
       </Card>
     </>

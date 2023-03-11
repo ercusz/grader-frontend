@@ -30,7 +30,6 @@ import '@uiw/react-markdown-preview/markdown.css';
 import { compareAsc, compareDesc, parseISO } from 'date-fns';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-import Head from 'next/head';
 import { MouseEvent, useState } from 'react';
 import { NextPageWithLayout } from '../../../page';
 
@@ -139,13 +138,6 @@ const Feedbacks: NextPageWithLayout = ({
 
   return (
     <section>
-      <Head>
-        <title>
-          {classroom
-            ? `${classroom.course.name} - ${classroom.name}`
-            : 'ไม่พบรายวิชา'}
-        </title>
-      </Head>
       {isLoadingClassroom && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -466,12 +458,13 @@ export default Feedbacks;
 
 Feedbacks.getLayout = (page) => {
   const { props } = page;
-  const { slug, feedbackHeaderProps, contentProps } = props;
+  const { slug, feedbackHeaderProps, contentProps, title } = props;
   return (
     <FeedbackLayout
       classroomSlug={slug}
       feedbackHeaderProps={feedbackHeaderProps}
       contentProps={contentProps}
+      title={title}
     >
       {page}
     </FeedbackLayout>
@@ -488,6 +481,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const queryClient = new QueryClient();
+  let title = 'ไม่พบหน้า';
 
   try {
     const classroom = await queryClient.fetchQuery(
@@ -505,6 +499,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         notFound: true,
       };
     }
+
+    title = `ติดตามความคืบหน้าของงาน | ${classroom.name} - ${classroom.course?.name}`;
   } catch (error) {
     return {
       notFound: true,
@@ -514,6 +510,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       slug: slug,
+      title: title,
       feedbackHeaderProps: {
         backButton: false,
         downloadCurrentAssignmentButton: false,

@@ -133,5 +133,5 @@ const SignIn: NextPageWithLayout = () => {
 export default SignIn;
 
 SignIn.getLayout = (page) => {
-  return <PrimaryLayout>{page}</PrimaryLayout>;
+  return <PrimaryLayout title="ลงชื่อเข้าใช้">{page}</PrimaryLayout>;
 };

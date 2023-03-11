@@ -29,7 +29,6 @@ import { isBefore, parseISO } from 'date-fns';
 import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-import Head from 'next/head';
 import { NextPageWithLayout } from '../../../page';
 
 const ClassroomAssignments: NextPageWithLayout = ({
@@ -78,13 +77,6 @@ const ClassroomAssignments: NextPageWithLayout = ({
 
   return (
     <section>
-      <Head>
-        <title>
-          {classroom
-            ? `${classroom.course.name} - ${classroom.name}`
-            : 'ไม่พบรายวิชา'}
-        </title>
-      </Head>
       <Fab
         color="primary"
         variant="extended"
@@ -218,8 +210,12 @@ export default ClassroomAssignments;
 
 ClassroomAssignments.getLayout = (page) => {
   const { props } = page;
-  const { slug } = props;
-  return <ClassroomLayout slug={slug}>{page}</ClassroomLayout>;
+  const { slug, title } = props;
+  return (
+    <ClassroomLayout slug={slug} title={title}>
+      {page}
+    </ClassroomLayout>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -232,11 +228,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const queryClient = new QueryClient();
+  let title = 'ไม่พบรายวิชา';
 
   try {
-    await queryClient.fetchQuery(['classroom', { slug: slug }], () =>
-      getClassroomBySlug(slug)
+    const classroom = await queryClient.fetchQuery(
+      ['classroom', { slug: slug }],
+      () => getClassroomBySlug(slug)
     );
+
+    title = `งานที่ได้รับมอบหมาย | ${classroom.name} - ${classroom.course?.name}`;
   } catch (error) {
     return {
       notFound: true,
@@ -246,6 +246,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       slug: slug,
+      title: title,
       dehydratedState: dehydrate(queryClient),
     },
   };

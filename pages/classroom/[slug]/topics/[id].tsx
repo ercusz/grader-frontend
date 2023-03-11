@@ -38,7 +38,6 @@ import '@uiw/react-markdown-preview/markdown.css';
 import { useAtom } from 'jotai';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { getToken } from 'next-auth/jwt';
-import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { NextPageWithLayout } from '../../../page';
@@ -80,13 +79,6 @@ const ClassroomTopic: NextPageWithLayout = ({
 
   return (
     <section>
-      <Head>
-        <title>
-          {classroom
-            ? `${classroom.course.name} - ${classroom.name}`
-            : 'ไม่พบรายวิชา'}
-        </title>
-      </Head>
       {isLoadingClassroom && isLoadingTopic && (
         <Backdrop
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -209,8 +201,12 @@ export default ClassroomTopic;
 
 ClassroomTopic.getLayout = (page) => {
   const { props } = page;
-  const { slug } = props;
-  return <ClassroomLayout slug={slug}>{page}</ClassroomLayout>;
+  const { slug, title } = props;
+  return (
+    <ClassroomLayout slug={slug} title={title}>
+      {page}
+    </ClassroomLayout>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -223,6 +219,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const queryClient = new QueryClient();
+  let title = 'ไม่พบหัวข้อ';
 
   try {
     const classroom = await queryClient.fetchQuery(
@@ -240,6 +237,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         notFound: true,
       };
     }
+
+    const topicName =
+      topic.name.length > 20
+        ? (title = topic.name.slice(0, 20) + '...')
+        : topic.name;
+
+    title = `${topicName} | ${classroom.name} - ${classroom.course?.name}`;
   } catch (error) {
     return {
       notFound: true,
@@ -249,6 +253,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
     props: {
       slug: slug,
+      title: title,
       dehydratedState: dehydrate(queryClient),
     },
   };

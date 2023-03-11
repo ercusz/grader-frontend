@@ -119,5 +119,5 @@ const SignUp: NextPageWithLayout = () => {
 export default SignUp;
 
 SignUp.getLayout = (page) => {
-  return <PrimaryLayout>{page}</PrimaryLayout>;
+  return <PrimaryLayout title="สร้างบัญชี">{page}</PrimaryLayout>;
 };
