@@ -104,7 +104,7 @@ const ClassroomTopic: NextPageWithLayout = ({
           </>
         )
       }
-      {isSuccessClassroom && isSuccessTopic && classroom && (
+      {isSuccessClassroom && isSuccessTopic && classroom && topic && (
         <Grid
           container
           spacing={2}

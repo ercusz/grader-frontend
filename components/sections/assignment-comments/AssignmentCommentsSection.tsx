@@ -50,11 +50,11 @@ const AssignmentCommentsSection: React.FC<IAssignmentCommentsSection> = ({
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const { data: publicComments } = useAssignmentPublicComments({
     classroomId: classroom?.id.toString() as string,
-    assignmentId: assignment.id.toString() as string,
+    assignmentId: assignment?.id?.toString() as string,
   });
   const { data: privateComments } = useAssignmentPrivateComments({
     classroomId: classroom?.id.toString() as string,
-    assignmentId: assignment.id.toString() as string,
+    assignmentId: assignment?.id?.toString() as string,
     hostId: hostId,
   });
 
@@ -67,7 +67,7 @@ const AssignmentCommentsSection: React.FC<IAssignmentCommentsSection> = ({
     (params: ICreateCommentParams) =>
       createAssignmentComment(
         classroom?.id.toString() as string,
-        assignment.id.toString() as string,
+        assignment?.id?.toString() as string,
         params.content,
         isPrivate,
         hostId
@@ -88,7 +88,7 @@ const AssignmentCommentsSection: React.FC<IAssignmentCommentsSection> = ({
     (id: string) =>
       deleteAssignmentComment(
         classroom?.id.toString() as string,
-        assignment.id.toString() as string,
+        assignment?.id?.toString() as string,
         id
       ),
     {

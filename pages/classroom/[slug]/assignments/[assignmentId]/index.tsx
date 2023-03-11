@@ -178,7 +178,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
           )}
         </>
       )}
-      {isSuccessClassroom && isSuccessAssignment && classroom && (
+      {isSuccessClassroom && isSuccessAssignment && classroom && assignment && (
         <Grid
           container
           spacing={2}
@@ -190,12 +190,10 @@ const ClassroomAssignment: NextPageWithLayout = ({
             {(user && getRole(user) === Roles.TEACHER) ||
             (user && getRole(user) === Roles.TA) ? (
               <>
-                {assignment && (
-                  <EditAssignmentDialog
-                    classroomSlug={slug}
-                    assignment={assignment}
-                  />
-                )}
+                <EditAssignmentDialog
+                  classroomSlug={slug}
+                  assignment={assignment}
+                />
 
                 <Card
                   className="shadow-md w-full"
@@ -326,7 +324,7 @@ const ClassroomAssignment: NextPageWithLayout = ({
                 </Breadcrumbs>
               </CardContent>
             </Card>
-            {assignment && <AssignmentContentCard assignment={assignment} />}
+            <AssignmentContentCard assignment={assignment} />
           </Grid>
         </Grid>
       )}

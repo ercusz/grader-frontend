@@ -122,7 +122,7 @@ const ClassroomMaterial: NextPageWithLayout = ({
           <CircularProgress color="inherit" />
         </Backdrop>
       )}
-      {isSuccessClassroom && isSuccessMaterial && classroom && (
+      {isSuccessClassroom && isSuccessMaterial && classroom && material && (
         <Grid
           container
           spacing={2}
@@ -134,18 +134,14 @@ const ClassroomMaterial: NextPageWithLayout = ({
             {((user && getRole(user) === Roles.TEACHER) ||
               (user && getRole(user) === Roles.TA)) && (
               <>
-                {material && (
-                  <EditMaterialDialog
-                    classroomSlug={slug}
-                    material={material}
-                  />
-                )}
+                <EditMaterialDialog classroomSlug={slug} material={material} />
 
                 <Card
                   className="shadow-md w-full"
                   variant="outlined"
                   sx={{
                     p: 1,
+                    mb: 2,
                     alignItems: 'center',
                     justifyContent: 'center',
                     '& .MuiCardContent-root': {
@@ -241,7 +237,7 @@ const ClassroomMaterial: NextPageWithLayout = ({
                 </Breadcrumbs>
               </CardContent>
             </Card>
-            {material && <MaterialContentCard material={material} />}
+            <MaterialContentCard material={material} />
           </Grid>
         </Grid>
       )}

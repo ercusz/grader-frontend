@@ -37,7 +37,7 @@ const MaterialCommentsSection: React.FC<IMaterialCommentsSection> = ({
   const { data: classroom } = useClassroomSlug({ slug: classroomSlug });
   const { data: comments } = useMaterialComments({
     classroomId: classroom?.id.toString() as string,
-    materialId: material.id.toString() as string,
+    materialId: material?.id?.toString() as string,
   });
 
   const queryClient = useQueryClient();
@@ -49,7 +49,7 @@ const MaterialCommentsSection: React.FC<IMaterialCommentsSection> = ({
     (params: ICreateCommentParams) =>
       createMaterialComment(
         classroom?.id.toString() as string,
-        material.id.toString() as string,
+        material?.id?.toString() as string,
         params.content
       ),
     {
@@ -68,7 +68,7 @@ const MaterialCommentsSection: React.FC<IMaterialCommentsSection> = ({
     (id: string) =>
       deleteMaterialComment(
         classroom?.id.toString() as string,
-        material.id.toString() as string,
+        material?.id?.toString() as string,
         id
       ),
     {
