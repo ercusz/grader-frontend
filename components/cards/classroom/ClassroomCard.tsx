@@ -27,7 +27,11 @@ const CircularProgressWithLabel = (
   props: CircularProgressProps & { value: number }
 ) => {
   return (
-    <Tooltip title="ความคืบหน้าการส่งงาน" placement="top" arrow>
+    <Tooltip
+      title={props?.value === 100 ? 'ส่งงานครบ' : 'ความคืบหน้าในการส่งงาน'}
+      placement="top"
+      arrow
+    >
       {props?.value === 100 ? (
         <Fab
           className="cursor-pointer"
@@ -53,9 +57,26 @@ const CircularProgressWithLabel = (
           }}
         >
           <CircularProgress
-            color={props?.value === 100 ? 'success' : 'primary'}
-            thickness={4}
             variant="determinate"
+            sx={{
+              color: (theme) =>
+                theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+            }}
+            size={40}
+            thickness={4}
+            {...props}
+            value={100}
+          />
+          <CircularProgress
+            variant="determinate"
+            sx={{
+              color: (theme) => theme.palette.info.main,
+              animationDuration: '550ms',
+              position: 'absolute',
+              left: 0,
+            }}
+            size={40}
+            thickness={4}
             {...props}
           />
           <Box
@@ -92,14 +113,16 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
 
   useEffect(() => {
     if (percent < classroom.success) {
-      setPercent((p) => {
-        let newPercent = p + 20;
-        if (newPercent > classroom.success) {
-          return classroom.success;
-        }
+      setInterval(() => {
+        setPercent((p) => {
+          let newPercent = p + 10;
+          if (newPercent > classroom.success) {
+            return classroom.success;
+          }
 
-        return newPercent;
-      });
+          return newPercent;
+        });
+      }, 500);
     }
   }, [classroom.success, percent]);
 
