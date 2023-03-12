@@ -23,6 +23,12 @@ export type UserResponse = {
   studentId?: string | null;
 };
 
+export type UserProfile = {
+  contactEmail?: string | null;
+  phoneNumber?: string | null;
+  bio?: string | null;
+} & UserResponse;
+
 export type Course = {
   id: number;
   code: string | null;

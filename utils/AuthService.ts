@@ -1,6 +1,4 @@
-import { User } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
-import { getImagePath } from './imagePath';
 
 interface ISignIn {
   identifier: string;
@@ -60,19 +58,4 @@ export async function signUp({ email, username, password }: ISignUp) {
   }
 
   return;
-}
-
-export async function getUserInfo(): Promise<User | null> {
-  let { res, err }: Response = await contentHttpClient.get('/api/users/me');
-
-  if (err) {
-    // console.log(`Get user data failed with error:\n${err}`);
-    throw new Error(err);
-  }
-
-  if (res.data.profileImage !== null) {
-    res.data.profileImage.url = getImagePath(res.data.profileImage);
-  }
-
-  return res.data as User;
 }

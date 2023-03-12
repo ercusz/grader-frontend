@@ -39,6 +39,15 @@ const nextConfig = {
 
     return config;
   },
+
+  async rewrites() {
+    return [
+      {
+        source: '/p/@:username',
+        destination: '/profiles/:username',
+      },
+    ];
+  },
 };
 
 module.exports = () => {
