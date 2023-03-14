@@ -1,5 +1,7 @@
 import { Assignment } from '@/types/types';
+import AlarmIcon from '@mui/icons-material/Alarm';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CodeIcon from '@mui/icons-material/Code';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import {
@@ -12,19 +14,65 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { format, isFuture, parseISO } from 'date-fns';
+import { format, isFuture, isPast, isValid, parseISO } from 'date-fns';
 import { th } from 'date-fns/locale';
 import Link from 'next/link';
 
 export interface IAssignmentCard {
   assignment: Assignment;
   classroomSlug: string;
+  isTeacherTA: boolean;
 }
 
 const AssignmentCard: React.FC<IAssignmentCard> = ({
   assignment,
   classroomSlug,
+  isTeacherTA,
 }) => {
+  const renderStatus = () => {
+    if (
+      !assignment ||
+      !isValid(parseISO(assignment.startDate)) ||
+      !isValid(parseISO(assignment.endDate))
+    ) {
+      return null;
+    }
+
+    if (assignment.isSubmitted) {
+      return (
+        <Chip
+          color="success"
+          variant="outlined"
+          size="small"
+          icon={<CheckCircleIcon />}
+          label={'ส่งแล้ว'}
+        />
+      );
+    } else {
+      if (isPast(parseISO(assignment.endDate))) {
+        return (
+          <Chip
+            color="error"
+            variant="outlined"
+            size="small"
+            icon={<AlarmIcon />}
+            label={'เกินกำหนด'}
+          />
+        );
+      } else {
+        return (
+          <Chip
+            color="warning"
+            variant="outlined"
+            size="small"
+            icon={<AlarmIcon />}
+            label={'ยังไม่ส่ง'}
+          />
+        );
+      }
+    }
+  };
+
   return (
     <Card className="shadow-md w-full" variant="outlined">
       <Link
@@ -54,8 +102,10 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({
               </Typography>
             }
             action={
+              isTeacherTA &&
               isFuture(parseISO(assignment.startDate)) && (
                 <Tooltip
+                  arrow
                   title={
                     'โพสต์นี้จะไม่ปรากฏให้นักศึกษาในคลาสเรียนเห็นจนกว่าจะถึงวันเวลาที่เริ่มการส่งงาน'
                   }
@@ -75,10 +125,7 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({
             })}
           />
           <CardActions sx={{ justifyContent: 'flex-end' }}>
-            {/* <Typography variant="caption" sx={{ pr: 1 }}>
-              แท็ก
-            </Typography>
-            <Chip label={'บทที่ 1'} size="small" /> */}
+            {renderStatus()}
           </CardActions>
         </CardActionArea>
       </Link>

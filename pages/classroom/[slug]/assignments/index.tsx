@@ -75,6 +75,12 @@ const ClassroomAssignments: NextPageWithLayout = ({
     return obj.name !== undefined;
   }
 
+  const isTeacherTA = Boolean(
+    user &&
+      ((user && getRole(user) === Roles.TEACHER) ||
+        (user && getRole(user) === Roles.TA))
+  );
+
   return (
     <section>
       <Fab
@@ -111,9 +117,8 @@ const ClassroomAssignments: NextPageWithLayout = ({
           justifyContent="center"
           alignItems="flex-start"
         >
-          <Grid item xs={12} md={4}>
-            {((user && getRole(user) === Roles.TEACHER) ||
-              (user && getRole(user) === Roles.TA)) && (
+          <Grid item xs={12} md={isTeacherTA ? 4 : false}>
+            {isTeacherTA && (
               <List>
                 <ListItem
                   disableGutters
@@ -140,7 +145,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
               </List>
             )}
           </Grid>
-          <Grid item xs={12} md={8} minHeight="40vh">
+          <Grid item xs={12} md={isTeacherTA ? 8 : 12} minHeight="40vh">
             {isLoadingAssignments && (
               <List sx={{ width: '100%' }}>
                 {[...Array(4)].map((_, index) => (
@@ -165,6 +170,7 @@ const ClassroomAssignments: NextPageWithLayout = ({
                           <AssignmentCard
                             classroomSlug={slug}
                             assignment={obj}
+                            isTeacherTA={isTeacherTA}
                           />
                         </ListItem>
                       );

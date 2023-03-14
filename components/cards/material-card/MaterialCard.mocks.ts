@@ -22,6 +22,7 @@ const base: IMaterialCard = {
     files: [],
   },
   classroomSlug: '',
+  isTeacherTA: false,
 };
 
 export const mockMaterialCardProps = {

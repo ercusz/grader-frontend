@@ -50,6 +50,7 @@ const base: IAssignmentCard = {
     enabledPointDeduction: false,
   },
   classroomSlug: '',
+  isTeacherTA: false,
 };
 
 export const mockAssignmentCardProps = {

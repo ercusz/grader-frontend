@@ -18,9 +18,14 @@ import Link from 'next/link';
 export interface IMaterialCard {
   material: Material;
   classroomSlug: string;
+  isTeacherTA: boolean;
 }
 
-const MaterialCard: React.FC<IMaterialCard> = ({ material, classroomSlug }) => {
+const MaterialCard: React.FC<IMaterialCard> = ({
+  material,
+  classroomSlug,
+  isTeacherTA,
+}) => {
   return (
     <Card className="shadow-md w-full" variant="outlined">
       <Link
@@ -49,6 +54,7 @@ const MaterialCard: React.FC<IMaterialCard> = ({ material, classroomSlug }) => {
               </Typography>
             }
             action={
+              isTeacherTA &&
               isFuture(parseISO(material.publishedDate)) && (
                 <Tooltip
                   title={

@@ -73,6 +73,12 @@ const ClassroomMaterials: NextPageWithLayout = ({
     return obj.name !== undefined;
   }
 
+  const isTeacherTA = Boolean(
+    user &&
+      ((user && getRole(user) === Roles.TEACHER) ||
+        (user && getRole(user) === Roles.TA))
+  );
+
   return (
     <section>
       <Fab
@@ -109,9 +115,8 @@ const ClassroomMaterials: NextPageWithLayout = ({
           justifyContent="center"
           alignItems="flex-start"
         >
-          <Grid item xs={12} md={4}>
-            {((user && getRole(user) === Roles.TEACHER) ||
-              (user && getRole(user) === Roles.TA)) && (
+          <Grid item xs={12} md={isTeacherTA ? 4 : false}>
+            {isTeacherTA && (
               <List>
                 <ListItem
                   disableGutters
@@ -138,7 +143,7 @@ const ClassroomMaterials: NextPageWithLayout = ({
               </List>
             )}
           </Grid>
-          <Grid item xs={12} md={8} minHeight="40vh">
+          <Grid item xs={12} md={isTeacherTA ? 8 : 12} minHeight="40vh">
             {isLoadingMaterials && (
               <List sx={{ width: '100%' }}>
                 {[...Array(4)].map((_, index) => (
@@ -160,7 +165,11 @@ const ClassroomMaterials: NextPageWithLayout = ({
                     if (isMaterial(obj)) {
                       return (
                         <ListItem key={obj.id} disableGutters>
-                          <MaterialCard classroomSlug={slug} material={obj} />
+                          <MaterialCard
+                            classroomSlug={slug}
+                            material={obj}
+                            isTeacherTA={isTeacherTA}
+                          />
                         </ListItem>
                       );
                     }

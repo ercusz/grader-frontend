@@ -10,6 +10,7 @@ import CreateMaterialDialog from '@/components/dialogs/create-material/CreateMat
 import CreatePostDialog from '@/components/dialogs/create-post/CreatePostDialog';
 import ClassroomLayout from '@/components/layouts/classroom/ClassroomLayout';
 import PinList from '@/components/lists/pin-list/PinList';
+import { Roles } from '@/constants/roles';
 import { useAssignments } from '@/hooks/assignment/useAssignment';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useMaterials } from '@/hooks/material/useMaterial';
@@ -147,6 +148,12 @@ const Classroom: NextPageWithLayout = ({
     });
   };
 
+  const isTeacherTA = Boolean(
+    user &&
+      ((user && getRole(user) === Roles.TEACHER) ||
+        (user && getRole(user) === Roles.TA))
+  );
+
   return (
     <section>
       <CreatePostDialog
@@ -223,13 +230,18 @@ const Classroom: NextPageWithLayout = ({
                           <AssignmentCard
                             classroomSlug={slug}
                             assignment={obj}
+                            isTeacherTA={isTeacherTA}
                           />
                         </ListItem>
                       );
                     } else if (isMaterial(obj)) {
                       return (
                         <ListItem key={`material-${obj.id}`} disableGutters>
-                          <MaterialCard classroomSlug={slug} material={obj} />
+                          <MaterialCard
+                            classroomSlug={slug}
+                            material={obj}
+                            isTeacherTA={isTeacherTA}
+                          />
                         </ListItem>
                       );
                     } else if (isTopic(obj)) {

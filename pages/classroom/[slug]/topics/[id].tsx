@@ -77,6 +77,12 @@ const ClassroomTopic: NextPageWithLayout = ({
     });
   };
 
+  const isTeacherTA = Boolean(
+    user &&
+      ((user && getRole(user) === Roles.TEACHER) ||
+        (user && getRole(user) === Roles.TA))
+  );
+
   return (
     <section>
       {isLoadingClassroom && isLoadingTopic && (
@@ -104,7 +110,7 @@ const ClassroomTopic: NextPageWithLayout = ({
           justifyContent="center"
           alignItems="flex-start"
         >
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={isTeacherTA ? 4 : false}>
             {((user && getRole(user) === Roles.TEACHER) ||
               (user && getRole(user) === Roles.TA)) && (
               <List>
@@ -145,7 +151,7 @@ const ClassroomTopic: NextPageWithLayout = ({
               </List>
             )}
           </Grid>
-          <Grid item xs={12} md={8} sx={{ mb: 6 }}>
+          <Grid item xs={12} md={isTeacherTA ? 8 : 12} sx={{ mb: 6 }}>
             <Card className="shadow-md" variant="outlined" sx={{ mb: 2 }}>
               <CardContent sx={{ pt: 0, '&:last-child': { pb: 0 } }}>
                 <Breadcrumbs
@@ -183,12 +189,7 @@ const ClassroomTopic: NextPageWithLayout = ({
             <TopicContentCard
               classroomSlug={slug}
               topic={topic}
-              isTeacherTA={
-                (user && getRole(user) === Roles.TEACHER) ||
-                (user && getRole(user) === Roles.TA)
-                  ? true
-                  : false
-              }
+              isTeacherTA={isTeacherTA}
             />
           </Grid>
         </Grid>
