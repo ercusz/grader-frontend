@@ -16,7 +16,7 @@ export const docsExtensions = [
   '7z',
 ];
 
-const isValidFileUploaded = (file: File, exts: string[]) => {
+export const isValidFileUploaded = (file: File, exts: string[]) => {
   const mimeType = file.type;
   const fileExtension = mime.extension(mimeType);
   return exts.includes(fileExtension as string);

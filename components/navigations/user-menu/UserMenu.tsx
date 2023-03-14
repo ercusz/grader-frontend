@@ -7,7 +7,7 @@ import Check from '@mui/icons-material/Check';
 import EmojiObjectsIcon from '@mui/icons-material/EmojiObjects';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import LogoutIcon from '@mui/icons-material/Logout';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import SettingsIcon from '@mui/icons-material/Settings';
 import WarningIcon from '@mui/icons-material/Warning';
 import {
   Box,
@@ -108,9 +108,9 @@ const UserMenu: React.FC<IUserMenu> = ({ anchorElUser, setAnchorElUser }) => {
 
   const settings = [
     {
-      name: 'จัดการบัญชี',
-      icon: <ManageAccountsIcon />,
-      link: '/settings/account',
+      name: 'การตั้งค่า',
+      icon: <SettingsIcon />,
+      link: '/settings/profile',
       action: undefined,
     },
     {

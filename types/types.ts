@@ -7,6 +7,9 @@ export type User = {
   lastName: string | null;
   role: { id: number; name: string };
   profileImage?: { id: number; url: string } | undefined;
+  contactEmail?: string | null;
+  phoneNumber?: string | null;
+  bio?: string | null;
 };
 
 export type Image = {
@@ -28,6 +31,23 @@ export type UserProfile = {
   phoneNumber?: string | null;
   bio?: string | null;
 } & UserResponse;
+
+export type UpdateUserProfile = {
+  firstName?: string | null;
+  lastName?: string | null;
+  username?: string | null;
+  studentId?: string | null;
+  contactEmail?: string | null;
+  phoneNumber?: string | null;
+  bio?: string | null;
+  profileImage?: File | null;
+};
+
+export type ChangePassword = {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
 
 export type Course = {
   id: number;
