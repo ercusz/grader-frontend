@@ -3,12 +3,15 @@ import { Material } from '@/types/types';
 import { deleteMaterialTopic } from '@/utils/TopicServices';
 import BookIcon from '@mui/icons-material/Book';
 import DeleteIcon from '@mui/icons-material/Delete';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   Avatar,
   Card,
   CardActionArea,
+  CardActions,
   CardHeader,
+  Chip,
   IconButton,
   Menu,
   MenuItem,
@@ -17,6 +20,7 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { isFuture, parseISO } from 'date-fns';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { MouseEvent, useState } from 'react';
@@ -80,7 +84,7 @@ const SubMaterialCard: React.FC<ISubMaterialCard> = ({
   return (
     <>
       <Card
-        className="h-full w-full 
+        className="h-44 w-full 
             content-between rounded-3xl
             transition-all ease-in-out delay-150 
             duration-300 hover:shadow-sm hover:outline-2"
@@ -98,7 +102,7 @@ const SubMaterialCard: React.FC<ISubMaterialCard> = ({
           href={`/classroom/${classroomSlug}/materials/${material.id}`}
           passHref
         >
-          <CardActionArea component="a">
+          <CardActionArea component="a" sx={{ height: '100%' }}>
             <CardHeader
               title={
                 <>
@@ -143,6 +147,30 @@ const SubMaterialCard: React.FC<ISubMaterialCard> = ({
                 },
               }}
             />
+            <CardActions
+              sx={{
+                position: 'absolute',
+                bottom: 4,
+                right: 4,
+              }}
+            >
+              {isTeacherTA && isFuture(parseISO(material.publishedDate)) && (
+                <Tooltip
+                  arrow
+                  title={
+                    'โพสต์นี้จะไม่ปรากฏให้นักศึกษาในคลาสเรียนเห็นจนกว่าจะถึงวันเวลาที่เริ่มเผยแพร่'
+                  }
+                >
+                  <Chip
+                    size="small"
+                    color="warning"
+                    icon={<InsertDriveFileIcon />}
+                    label="DRAFT"
+                    variant="outlined"
+                  />
+                </Tooltip>
+              )}
+            </CardActions>
           </CardActionArea>
         </Link>
       </Card>

@@ -3,8 +3,10 @@ import { Assignment } from '@/types/types';
 import { deleteAssignmentTopic } from '@/utils/TopicServices';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CodeIcon from '@mui/icons-material/Code';
 import DeleteIcon from '@mui/icons-material/Delete';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   Avatar,
@@ -17,6 +19,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -25,6 +28,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   format,
   formatDistanceToNow,
+  isFuture,
   isPast,
   isValid,
   parseISO,
@@ -90,10 +94,77 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
     setAnchorEl(e.currentTarget);
   };
 
+  const renderTaskStatus = () => {
+    if (
+      !assignment ||
+      !isValid(parseISO(assignment.startDate)) ||
+      !isValid(parseISO(assignment.endDate))
+    ) {
+      return null;
+    }
+
+    if (isTeacherTA) {
+      if (isFuture(parseISO(assignment.startDate))) {
+        return (
+          <Tooltip
+            arrow
+            title={
+              'โพสต์นี้จะไม่ปรากฏให้นักศึกษาในคลาสเรียนเห็นจนกว่าจะถึงวันเวลาที่เริ่มเผยแพร่'
+            }
+          >
+            <Chip
+              size="small"
+              color="warning"
+              icon={<InsertDriveFileIcon />}
+              label="DRAFT"
+              variant="outlined"
+            />
+          </Tooltip>
+        );
+      }
+
+      return null;
+    }
+
+    if (assignment.isSubmitted) {
+      return (
+        <Chip
+          color="success"
+          variant="outlined"
+          size="small"
+          icon={<CheckCircleIcon />}
+          label={'ส่งแล้ว'}
+        />
+      );
+    } else {
+      if (isPast(parseISO(assignment.endDate))) {
+        return (
+          <Chip
+            color="error"
+            variant="outlined"
+            size="small"
+            icon={<AlarmIcon />}
+            label={'เกินกำหนด'}
+          />
+        );
+      } else {
+        return (
+          <Chip
+            color="warning"
+            variant="outlined"
+            size="small"
+            icon={<AlarmIcon />}
+            label={'ยังไม่ส่ง'}
+          />
+        );
+      }
+    }
+  };
+
   return (
     <>
       <Card
-        className="h-full w-full 
+        className="h-44 w-full 
             content-between rounded-3xl
             transition-all ease-in-out delay-150 
             duration-300 hover:shadow-sm hover:outline-2"
@@ -111,7 +182,12 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
           href={`/classroom/${classroomSlug}/assignments/${assignment.id}`}
           passHref
         >
-          <CardActionArea component="a">
+          <CardActionArea
+            component="a"
+            sx={{
+              height: '100%',
+            }}
+          >
             <CardHeader
               title={
                 <>
@@ -135,9 +211,7 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
                     component="div"
                     noWrap
                   >
-                    <Tooltip title={assignment.title} arrow>
-                      <span>{assignment.title}</span>
-                    </Tooltip>
+                    {assignment.title}
                   </Typography>
                 </>
               }
@@ -167,51 +241,57 @@ const SubtaskCard: React.FC<ISubtaskCard> = ({
             />
             <CardContent>
               {isValid(parseISO(assignment.endDate)) && (
-                <Typography
-                  color={
-                    isPast(parseISO(assignment.endDate))
-                      ? 'error'
-                      : 'text.secondary'
-                  }
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    typography: { xs: 'caption', md: 'body2' },
-                  }}
-                  noWrap
+                <Tooltip
+                  title={`กำหนดส่ง ${formatDistanceToNow(
+                    parseISO(assignment.endDate),
+                    {
+                      locale: th,
+                      addSuffix: true,
+                    }
+                  )}`}
+                  arrow
                 >
-                  <AlarmIcon sx={{ mr: 0.5 }} fontSize="inherit" />
-                  {`${format(parseISO(assignment.endDate), 'PPp', {
-                    locale: th,
-                  })}`}
-                </Typography>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    spacing={0.5}
+                    sx={{
+                      width: 'fit-content',
+                      color:
+                        !isTeacherTA && !assignment.isSubmitted
+                          ? isPast(parseISO(assignment.endDate))
+                            ? 'error.main'
+                            : 'text.secondary'
+                          : 'text.secondary',
+                    }}
+                  >
+                    <AlarmIcon fontSize="inherit" />
+                    <Typography
+                      sx={{
+                        typography: { xs: 'caption', md: 'body2' },
+                      }}
+                      noWrap
+                    >
+                      {`${format(parseISO(assignment.endDate), 'PPp', {
+                        locale: th,
+                      })}`}
+                    </Typography>
+                  </Stack>
+                </Tooltip>
               )}
             </CardContent>
+
+            <CardActions
+              sx={{
+                position: 'absolute',
+                bottom: 4,
+                right: 4,
+              }}
+            >
+              {renderTaskStatus()}
+            </CardActions>
           </CardActionArea>
         </Link>
-        {!isTeacherTA && (
-          <CardActions className="align-middle justify-end mr-2">
-            {isValid(parseISO(assignment.endDate)) &&
-            isPast(parseISO(assignment.endDate)) ? (
-              <Chip
-                label="เกินกำหนด"
-                color="error"
-                variant="outlined"
-                size="small"
-              />
-            ) : (
-              <Chip
-                label={formatDistanceToNow(parseISO(assignment.endDate), {
-                  locale: th,
-                  addSuffix: true,
-                })}
-                color="info"
-                variant="outlined"
-                size="small"
-              />
-            )}
-          </CardActions>
-        )}
       </Card>
       {isTeacherTA && (
         <Menu

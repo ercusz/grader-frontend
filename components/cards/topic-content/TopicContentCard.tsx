@@ -43,73 +43,97 @@ const TopicContentCard: React.FC<ITopicContentCard> = ({
             <Divider sx={{ my: 6 }} />
           </Box>
 
-          {classroomSlug &&
-            topic.assignments &&
-            topic.assignments.length > 0 && (
-              <Box>
-                <Typography
-                  className="font-extrabold text-center"
-                  component="h1"
-                  variant="h5"
-                  gutterBottom
+          <Grid container columnSpacing={2} rowSpacing={4}>
+            {classroomSlug &&
+              topic.assignments &&
+              topic.assignments.length > 0 && (
+                <Grid
+                  item
+                  xs={12}
+                  md={topic.materials && topic.materials.length > 0 ? 6 : 12}
                 >
-                  งานย่อย
-                </Typography>
+                  <Grid
+                    container
+                    spacing={2}
+                    justifyContent="space-around"
+                    alignItems="stretch"
+                  >
+                    <Grid item xs={12}>
+                      <Typography
+                        className="font-extrabold text-center"
+                        component="h1"
+                        variant="h5"
+                        gutterBottom
+                      >
+                        งาน
+                      </Typography>
+                    </Grid>
+                    {topic.assignments.map((assignment) => (
+                      <Grid
+                        item
+                        xs={12}
+                        md={
+                          topic.materials && topic.materials.length > 0 ? 12 : 6
+                        }
+                        key={assignment.id}
+                      >
+                        <SubtaskCard
+                          key={assignment.id}
+                          classroomSlug={classroomSlug}
+                          assignment={assignment}
+                          isTeacherTA={Boolean(isTeacherTA)}
+                        />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Grid>
+              )}
+
+            {classroomSlug && topic.materials && topic.materials.length > 0 && (
+              <Grid
+                item
+                xs={12}
+                md={topic.assignments && topic.assignments.length > 0 ? 6 : 12}
+              >
                 <Grid
                   container
-                  columnSpacing={2}
-                  rowSpacing={2}
+                  spacing={2}
                   justifyContent="space-around"
                   alignItems="stretch"
                 >
-                  {topic.assignments.map((assignment) => (
-                    <Grid item xs={12} sm={12} md={6} key={assignment.id}>
-                      <SubtaskCard
-                        key={assignment.id}
+                  <Grid item xs={12}>
+                    <Typography
+                      className="font-extrabold text-center"
+                      component="h1"
+                      variant="h5"
+                      gutterBottom
+                    >
+                      เอกสาร
+                    </Typography>
+                  </Grid>
+                  {topic.materials.map((material) => (
+                    <Grid
+                      item
+                      xs={12}
+                      md={
+                        topic.assignments && topic.assignments.length > 0
+                          ? 12
+                          : 6
+                      }
+                      key={material.id}
+                    >
+                      <SubMaterialCard
+                        key={material.id}
                         classroomSlug={classroomSlug}
-                        assignment={assignment}
+                        material={material}
                         isTeacherTA={Boolean(isTeacherTA)}
                       />
                     </Grid>
                   ))}
                 </Grid>
-              </Box>
-            )}
-
-          {classroomSlug && topic.materials && topic.materials.length > 0 && (
-            <Box
-              sx={{
-                mt: 4,
-              }}
-            >
-              <Typography
-                className="font-extrabold text-center"
-                component="h1"
-                variant="h5"
-                gutterBottom
-              >
-                เอกสาร
-              </Typography>
-              <Grid
-                container
-                columnSpacing={2}
-                rowSpacing={2}
-                justifyContent="space-around"
-                alignItems="stretch"
-              >
-                {topic.materials.map((material) => (
-                  <Grid item xs={12} sm={12} md={6} key={material.id}>
-                    <SubMaterialCard
-                      key={material.id}
-                      classroomSlug={classroomSlug}
-                      material={material}
-                      isTeacherTA={Boolean(isTeacherTA)}
-                    />
-                  </Grid>
-                ))}
               </Grid>
-            </Box>
-          )}
+            )}
+          </Grid>
         </CardContent>
       </Card>
     </>

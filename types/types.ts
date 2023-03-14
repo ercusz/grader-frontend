@@ -202,6 +202,7 @@ export type Assignment = {
   updatedAt: string;
   updateBy: UserResponse | null;
   topic: Topic | null;
+  isSubmitted?: boolean | null;
 };
 
 export type CreatePost = {
