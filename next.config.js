@@ -28,6 +28,7 @@ const nextConfig = {
       'source.unsplash.com',
       'images.unsplash.com',
       'localhost',
+      process.env.HOSTNAME,
     ],
   },
 
