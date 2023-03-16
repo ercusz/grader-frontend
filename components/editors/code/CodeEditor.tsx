@@ -13,7 +13,7 @@ import {
 import { useTheme } from '@mui/material/styles';
 import { SyntheticEvent, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { SiJava } from 'react-icons/si';
+import { FaJava } from 'react-icons/fa';
 import NewFileDialog from '../../dialogs/newfile-dialog/NewFileDialog';
 
 export interface ICodeEditor {
@@ -129,7 +129,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
                   >
                     {language === 'java' && (
                       <IconButton size="small" aria-label="Java File">
-                        <SiJava />
+                        <FaJava />
                       </IconButton>
                     )}
                     <Typography
@@ -194,7 +194,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
           colorDecorators: true,
           contextmenu: true,
           cursorBlinking: 'blink',
-          cursorSmoothCaretAnimation: false,
+          cursorSmoothCaretAnimation: 'off',
           cursorStyle: 'line',
           disableLayerHinting: false,
           disableMonospaceOptimizations: false,
@@ -219,7 +219,7 @@ const CodeEditor: React.FC<ICodeEditor> = ({ language, template, onMount }) => {
           quickSuggestionsDelay: 100,
           readOnly: false,
           renderControlCharacters: false,
-          renderFinalNewline: true,
+          renderFinalNewline: 'on',
           renderLineHighlight: 'all',
           renderWhitespace: 'none',
           revealHorizontalRightPadding: 30,

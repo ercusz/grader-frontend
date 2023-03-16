@@ -36,25 +36,24 @@ const Code = ({ children = [], className }: any) => {
   const code = getCode(children);
   const demo = useRef(null);
   useEffect(() => {
-    if (demo.current) {
-      try {
-        mermaid.initialize({
-          theme: 'forest',
-        });
+    const renderSvg = async () => {
+      if (demo.current) {
+        try {
+          mermaid.initialize({
+            theme: 'forest',
+          });
 
-        const str = mermaid.render(
-          demoId.current,
-          code,
-          () => null,
-          demo.current
-        );
-        // @ts-ignore
-        demo.current.innerHTML = str;
-      } catch (error) {
-        // @ts-ignore
-        demo.current.innerHTML = error;
+          const { svg } = await mermaid.render(demoId.current, code);
+          // @ts-ignore
+          demo.current.innerHTML = svg;
+        } catch (error) {
+          // @ts-ignore
+          demo.current.innerHTML = error;
+        }
       }
-    }
+    };
+
+    renderSvg();
   }, [code, demo]);
 
   if (

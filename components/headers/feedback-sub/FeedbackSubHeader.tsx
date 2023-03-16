@@ -188,9 +188,6 @@ const FeedbackSubHeader: React.FC<IFeedbackSubHeader> = () => {
         anchorEl={anchorEl}
         placement="bottom"
         disablePortal
-        nonce={undefined}
-        onResize={undefined}
-        onResizeCapture={undefined}
         modifiers={[
           {
             name: 'preventOverflow',

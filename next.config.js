@@ -2,6 +2,7 @@
 const removeImports = require('next-remove-imports')();
 
 const nextConfig = {
+  output: 'standalone',
   swcMinify: true,
   experimental: {
     modularizeImports: {
