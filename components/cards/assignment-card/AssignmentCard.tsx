@@ -33,7 +33,8 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({
     if (
       !assignment ||
       !isValid(parseISO(assignment.startDate)) ||
-      !isValid(parseISO(assignment.endDate))
+      !isValid(parseISO(assignment.endDate)) ||
+      isTeacherTA
     ) {
       return null;
     }
