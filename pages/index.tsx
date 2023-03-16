@@ -1,3 +1,4 @@
+import TallyFormButton from '@/components/buttons/tally-form/TallyFormButton';
 import PrimaryLayout from '@/components/layouts/primary/PrimaryLayout';
 import { Box, Button, Container, Grid, Stack, Typography } from '@mui/material';
 import { useSession } from 'next-auth/react';
@@ -17,6 +18,7 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <section>
+      <TallyFormButton />
       <Grid
         container
         className="min-h-screen"
