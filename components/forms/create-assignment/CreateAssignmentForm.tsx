@@ -164,7 +164,7 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                   required: 'กรุณาระบุวันเวลาที่สิ้นสุดการส่งงาน',
                   validate: (value) => {
                     let threeMinLater = new Date(
-                      startDate?.getTime() + 3 * 60000
+                      (startDate?.getTime() ?? new Date().getTime()) + 3 * 60000
                     );
                     if (value < threeMinLater) {
                       return 'วันเวลาที่สิ้นสุดการส่งงานต้องมากกว่าวันเวลาที่เริ่มการส่งงานอย่างต่ำ 3 นาที';
@@ -172,7 +172,11 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                     return true;
                   },
                 }}
-                minDateTime={new Date(startDate?.getTime() + 3 * 60000)} // 3 minutes after start date
+                minDateTime={
+                  new Date(
+                    (startDate?.getTime() ?? new Date().getTime()) + 3 * 60000
+                  )
+                } // 3 minutes after start date
               />
             </LocalizationProvider>
           </Stack>
