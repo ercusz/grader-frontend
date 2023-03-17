@@ -154,7 +154,9 @@ const TestCasesList: React.FC<ITestCasesList> = ({ runnable }) => {
                           <PlayCircleIcon fontSize="large" />
                         </LoadingButton>
                       )}
-                      {testcase.name}
+                      <Typography variant="h6" display="block" noWrap>
+                        {testcase.name}
+                      </Typography>
                       {testcase.status >= 3 && runnable && (
                         <Chip
                           sx={{
