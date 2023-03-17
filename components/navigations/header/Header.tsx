@@ -65,7 +65,9 @@ const Header: React.FC<IHeader> = () => {
   React.useEffect(() => {
     if (
       router.pathname === '/auth/sign-in' ||
-      router.pathname === '/auth/sign-up' 
+      router.pathname === '/auth/sign-up' ||
+      router.pathname === '/auth/forgot-password' ||
+      router.pathname === '/auth/reset-password'
     ) {
       setIsInSignInPage(true);
     }

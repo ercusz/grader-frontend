@@ -59,3 +59,41 @@ export async function signUp({ email, username, password }: ISignUp) {
 
   return;
 }
+
+export async function forgotPassword(email: string) {
+  const { err }: Response = await contentHttpClient.post(
+    '/api/auth/forgot-password',
+    {
+      email: email,
+    }
+  );
+
+  if (err) {
+    return {
+      errorMsg:
+        'เกิดข้อผิดพลาดในการส่งอีเมลรีเซ็ตรหัสผ่าน กรุณาตรวจสอบที่อยู่อีเมลของคุณและลองใหม่อีกครั้งในภายหลัง',
+    };
+  }
+}
+
+export async function resetPassword(
+  code: string,
+  password: string,
+  passwordConfirmation: string
+) {
+  const { err }: Response = await contentHttpClient.post(
+    '/api/auth/reset-password',
+    {
+      code: code,
+      password: password,
+      passwordConfirmation: passwordConfirmation,
+    }
+  );
+
+  if (err) {
+    return {
+      errorMsg:
+        'เกิดข้อผิดพลาดในการรีเซ็ตรหัสผ่าน กรุณาลองใหม่อีกครั้งในภายหลัง',
+    };
+  }
+}

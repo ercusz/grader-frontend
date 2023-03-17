@@ -106,6 +106,13 @@ const UserMenu: React.FC<IUserMenu> = ({ anchorElUser, setAnchorElUser }) => {
     setShowAppearance(true);
   };
 
+  const onSignOut = () => {
+    signOut({
+      redirect: true,
+      callbackUrl: '/auth/sign-in',
+    });
+  };
+
   const settings = [
     {
       name: 'การตั้งค่า',
@@ -123,7 +130,7 @@ const UserMenu: React.FC<IUserMenu> = ({ anchorElUser, setAnchorElUser }) => {
       name: 'ออกจากระบบ',
       icon: <LogoutIcon />,
       link: undefined,
-      action: signOut,
+      action: onSignOut,
     },
   ];
 
