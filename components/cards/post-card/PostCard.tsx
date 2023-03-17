@@ -142,6 +142,14 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
     return <Chip label={role} size="small" sx={sx} />;
   };
 
+  const isOwnPost = user && user.id === post.createBy.id;
+
+  const isTeacherTA = Boolean(
+    user &&
+      ((user && getRole(user) === Roles.TEACHER) ||
+        (user && getRole(user) === Roles.TA))
+  );
+
   return (
     <>
       <EditPostDialog
@@ -181,9 +189,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             </Link>
           }
           action={
-            ((user && getRole(user) === Roles.TEACHER) ||
-              (user && getRole(user) === Roles.TA) ||
-              (user && user.id === post.createBy?.id)) && (
+            (isOwnPost || isTeacherTA) && (
               <Tooltip title="ตัวเลือก">
                 <IconButton
                   aria-label="more"
@@ -292,7 +298,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
           horizontal: 'right',
         }}
       >
-        {user && user.id === post.createBy?.id && (
+        {isOwnPost && (
           <MenuItem
             key="post-menu-edit"
             onClick={() => setOpenEditPostDialog(true)}
@@ -303,8 +309,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
             แก้ไข
           </MenuItem>
         )}
-        {((user && getRole(user) === Roles.TEACHER) ||
-          (user && getRole(user) === Roles.TA)) && [
+        {isTeacherTA && [
           post.isPinned ? (
             <MenuItem
               key="post-menu-unpin"
@@ -326,6 +331,8 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
               ปักหมุด
             </MenuItem>
           ),
+        ]}
+        {(isTeacherTA || isOwnPost) && [
           <Divider key="post-menu-divider" />,
           <MenuItem
             key="post-menu-delete"
