@@ -6,7 +6,7 @@
   "private": true,
   "license": "MIT",
   "engines": {
-    "node": ">=16"
+    "node": "16.x"
   },
   "scripts": {
     "dev": "cross-env NODE_OPTIONS='--inspect' next dev",
