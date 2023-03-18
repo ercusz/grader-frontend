@@ -27,8 +27,9 @@ const nextConfig = {
       'i.pravatar.cc',
       'source.unsplash.com',
       'images.unsplash.com',
-      'localhost',
       process.env.HOST,
+      process.env.DO_SPACE_ENDPOINT,
+      process.env.DO_SPACE_CDN,
     ],
   },
 
