@@ -3,7 +3,7 @@ const removeImports = require('next-remove-imports')();
 
 const nextConfig = {
   output: 'standalone',
-  swcMinify: true,
+  swcMinify: false,
   experimental: {
     modularizeImports: {
       '@mui/material': {
