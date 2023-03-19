@@ -45,26 +45,39 @@ const OutlinedAvatar: React.FC<IOutlinedAvatar> = ({
   return (
     <IconButton
       className={`drop-shadow-2xl 
-      ${
-        !src &&
-        'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-700 via-orange-300 to-rose-800'
-      }
       ${clickable ? 'cursor-pointer' : 'cursor-default'}`}
       sx={{
-        bgcolor: (theme: Theme) => theme.palette.primary.main + '!important',
-        color: (theme: Theme) => theme.palette.background.default,
+        p: 0.3,
+        background: (theme) => `linear-gradient(${
+          theme.palette.background.default
+        }, ${theme.palette.background.default}) padding-box,
+          ${
+            !src
+              ? 'radial-gradient(ellipse at top,rgb(180, 83, 9),rgb(253, 186, 116),rgb(159, 18, 57))'
+              : `linear-gradient(${theme.palette.primary.main}, ${theme.palette.primary.main})` +
+                ' border-box'
+          }`,
+        border: '3px solid transparent',
+        '&:hover': {
+          p: 0.2,
+          borderWidth: '2px',
+        },
+        transition: 'all 0.2s ease-in-out',
       }}
       onClick={onClick}
       disableRipple={!clickable}
     >
       <Avatar
-        className={`outline outline-offset-4 bg-transparent font-black 
-        ${clickable ? 'transition-all hover:outline-offset-2' : ''}`}
+        className={`${
+          !src &&
+          'bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-amber-700 via-orange-300 to-rose-800'
+        }`}
         alt={alt}
         src={src}
         sx={
           {
-            outlineColor: (theme: Theme) => theme.palette.background.default,
+            fontWeight: 900,
+            color: (theme: Theme) => theme.palette.background.default,
           } && renderSize()
         }
       >

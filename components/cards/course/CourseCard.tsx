@@ -29,13 +29,14 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
       ) : (
         <Card
           className="transition-all ease-in-out
-          duration-200 cursor-pointer
+          duration-200 cursor-pointer rounded-md
           outline outline-1 outline-offset-2
           hover:outline-2 hover:-translate-y-6"
           sx={[
             {
               height: '100%',
               flexDirection: 'column',
+              outlineStyle: 'auto',
               outlineColor: (theme) => alpha(theme.palette.primary.main, 0.3),
               WebkitBoxReflect:
                 'below 1px linear-gradient(transparent, rgba(0, 0, 0, .2))',

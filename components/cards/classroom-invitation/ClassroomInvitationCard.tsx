@@ -115,13 +115,14 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
               </DialogActions>
             </Dialog>
             <Card
-              className="transition-all ease-in-out
+              className="transition-all ease-in-out rounded-md
           duration-200 outline outline-1 outline-offset-2
           hover:outline-2 hover:-translate-y-6"
               sx={[
                 {
                   height: '100%',
                   flexDirection: 'column',
+                  outlineStyle: 'auto',
                   outlineColor: (theme) =>
                     alpha(theme.palette.primary.main, 0.3),
                   WebkitBoxReflect:
