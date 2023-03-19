@@ -59,6 +59,19 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
     }
   }, [currentDateTime, postDateType, setValue]);
 
+  const threeMinAfterStartDate = useMemo(() => {
+    if (startDate) {
+      const newDate = new Date(startDate);
+      if (isNaN(newDate.getTime())) {
+        return new Date().setMinutes(new Date().getMinutes() + 3);
+      }
+      newDate.setMinutes(newDate.getMinutes() + 3);
+      return newDate;
+    }
+
+    return new Date().setMinutes(new Date().getMinutes() + 3);
+  }, [startDate]);
+
   const handleProblemType = (
     event: React.MouseEvent<HTMLElement>,
     newType: string
@@ -163,20 +176,13 @@ const CreateAssignmentForm: React.FC<ICreateAssignmentForm> = ({
                 validation={{
                   required: 'กรุณาระบุวันเวลาที่สิ้นสุดการส่งงาน',
                   validate: (value) => {
-                    let threeMinLater = new Date(
-                      (startDate?.getTime() ?? new Date().getTime()) + 3 * 60000
-                    );
-                    if (value < threeMinLater) {
+                    if (value < threeMinAfterStartDate) {
                       return 'วันเวลาที่สิ้นสุดการส่งงานต้องมากกว่าวันเวลาที่เริ่มการส่งงานอย่างต่ำ 3 นาที';
                     }
                     return true;
                   },
                 }}
-                minDateTime={
-                  new Date(
-                    (startDate?.getTime() ?? new Date().getTime()) + 3 * 60000
-                  )
-                } // 3 minutes after start date
+                minDateTime={threeMinAfterStartDate} // 3 minutes after start date
               />
             </LocalizationProvider>
           </Stack>
