@@ -3,6 +3,7 @@ import SourceCodeSection from '@/components/sections/source-code/SourceCodeSecti
 import { useUserSubmissionPages } from '@/hooks/submission/useSubmission';
 import { useUser } from '@/hooks/user/useUser';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
@@ -132,7 +133,7 @@ const SubmissionHistoryCard: React.FC<ISubmissionHistoryCard> = ({
                   </Avatar>
                   <Stack direction="column">
                     <Typography className="font-bold" variant="body2">
-                      {user.firstName + ' ' + user.lastName}
+                      {getUserFullName(user)}
                     </Typography>
                     <Link href={`/p/@${user.username}`} passHref>
                       <MuiLink sx={{ p: 0, m: 0 }}>

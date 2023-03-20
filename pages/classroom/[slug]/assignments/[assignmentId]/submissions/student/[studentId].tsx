@@ -5,11 +5,11 @@ import SourceCodeSection from '@/components/sections/source-code/SourceCodeSecti
 import SubmissionTestcasesSection from '@/components/sections/submission-testcases/SubmissionTestcasesSection';
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
-import { UserResponse } from '@/types/types';
 import { setToken } from '@/utils/APIHelper';
 import { getClassroomBySlug } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
 import { getAssignmentSubmissions } from '@/utils/SubmissionService';
+import { getUserFullName } from '@/utils/UserService';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HistoryIcon from '@mui/icons-material/History';
 import {
@@ -62,14 +62,6 @@ const AssignmentSubmission: NextPageWithLayout = ({
       return students.find((s) => s.id === Number(studentId));
     }
   }, [students, studentId]);
-
-  const getStudentName = (student: UserResponse) => {
-    if (student.firstName && student.lastName) {
-      return `${student.firstName} ${student.lastName}`;
-    }
-
-    return student.username;
-  };
 
   return (
     <section>
@@ -139,7 +131,7 @@ const AssignmentSubmission: NextPageWithLayout = ({
                     color="primary"
                     noWrap
                   >
-                    {getStudentName(student)}
+                    {getUserFullName(student)}
                   </Typography>
                   {student.submission &&
                     isValid(parseISO(student.submission.createdAt)) && (
@@ -439,11 +431,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       (student) => student.id.toString() === studentId
     );
 
-    const studentName = student
-      ? student.firstName && student.lastName
-        ? `${student.firstName} ${student.lastName}`
-        : student.username
-      : '';
+    const studentName = student && getUserFullName(student);
 
     title = `งานของ ${studentName} | ${assignmentName} | ${classroom.name} - ${classroom.course?.name}`;
   } catch (error) {

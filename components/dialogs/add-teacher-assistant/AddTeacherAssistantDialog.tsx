@@ -3,6 +3,7 @@ import { useDebounce } from '@/hooks/debounce/useDebounce';
 import { UserResponse } from '@/types/types';
 import { addTaToClassroom, findUser } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import GppGoodIcon from '@mui/icons-material/GppGood';
@@ -111,14 +112,6 @@ const AddTeacherAssistantDialog: React.FC<IAddTeacherAssistantDialog> = ({
     }
   };
 
-  const getTaName = (ta: UserResponse) => {
-    if (ta.firstName && ta.lastName) {
-      return `${ta.firstName} ${ta.lastName}`;
-    }
-
-    return 'ยังไม่ตั้งชื่อ';
-  };
-
   const isUserAlreadyTa = (ta: UserResponse) => {
     return classroom
       ? classroom.teacherAssistants.some((t) => t.id === ta.id)
@@ -217,12 +210,12 @@ const AddTeacherAssistantDialog: React.FC<IAddTeacherAssistantDialog> = ({
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt={getTaName(user)}
+                    alt={getUserFullName(user)}
                     src={getImagePath(user.profileImage)}
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={getTaName(user)}
+                  primary={getUserFullName(user)}
                   secondary={`@${user.username}`}
                 />
               </ListItem>

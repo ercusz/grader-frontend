@@ -4,12 +4,13 @@ import {
   enabledPointDeductionAtom,
   selectedSubmissionsAtom,
 } from '@/stores/assignment-submissions';
-import { StudentSubmission, UserResponse } from '@/types/types';
+import { StudentSubmission } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import {
   calculateDeductPoint,
   gradingStudentScore,
 } from '@/utils/SubmissionService';
+import { getUserFullName } from '@/utils/UserService';
 import {
   Avatar,
   Button,
@@ -60,14 +61,6 @@ const StudentGradedScoreDialog: React.FC<IStudentGradedScoreDialog> = ({
   const maxPoint = useMemo(() => {
     return assignment?.point ?? 0;
   }, [assignment]);
-
-  const getStudentName = (student: UserResponse) => {
-    if (student.firstName && student.lastName) {
-      return `${student.firstName} ${student.lastName}`;
-    }
-
-    return student.username;
-  };
 
   const studentWithScores = useMemo(() => {
     return (students &&
@@ -187,7 +180,7 @@ const StudentGradedScoreDialog: React.FC<IStudentGradedScoreDialog> = ({
                     </Avatar>
                   </ListItemIcon>
                   <ListItemText
-                    primary={getStudentName(student)}
+                    primary={getUserFullName(student)}
                     primaryTypographyProps={{
                       variant: 'subtitle2',
                       style: {

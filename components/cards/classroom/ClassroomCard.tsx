@@ -1,5 +1,6 @@
 import { MyClassroom } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import CheckIcon from '@mui/icons-material/Check';
 import {
   Avatar,
@@ -215,7 +216,7 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                     className="object-cover"
                     layout="fill"
                     quality={60}
-                    alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
+                    alt={getUserFullName(classroom.course.teachers[0])}
                     src={getImagePath(
                       classroom.course.teachers[0].profileImage
                     )}
@@ -228,11 +229,9 @@ const ClassroomCard: React.FC<IClassroomCard> = ({ classroom, loading }) => {
                   className="no-underline hover:underline"
                   href={`/p/@${classroom.course.teachers[0].username}`}
                 >
-                  <Typography
-                    variant="body2"
-                    noWrap
-                    className="font-semibold"
-                  >{`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}</Typography>
+                  <Typography variant="body2" noWrap className="font-semibold">
+                    {getUserFullName(classroom.course.teachers[0])}
+                  </Typography>
                 </Link>
                 <Link
                   className="no-underline hover:underline"

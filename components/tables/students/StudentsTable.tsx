@@ -7,6 +7,7 @@ import {
   removeStudentsFromClassroom,
 } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Avatar,
@@ -92,18 +93,10 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
     }
   };
 
-  const getStudentName = (student: UserResponse) => {
-    if (student.firstName && student.lastName) {
-      return `${student.firstName} ${student.lastName}`;
-    }
-
-    return 'ยังไม่ตั้งชื่อ';
-  };
-
   const columns = useMemo<MRT_ColumnDef<UserResponse>[]>(
     () => [
       {
-        accessorFn: (student) => getStudentName(student),
+        accessorFn: (student) => getUserFullName(student),
         id: 'name',
         header: 'ชื่อ - สกุล',
         Cell: ({ cell, row }) => (
@@ -115,7 +108,7 @@ const StudentsTable: React.FC<IStudentsTable> = ({ classroomSlug }) => {
             }}
           >
             <Avatar
-              alt={getStudentName(row.original)}
+              alt={getUserFullName(row.original)}
               src={getImagePath(row.original.profileImage)}
             />
             <Typography>{cell.getValue<string>()}</Typography>

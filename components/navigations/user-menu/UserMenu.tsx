@@ -1,6 +1,7 @@
 import OutlinedAvatar from '@/components/avatars/outlined-avatar/OutlinedAvatar';
 import { useAtomTheme } from '@/hooks/atom-theme/useAtomTheme';
 import { useUser } from '@/hooks/user/useUser';
+import { getUserFullName } from '@/utils/UserService';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BedtimeIcon from '@mui/icons-material/Bedtime';
 import Check from '@mui/icons-material/Check';
@@ -187,7 +188,7 @@ const UserMenu: React.FC<IUserMenu> = ({ anchorElUser, setAnchorElUser }) => {
                 spacing={1}
               >
                 <Typography variant="inherit" noWrap>
-                  {`${user.firstName} ${user.lastName}`}
+                  {getUserFullName(user)}
                 </Typography>
                 <Chip
                   className="font-semibold scale-95"

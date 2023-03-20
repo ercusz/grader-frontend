@@ -1,4 +1,5 @@
 import { Assignment } from '@/types/types';
+import { getUserFullName } from '@/utils/UserService';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -97,7 +98,7 @@ const AssignmentCard: React.FC<IAssignmentCard> = ({
             }
             title={
               <Typography noWrap gutterBottom variant="subtitle2">
-                {`${assignment.createBy.firstName} ${assignment.createBy.lastName}`}
+                {getUserFullName(assignment.createBy)}
                 {` ได้มอบหมายงานใหม่ `}
                 {`${assignment.title}`}
               </Typography>

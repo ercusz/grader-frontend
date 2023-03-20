@@ -4,8 +4,9 @@ import SourceCodeSection from '@/components/sections/source-code/SourceCodeSecti
 import { useAssignment } from '@/hooks/assignment/useAssignment';
 import { useStudentLatestSubmission } from '@/hooks/submission/useSubmission';
 import { useUser } from '@/hooks/user/useUser';
-import { Assignment, StudentSubmission, UserResponse } from '@/types/types';
+import { Assignment, StudentSubmission } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CloseIcon from '@mui/icons-material/Close';
@@ -71,14 +72,6 @@ const SubmissionDetailDialog: React.FC<ISubmissionDetailDialog> = ({
   const passedTestcases = useMemo(() => {
     return testcases.filter((testcase) => testcase.status === 3).length;
   }, [testcases]);
-
-  const getStudentName = (student: UserResponse) => {
-    if (student.firstName && student.lastName) {
-      return `${student.firstName} ${student.lastName}`;
-    }
-
-    return student.username;
-  };
 
   return (
     <Dialog
@@ -150,7 +143,7 @@ const SubmissionDetailDialog: React.FC<ISubmissionDetailDialog> = ({
               </Avatar>
               <Stack direction="column">
                 <Typography variant="h6" color="primary" noWrap>
-                  {getStudentName(studentSubmission)}
+                  {getUserFullName(studentSubmission)}
                 </Typography>
                 {isValid(parseISO(studentSubmission.submission.createdAt)) && (
                   <>
@@ -298,7 +291,7 @@ const SubmissionStatusCard: React.FC<ISubmissionStatusCard> = ({
         <Chip
           className="mx-auto mb-4"
           size="small"
-          label={`${user?.firstName} ${user?.lastName}`}
+          label={user && getUserFullName(user)}
           avatar={
             <Avatar
               alt={user ? `${user?.username}'s profile image` : undefined}

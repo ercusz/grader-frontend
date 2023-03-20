@@ -6,6 +6,7 @@ import { User, UserResponse } from '@/types/types';
 import { leaveClassroom } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
 import { getUserRole } from '@/utils/role';
+import { getUserFullName } from '@/utils/UserService';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import LockIcon from '@mui/icons-material/Lock';
 import PeopleIcon from '@mui/icons-material/People';
@@ -89,14 +90,6 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
 
   const handleAvatarClick = (e: MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
-  };
-
-  const getMemberName = (student: UserResponse | User) => {
-    if (student.firstName && student.lastName) {
-      return `${student.firstName} ${student.lastName}`;
-    }
-
-    return student.username;
   };
 
   const getRole = (targetUser: UserResponse | User) => {
@@ -200,11 +193,11 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
                   alignItems: 'center',
                 }}
               >
-                <Tooltip title={getMemberName(user) + '(คุณ)'}>
+                <Tooltip title={getUserFullName(user) + '(คุณ)'}>
                   <IconButton onClick={handleAvatarClick}>
                     <Avatar
                       className="shadow-md"
-                      alt={getMemberName(user)}
+                      alt={getUserFullName(user)}
                       src={
                         user.profileImage
                           ? getImagePath(user.profileImage)
@@ -222,11 +215,11 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
                   .map((member) => (
                     <Tooltip
                       key={member.username}
-                      title={getMemberName(member)}
+                      title={getUserFullName(member)}
                     >
                       <Avatar
                         className="shadow-md"
-                        alt={getMemberName(member)}
+                        alt={getUserFullName(member)}
                         src={getImagePath(member.profileImage)}
                       />
                     </Tooltip>
@@ -282,14 +275,14 @@ const ClassroomMenu: React.FC<IClassroomMenu> = ({ classroomSlug }) => {
               >
                 <Avatar
                   className="shadow-md"
-                  alt={getMemberName(user)}
+                  alt={getUserFullName(user)}
                   src={
                     user.profileImage
                       ? getImagePath(user.profileImage)
                       : undefined
                   }
                 />
-                <Typography variant="body2">{getMemberName(user)}</Typography>
+                <Typography variant="body2">{getUserFullName(user)}</Typography>
                 <Chip label={getRole(user)} size="small" />
               </Stack>
             </Box>

@@ -1,5 +1,6 @@
 import { Course } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import {
   Avatar,
   Card,
@@ -96,7 +97,7 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                   className="object-cover"
                   layout="fill"
                   quality={60}
-                  alt={`${course.teachers[0].firstName} ${course.teachers[0].lastName}`}
+                  alt={getUserFullName(course.teachers[0])}
                   src={getImagePath(course.teachers[0].profileImage)}
                   sizes="100vw"
                 />
@@ -107,11 +108,9 @@ const CourseCard: React.FC<ICourseCard> = ({ course, loading }) => {
                 className="no-underline hover:underline"
                 href={`/p/@${course.teachers[0].username}`}
               >
-                <Typography
-                  variant="body2"
-                  noWrap
-                  className="font-semibold"
-                >{`${course.teachers[0].firstName} ${course.teachers[0].lastName}`}</Typography>
+                <Typography variant="body2" noWrap className="font-semibold">
+                  {getUserFullName(course.teachers[0])}
+                </Typography>
               </Link>
               <Link
                 className="no-underline hover:underline"

@@ -6,6 +6,7 @@ import { User, UserComment, UserResponse } from '@/types/types';
 import { editComment } from '@/utils/CommentService';
 import { getImagePath } from '@/utils/imagePath';
 import { getUserRole } from '@/utils/role';
+import { getUserFullName } from '@/utils/UserService';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -98,14 +99,6 @@ const CommentListItem: React.FC<ICommentListItem> = ({
       id: comment.id.toString() as string,
       content: content,
     });
-  };
-
-  const getUserName = (user: UserResponse) => {
-    if (user.firstName && user.lastName) {
-      return `${user.firstName} ${user.lastName}`;
-    }
-
-    return user.username;
   };
 
   const handleCloseMenu = () => {
@@ -239,7 +232,7 @@ const CommentListItem: React.FC<ICommentListItem> = ({
                         mr: 0.5,
                       }}
                     >
-                      {getUserName(comment.createBy)}
+                      {getUserFullName(comment.createBy)}
                     </Typography>
                   </MuiLink>
                 </Link>

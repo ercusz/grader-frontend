@@ -6,6 +6,7 @@ import {
   removeTasFromClassroom,
 } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Avatar,
@@ -86,18 +87,10 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
     }
   };
 
-  const getTaName = (ta: UserResponse) => {
-    if (ta.firstName && ta.lastName) {
-      return `${ta.firstName} ${ta.lastName}`;
-    }
-
-    return 'ยังไม่ตั้งชื่อ';
-  };
-
   const columns = useMemo<MRT_ColumnDef<UserResponse>[]>(
     () => [
       {
-        accessorFn: (row) => getTaName(row),
+        accessorFn: (row) => getUserFullName(row),
         id: 'name',
         header: 'ชื่อ - สกุล',
         Cell: ({ cell, row }) => (
@@ -109,7 +102,7 @@ const TeacherAssistantsTable: React.FC<ITeacherAssistantsTable> = ({
             }}
           >
             <Avatar
-              alt={getTaName(row.original)}
+              alt={getUserFullName(row.original)}
               src={getImagePath(row.original.profileImage)}
             />
             <Typography>{cell.getValue<string>()}</Typography>

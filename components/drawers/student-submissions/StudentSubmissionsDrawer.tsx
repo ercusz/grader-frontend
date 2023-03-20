@@ -1,8 +1,9 @@
 import { useClassroomSlug } from '@/hooks/classrooms/useClassrooms';
 import { useAssignmentSubmissions } from '@/hooks/submission/useSubmission';
 import { selectedSubmissionsAtom } from '@/stores/assignment-submissions';
-import { StudentSubmission, UserResponse } from '@/types/types';
+import { StudentSubmission } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CheckIcon from '@mui/icons-material/Check';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -387,14 +388,6 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
 
   const [selected, setSelected] = useAtom(selectedSubmissionsAtom);
 
-  const getStudentName = (student: UserResponse) => {
-    if (student.firstName && student.lastName) {
-      return `${student.firstName} ${student.lastName}`;
-    }
-
-    return student.username;
-  };
-
   const [descSort, setDescSort] = useState(true);
   const [sortBy, setSortBy] = useState<
     'createdAt' | 'name' | 'studentId' | 'status'
@@ -446,8 +439,8 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
       );
     }
     if (sortBy === 'name') {
-      const x = getStudentName(a);
-      const y = getStudentName(b);
+      const x = getUserFullName(a);
+      const y = getUserFullName(b);
 
       return x.localeCompare(y) * (descSort ? -1 : 1);
     }
@@ -638,7 +631,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                         : student.username?.charAt(0)}
                     </Avatar>
                   }
-                  studentName={getStudentName(student)}
+                  studentName={getUserFullName(student)}
                   studentId={student.studentId || null}
                   status={
                     (Object.keys(groups).find(
@@ -746,7 +739,7 @@ const StudentSubmissionsDrawer: React.FC<IStudentSubmissionsDrawer> = () => {
                             : student.username?.charAt(0)}
                         </Avatar>
                       }
-                      studentName={getStudentName(student)}
+                      studentName={getUserFullName(student)}
                       studentId={student.studentId || null}
                       status={
                         (Object.keys(groups).find(

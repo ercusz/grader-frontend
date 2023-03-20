@@ -3,6 +3,7 @@ import { useDebounce } from '@/hooks/debounce/useDebounce';
 import { UserResponse } from '@/types/types';
 import { addStudentToClassroom, findUser } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
@@ -113,14 +114,6 @@ const AddStudentDialog: React.FC<IAddStudentDialog> = ({
     }
   };
 
-  const getStudentName = (student: UserResponse) => {
-    if (student.firstName && student.lastName) {
-      return `${student.firstName} ${student.lastName}`;
-    }
-
-    return 'ยังไม่ตั้งชื่อ';
-  };
-
   const isUserAlreadyStudent = (student: UserResponse) => {
     return classroom
       ? classroom.students.some((s) => s.id === student.id)
@@ -219,12 +212,12 @@ const AddStudentDialog: React.FC<IAddStudentDialog> = ({
               >
                 <ListItemAvatar>
                   <Avatar
-                    alt={getStudentName(user)}
+                    alt={getUserFullName(user)}
                     src={getImagePath(user.profileImage)}
                   />
                 </ListItemAvatar>
                 <ListItemText
-                  primary={getStudentName(user)}
+                  primary={getUserFullName(user)}
                   secondary={`@${user.username}`}
                 />
               </ListItem>

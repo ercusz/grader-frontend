@@ -1,6 +1,7 @@
 import { MyClassroomInvitation } from '@/types/types';
 import { responseClassroomInvitation } from '@/utils/ClassroomService';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import CheckIcon from '@mui/icons-material/Check';
 import ClearIcon from '@mui/icons-material/Clear';
 import EmailIcon from '@mui/icons-material/Email';
@@ -212,7 +213,7 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
                       className="object-cover"
                       layout="fill"
                       quality={60}
-                      alt={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
+                      alt={getUserFullName(classroom.course.teachers[0])}
                       src={getImagePath(
                         classroom.course.teachers[0].profileImage
                       )}
@@ -224,14 +225,16 @@ const ClassroomInvitationCard: React.FC<IClassroomInvitationCard> = ({
                   sx={{ display: 'flex', overflow: 'hidden', paddingLeft: 5 }}
                 >
                   <Tooltip
-                    title={`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName} ได้เชิญคุณเข้าร่วมคลาสเรียนนี้`}
+                    title={`${getUserFullName(
+                      classroom.course.teachers[0]
+                    )} ได้เชิญคุณเข้าร่วมคลาสเรียนนี้`}
                   >
                     <Typography
                       variant="caption"
                       className="font-semibold"
                       noWrap
                     >
-                      {`${classroom.course.teachers[0].firstName} ${classroom.course.teachers[0].lastName}`}
+                      {getUserFullName(classroom.course.teachers[0])}
                       <br />
                       <Typography variant="body2" className="font-bold" noWrap>
                         {`ได้เชิญคุณเข้าร่วม`}

@@ -1,4 +1,5 @@
 import { Topic } from '@/types/types';
+import { getUserFullName } from '@/utils/UserService';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import {
   Avatar,
@@ -26,11 +27,11 @@ const TopicCard: React.FC<ITopicCard> = ({ topic, classroomSlug }) => {
 
   const author = useMemo(() => {
     if (topic.assignments && topic.assignments[0]) {
-      return `${topic.assignments[0].createBy.firstName} ${topic.assignments[0].createBy.lastName}`;
+      return getUserFullName(topic.assignments[0].createBy);
     }
 
     if (topic.materials && topic.materials[0]) {
-      return `${topic.materials[0].createBy.firstName} ${topic.materials[0].createBy.lastName}`;
+      return getUserFullName(topic.materials[0].createBy);
     }
 
     return '';

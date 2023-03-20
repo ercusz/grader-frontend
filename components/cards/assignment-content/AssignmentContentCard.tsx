@@ -1,6 +1,7 @@
 import MarkdownPreview from '@/components/previews/markdown/MarkdownPreview';
 import { Assignment, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
+import { getUserFullName } from '@/utils/UserService';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
@@ -75,7 +76,7 @@ export const AuthorDetails: React.FC<IAuthorDetail> = ({ author, date }) => {
           </Avatar>
           <Stack direction="column">
             <Typography className="font-bold" variant="body2">
-              {author.firstName + ' ' + author.lastName}
+              {getUserFullName(author)}
             </Typography>
             <Link href={`/p/@${author.username}`} passHref>
               <MuiLink sx={{ p: 0, m: 0 }}>

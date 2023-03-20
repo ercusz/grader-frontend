@@ -8,6 +8,7 @@ import { Post, User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import { deletePost, setPinPost } from '@/utils/PostService';
 import { getUserRole } from '@/utils/role';
+import { getUserFullName } from '@/utils/UserService';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -212,8 +213,7 @@ const PostCard: React.FC<IPostCard> = ({ compact, post, classroomSlug }) => {
                     component="span"
                     sx={{ mr: 0.5 }}
                   >
-                    {post.createBy &&
-                      post.createBy.firstName + ' ' + post.createBy.lastName}
+                    {post.createBy && getUserFullName(post.createBy)}
                   </Typography>
                 </MuiLink>
               </Link>

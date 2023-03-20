@@ -1,4 +1,5 @@
 import { Material } from '@/types/types';
+import { getUserFullName } from '@/utils/UserService';
 import BookIcon from '@mui/icons-material/Book';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import {
@@ -48,7 +49,7 @@ const MaterialCard: React.FC<IMaterialCard> = ({
             }
             title={
               <Typography noWrap gutterBottom variant="subtitle2">
-                {`${material.createBy.firstName} ${material.createBy.lastName}`}
+                {getUserFullName(material.createBy)}
                 {` ได้โพสต์เอกสารใหม่ `}
                 {`${material.title}`}
               </Typography>

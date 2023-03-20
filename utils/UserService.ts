@@ -3,6 +3,7 @@ import {
   UpdateUserProfile,
   User,
   UserProfile,
+  UserResponse,
 } from '@/types/types';
 import { contentHttpClient, Response } from './APIHelper';
 import { getImagePath } from './imagePath';
@@ -83,4 +84,12 @@ export const changePassword = async (body: ChangePassword): Promise<void> => {
   if (err) {
     throw new Error('change password failed');
   }
+};
+
+export const getUserFullName = (user: UserResponse | User) => {
+  if (user.firstName && user.lastName) {
+    return `${user.firstName} ${user.lastName}`;
+  }
+
+  return user.username;
 };

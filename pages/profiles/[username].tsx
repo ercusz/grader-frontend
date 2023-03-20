@@ -2,7 +2,7 @@ import HeaderlessLayout from '@/components/layouts/headerless/HeaderlessLayout';
 import { useUserProfile } from '@/hooks/user/useUser';
 import { setToken } from '@/utils/APIHelper';
 import { getImagePath } from '@/utils/imagePath';
-import { getUserProfileByUsername } from '@/utils/UserService';
+import { getUserFullName, getUserProfileByUsername } from '@/utils/UserService';
 import { Avatar, Box, Container, Link, Typography } from '@mui/material';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { GetServerSideProps } from 'next';
@@ -42,16 +42,6 @@ const Profile: NextPageWithLayout = () => {
   const { data: userProfile } = useUserProfile({
     username: username ? username.toString() : '',
   });
-
-  const getUserFullName = () => {
-    if (userProfile) {
-      if (userProfile.firstName && userProfile.lastName) {
-        return `${userProfile.firstName} ${userProfile.lastName}`;
-      }
-
-      return userProfile.username;
-    }
-  };
 
   useEffect(() => {
     const gradient = new Gradient();
@@ -106,7 +96,7 @@ const Profile: NextPageWithLayout = () => {
                 fontWeight: 700,
               }}
             >
-              {getUserFullName()}
+              {getUserFullName(userProfile)}
             </Typography>
 
             {/* User Bio */}
@@ -177,11 +167,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       () => getUserProfileByUsername(username)
     );
 
-    const userProfileName = userProfile
-      ? userProfile.firstName && userProfile.lastName
-        ? `${userProfile.firstName} ${userProfile.lastName}`
-        : userProfile.username
-      : '';
+    const userProfileName = getUserFullName(userProfile);
 
     title = `โปรไฟล์ของ ${userProfileName}`;
   } catch (error) {

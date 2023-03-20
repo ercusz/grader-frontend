@@ -7,6 +7,7 @@ import { openEditCourseDialogAtom } from '@/stores/edit-course';
 import { User, UserResponse } from '@/types/types';
 import { getImagePath } from '@/utils/imagePath';
 import { getUserRole } from '@/utils/role';
+import { getUserFullName } from '@/utils/UserService';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
@@ -76,21 +77,11 @@ const CourseHeader: React.FC<ICourseHeader> = ({
   };
 
   const getTeacher = () => {
-    if (
-      classroom &&
-      classroom.course &&
-      classroom.course.teachers[0].firstName &&
-      classroom.course.teachers[0].lastName
-    ) {
+    if (classroom && classroom.course && classroom.course.teachers[0]) {
       const { course } = classroom;
-      return `ผู้สอน: ${course.teachers[0].firstName} ${course.teachers[0].lastName}`;
-    } else if (
-      course &&
-      course.teachers &&
-      course.teachers[0].firstName &&
-      course.teachers[0].lastName
-    ) {
-      return `ผู้สอน: ${course.teachers[0].firstName} ${course.teachers[0].lastName}`;
+      return `ผู้สอน: ${getUserFullName(course.teachers[0])}`;
+    } else if (course && course.teachers && course.teachers[0]) {
+      return `ผู้สอน: ${getUserFullName(course.teachers[0])}`;
     }
 
     return '';
