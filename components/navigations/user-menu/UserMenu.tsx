@@ -207,7 +207,7 @@ const UserMenu: React.FC<IUserMenu> = ({ anchorElUser, setAnchorElUser }) => {
                 />
               </Stack>
             ) : (
-              <Link href="/settings/account">
+              <Link href="/settings/profile">
                 <Chip
                   className="hover:animate-pulse"
                   clickable
